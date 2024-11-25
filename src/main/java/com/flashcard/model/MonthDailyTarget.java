@@ -1,0 +1,31 @@
+package com.flashcard.model;
+
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
+import java.time.Month;
+
+@Entity(name = "MonthDailyTarget")
+@Table(name = "month_daily_target")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class MonthDailyTarget {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    private User user;
+
+    @NotNull
+    private Month month;
+
+    @NotNull
+    private Integer average;
+}

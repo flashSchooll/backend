@@ -1,0 +1,14 @@
+package com.flashcard.controller.tytlessonadmin.request;
+
+import com.flashcard.model.enums.TYT;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class TYTLessonSaveRequest {
+
+    @NotNull
+    private TYT tyt;
+}
