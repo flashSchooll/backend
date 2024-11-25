@@ -100,7 +100,7 @@ public class TYTCardService {
         Objects.requireNonNull(flashcardId);
 
         if (request.getTytCardSaveRequests().size() > 20) {
-            throw new BadRequestException("Bir flash cartta en fazla 20 kart olabilir");
+            throw new BadRequestException("Bir flashcartta en fazla 20 kart olabilir");
         }
 
         for (TYTCardSaveRequest saveRequest : request.getTytCardSaveRequests()) {

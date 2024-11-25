@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/SS
-    username: SS
-    password: SS
+    url: jdbc:postgresql://localhost:5432/StudyHive
+    username: StudyHive
+    password: StudyHive
   jpa:
     hibernate:
       dialect: org.hibernate.dialect.MySQLDialect
