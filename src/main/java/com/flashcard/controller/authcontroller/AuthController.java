@@ -44,4 +44,8 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("Şifre başarıyle değiştirildi"));
     }
+
+    public void hello(){
+        System.out.println("Hello World");
+    }
 }
