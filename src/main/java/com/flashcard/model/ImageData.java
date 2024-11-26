@@ -1,6 +1,7 @@
 package com.flashcard.model;
 
 
+import com.flashcard.model.enums.CardFace;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,4 +22,21 @@ public class ImageData {
 
     private byte[] data;
 
+    @Enumerated(EnumType.STRING)
+    private CardFace face;
+
+
+    public ImageData getFrontData() {
+        if (this.getFace().equals(CardFace.FRONT)) {
+            return this;
+        }
+        return null;
+    }
+
+    public ImageData getBackData() {
+        if (this.getFace().equals(CardFace.BACK)) {
+            return this;
+        }
+        return null;
+    }
 }

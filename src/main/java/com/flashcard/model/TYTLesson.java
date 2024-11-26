@@ -3,6 +3,7 @@ package com.flashcard.model;
 
 import com.flashcard.model.enums.TYT;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,8 @@ public class TYTLesson {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
+    @NotNull()
+    @Column(unique = true)
     private TYT tyt;
 
 }

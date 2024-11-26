@@ -1,6 +1,5 @@
 package com.flashcard.controller.usercontroller.admin;
 
-import com.flashcard.model.DTO.UserDTO;
 import com.flashcard.model.DTO.UserDTOAdmin;
 import com.flashcard.payload.response.MessageResponse;
 import com.flashcard.service.UserService;
@@ -47,7 +46,6 @@ public class UserAdminController {
         Page<UserDTOAdmin> userDTOPage = userService.getUserPage(search, pageable);
 
         return ResponseEntity.ok(userDTOPage);
-
     }
 
     @DeleteMapping("/{userid}")

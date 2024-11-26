@@ -1,7 +1,7 @@
 package com.flashcard.service;
 
-import com.flashcard.controller.tytlessonadmin.request.TYTLessonSaveRequest;
-import com.flashcard.controller.tytlessonadmin.response.TYTLessonResponse;
+import com.flashcard.controller.tytlesson.admin.request.TYTLessonSaveRequest;
+import com.flashcard.controller.tytlesson.admin.response.TYTLessonResponse;
 import com.flashcard.model.TYTLesson;
 import com.flashcard.repository.TYTLessonRepository;
 import lombok.RequiredArgsConstructor;

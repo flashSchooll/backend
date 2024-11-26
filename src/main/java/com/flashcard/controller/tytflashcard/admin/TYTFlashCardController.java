@@ -4,6 +4,7 @@ package com.flashcard.controller.tytflashcard.admin;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardSaveRequest;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardUpdateRequest;
 import com.flashcard.controller.tytflashcard.admin.response.TYTFlashcardResponse;
+import com.flashcard.model.TYTFlashcard;
 import com.flashcard.service.TYTFlashCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -48,11 +49,12 @@ public class TYTFlashCardController {
         return ResponseEntity.ok("Flashcard başarıyla silindi");
     }
 
-    @GetMapping("/get-all")
+    @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(@PathVariable Long topicId) {
 
-        List<TYTFlashcardResponse> response = tytFlashCardService.getAll();
+        List<TYTFlashcardResponse> response = tytFlashCardService.getAll(topicId)
+                .stream().map(TYTFlashcardResponse::new).toList();
 
         return ResponseEntity.ok(response);
     }

@@ -23,31 +23,35 @@ public class TYTTopicService {
     private final TYTLessonRepository tytLessonRepository;
 
     @Transactional
-    public void save(TYTTopicSaveRequest tytLessonSaveRequest) {
-        Objects.requireNonNull(tytLessonSaveRequest.getTytLessonId());
+    public TYTTopicAdminResponse save(TYTTopicSaveRequest tytLessonSaveRequest) {
+        Objects.requireNonNull(tytLessonSaveRequest.getLessonId());
         Objects.requireNonNull(tytLessonSaveRequest.getSubject());
 
-        TYTLesson tytLesson = tytLessonRepository.findById(tytLessonSaveRequest.getTytLessonId())
+        TYTLesson tytLesson = tytLessonRepository.findById(tytLessonSaveRequest.getLessonId())
                 .orElseThrow(() -> new NoSuchElementException("Ders bulunamadı"));
 
         TYTTopic topic = new TYTTopic();
         topic.setTytLesson(tytLesson);
         topic.setSubject(tytLessonSaveRequest.getSubject());
 
-        tytTopicRepository.save(topic);
+        topic = tytTopicRepository.save(topic);
+
+        return new TYTTopicAdminResponse(topic);
     }
 
     @Transactional
-    public void update(TYTTopicUpdateRequest tytTopicUpdateRequest) {
-        Objects.requireNonNull(tytTopicUpdateRequest.getTopic_id());
+    public TYTTopicAdminResponse update(TYTTopicUpdateRequest tytTopicUpdateRequest) {
+        Objects.requireNonNull(tytTopicUpdateRequest.getTopicId());
         Objects.requireNonNull(tytTopicUpdateRequest.getSubject());
 
-        TYTTopic topic = tytTopicRepository.findById(tytTopicUpdateRequest.getTopic_id())
+        TYTTopic topic = tytTopicRepository.findById(tytTopicUpdateRequest.getTopicId())
                 .orElseThrow(() -> new NoSuchElementException("Konu bulunamadı"));
 
         topic.setSubject(tytTopicUpdateRequest.getSubject());
 
-        tytTopicRepository.save(topic);
+        topic = tytTopicRepository.save(topic);
+
+        return new TYTTopicAdminResponse(topic);
     }
 
     @Transactional
@@ -60,7 +64,12 @@ public class TYTTopicService {
         tytTopicRepository.delete(topic);
     }
 
-    public List<TYTTopicAdminResponse> getAll() {
-        return tytTopicRepository.findAll().stream().map(TYTTopicAdminResponse::new).toList();
+    public List<TYTTopicAdminResponse> getAll(Long lessonId) {
+        Objects.requireNonNull(lessonId);
+
+        TYTLesson tytLesson = tytLessonRepository.findById(lessonId)
+                .orElseThrow(() -> new NoSuchElementException("Ders bulunamadı"));
+
+        return tytTopicRepository.findByTytLesson(tytLesson).stream().map(TYTTopicAdminResponse::new).toList();
     }
 }

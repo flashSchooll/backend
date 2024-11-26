@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 public class TYTTopicSaveRequest {
 
-    private Long tytLessonId;
+    private Long lessonId;
 
     @Size(min = 0,max = 256)
     @NotBlank

@@ -1,7 +1,7 @@
-package com.flashcard.controller.tytlessonadmin;
+package com.flashcard.controller.tytlesson.admin;
 
-import com.flashcard.controller.tytlessonadmin.request.TYTLessonSaveRequest;
-import com.flashcard.controller.tytlessonadmin.response.TYTLessonResponse;
+import com.flashcard.controller.tytlesson.admin.request.TYTLessonSaveRequest;
+import com.flashcard.controller.tytlesson.admin.response.TYTLessonResponse;
 import com.flashcard.model.enums.TYT;
 import com.flashcard.service.TYTLessonService;
 import jakarta.validation.Valid;
@@ -39,7 +39,7 @@ public class TYTLessonAdminController {
         return ResponseEntity.ok("Ders başarıyla silindi");
     }
 
-    @GetMapping("get-all")
+    @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getId() {
 

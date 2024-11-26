@@ -24,7 +24,7 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getUserById() {
+    public ResponseEntity<?> get() {
         UserDTO userDTO = userService.getUser();
 
         return ResponseEntity.ok(userDTO);
@@ -32,7 +32,7 @@ public class UserController {
 
     @PutMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
+    public ResponseEntity<?> update(@RequestBody UpdateUserRequest updateUserRequest) {
         UserDTO userDTO = userService.updateUser(updateUserRequest);
 
         return ResponseEntity.ok(userDTO);
@@ -53,7 +53,6 @@ public class UserController {
         userService.saveImage(file);
 
         return ResponseEntity.ok("Resim başarıyla yüklendi");
-
     }
     @DeleteMapping("/photo")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
@@ -62,7 +61,6 @@ public class UserController {
         userService.deletePhoto();
 
         return ResponseEntity.ok("Resim başarıyla silindi");
-
     }
 
     @GetMapping("/photo")
@@ -76,6 +74,5 @@ public class UserController {
                         "Content-Disposition", "attachment; filename=\"image.jpg\"").
                 contentType(MediaType.IMAGE_JPEG).
                 body(photo);
-
     }
 }

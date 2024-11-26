@@ -1,4 +1,4 @@
-package com.flashcard.controller.tytlessonadmin.response;
+package com.flashcard.controller.tytlesson.admin.response;
 
 import com.flashcard.model.TYTLesson;
 import lombok.Getter;
@@ -8,11 +8,11 @@ import lombok.Setter;
 @Setter
 public class TYTLessonResponse {
 
-    private final Long id;
+    private final Long lessonId;
     private final String name;
 
     public TYTLessonResponse(TYTLesson tytLesson) {
-        this.id = tytLesson.getId();
+        this.lessonId = tytLesson.getId();
         this.name = tytLesson.getTyt().label;
     }
 }

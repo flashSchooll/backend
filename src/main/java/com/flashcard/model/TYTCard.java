@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity(name = "TYTCard")
 @Table(name = "tyt_card")
 @Getter
@@ -33,7 +35,7 @@ public class TYTCard {
     @NotBlank
     private String backFace;
 
-    private byte[] dataFrontFace;
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ImageData> imageData;
 
-    private byte[] dataBackFace;
 }

@@ -11,7 +11,7 @@ import lombok.Setter;
 public class TYTFlashcardSaveRequest {
 
     @NotNull
-    private Long tytTopicId;
+    private Long topicId;
 
     @NotBlank
     @Size(min = 0, max = 256)

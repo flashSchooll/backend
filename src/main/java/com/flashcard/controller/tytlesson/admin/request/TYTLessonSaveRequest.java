@@ -1,4 +1,4 @@
-package com.flashcard.controller.tytlessonadmin.request;
+package com.flashcard.controller.tytlesson.admin.request;
 
 import com.flashcard.model.enums.TYT;
 import jakarta.validation.constraints.NotNull;

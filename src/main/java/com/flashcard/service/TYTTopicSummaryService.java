@@ -8,7 +8,6 @@ import com.flashcard.model.TYTTopicSummary;
 import com.flashcard.repository.TYTTopicRepository;
 import com.flashcard.repository.TYTTopicSummaryRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +24,10 @@ public class TYTTopicSummaryService {
 
     @Transactional
     public void save(TYTTopicSummarySaveRequest request) {
-        Objects.requireNonNull(request.getTopic_id());
+        Objects.requireNonNull(request.getTopicId());
         Objects.requireNonNull(request.getSummary());
 
-        TYTTopic topic = tytTopicRepository.findById(request.getTopic_id())
+        TYTTopic topic = tytTopicRepository.findById(request.getTopicId())
                 .orElseThrow(() -> new NoSuchElementException("Konu bulunamadı"));
 
         TYTTopicSummary summary = new TYTTopicSummary();
@@ -36,15 +35,14 @@ public class TYTTopicSummaryService {
         summary.setSummary(request.getSummary());
 
         tytTopicSummaryRepository.save(summary);
-
     }
 
     @Transactional
     public void update(TYTTopicSummaryUpdateRequest request) {
-        Objects.requireNonNull(request.getSummary_id());
+        Objects.requireNonNull(request.getSummaryId());
         Objects.requireNonNull(request.getSummary());
 
-        TYTTopicSummary summary = tytTopicSummaryRepository.findById(request.getSummary_id())
+        TYTTopicSummary summary = tytTopicSummaryRepository.findById(request.getSummaryId())
                 .orElseThrow(() -> new NoSuchElementException("Konu özeti bulunamadı"));
 
         summary.setSummary(request.getSummary());

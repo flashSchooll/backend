@@ -11,7 +11,7 @@ import lombok.Setter;
 public class TYTTopicSummarySaveRequest {
 
     @NotNull
-    private Long topic_id;
+    private Long topicId;
 
     @NotBlank
     @Size(min = 0,max = 1024)

@@ -23,22 +23,21 @@ public class TYTTopicAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> save(@RequestBody @Valid  TYTTopicSaveRequest tytLessonSaveRequest) {
+    public ResponseEntity<?> save(@RequestBody @Valid TYTTopicSaveRequest tytLessonSaveRequest) {
 
-        tytTopicService.save(tytLessonSaveRequest);
+        TYTTopicAdminResponse response = tytTopicService.save(tytLessonSaveRequest);
 
-        return ResponseEntity.ok("Konu başarıyla kaydedildi");
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> update(@RequestBody @Valid TYTTopicUpdateRequest tytTopicUpdateRequest) {
 
-        tytTopicService.update(tytTopicUpdateRequest);
+        TYTTopicAdminResponse response = tytTopicService.update(tytTopicUpdateRequest);
 
-        return ResponseEntity.ok("Konu başarıyla güncellendi");
+        return ResponseEntity.ok(response);
     }
-
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -49,11 +48,11 @@ public class TYTTopicAdminController {
         return ResponseEntity.ok("Konu başarıyla silindi");
     }
 
-    @GetMapping("/get-all")
+    @GetMapping("/get-all/{lessonId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(@PathVariable Long lessonId) {
 
-        List<TYTTopicAdminResponse> response=tytTopicService.getAll();
+        List<TYTTopicAdminResponse> response = tytTopicService.getAll(lessonId);
 
         return ResponseEntity.ok(response);
     }

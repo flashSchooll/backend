@@ -11,7 +11,7 @@ import lombok.Setter;
 public class TYTTopicUpdateRequest {
 
     @NotNull
-    private Long topic_id;
+    private Long topicId;
 
     @Size(min = 0,max = 256)
     @NotBlank

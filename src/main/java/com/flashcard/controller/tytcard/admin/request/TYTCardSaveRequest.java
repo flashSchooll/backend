@@ -12,11 +12,11 @@ public class TYTCardSaveRequest {
 
     private Long tytFlashcardId;
 
-    @Size(min = 0, max = 256)
+    @Size(min = 0, max = 512)
     @NotBlank
     private String frontFace;
 
-    @Size(min = 0, max = 256)
+    @Size(min = 0, max = 512)
     @NotBlank
     private String backFace;
 

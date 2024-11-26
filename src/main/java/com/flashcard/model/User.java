@@ -1,13 +1,17 @@
 package com.flashcard.model;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
 
 @Setter
 @Getter
@@ -66,4 +70,16 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+
+    public void raiseStar(int addedStar) {
+        int star = getStar();
+
+        this.setStar(star + addedStar);
+    }
+
+    public void raiseRosette(int addedRosette) {
+        int rosette = getRosette();
+
+        this.setStar(rosette + addedRosette);
+    }
 }

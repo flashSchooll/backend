@@ -6,7 +6,6 @@ import com.flashcard.controller.tytcard.admin.request.TYTCardUpdateRequest;
 import com.flashcard.controller.tytcard.admin.response.TYTCardResponse;
 import com.flashcard.service.TYTCardService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,7 +49,6 @@ public class TYTCardAdminController {
 
         return ResponseEntity.ok(response);
     }
-
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")

@@ -1,6 +1,5 @@
 package com.flashcard.controller.tyttopicsummary;
 
-import com.flashcard.controller.tytlessonadmin.request.TYTLessonSaveRequest;
 import com.flashcard.controller.tyttopicsummary.request.TYTTopicSummarySaveRequest;
 import com.flashcard.controller.tyttopicsummary.request.TYTTopicSummaryUpdateRequest;
 import com.flashcard.controller.tyttopicsummary.response.TYTTopicSummaryResponse;
@@ -32,7 +31,7 @@ public class TYTTopicSummaryAdminController {
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> update(@RequestBody @Valid  TYTTopicSummaryUpdateRequest request) {
+    public ResponseEntity<?> update(@RequestBody @Valid TYTTopicSummaryUpdateRequest request) {
 
         tytTopicSummaryService.update(request);
 
