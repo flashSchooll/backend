@@ -46,7 +46,6 @@ public class UserCardPercentageService {
         }
 
         userCardPercentageRepository.saveAll(percentageList);
-
     }
 
     public List<UserCardPercentage> getAllTYT() {
