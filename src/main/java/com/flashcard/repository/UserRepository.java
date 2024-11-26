@@ -24,4 +24,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "FROM User u " +
             "where (:search is null or (u.userName ILIKE (%:search%) or u.userSurname ILIKE (%:search%)))")
     Page<User> findAllAsPage(String search, Pageable pageable);
+
 }
