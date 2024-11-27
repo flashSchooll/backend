@@ -45,7 +45,7 @@ public class AuthService {
     public void register(@Valid SignupRequest signUpRequest) throws IOException {
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new IllegalArgumentException(Constants.EMAIL_ALREADY_EXISTS);
+            throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXISTS, signUpRequest.getEmail()));
         }
 
         // Create new user's account

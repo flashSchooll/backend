@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -19,10 +20,11 @@ public class TYTLessonService {
     private final TYTLessonRepository tytLessonRepository;
 
     @Transactional
-    public void save(TYTLessonSaveRequest tytLessonSaveRequest) {
+    public void save(TYTLessonSaveRequest tytLessonSaveRequest) throws IOException {
 
         TYTLesson tytLesson = new TYTLesson();
         tytLesson.setTyt(tytLessonSaveRequest.getTyt());
+        tytLesson.setIcon(tytLessonSaveRequest.getIcon().getBytes());
 
         tytLessonRepository.save(tytLesson);
     }

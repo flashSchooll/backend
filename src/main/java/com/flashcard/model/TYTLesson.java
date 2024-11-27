@@ -26,4 +26,7 @@ public class TYTLesson {
     @Column(unique = true)
     private TYT tyt;
 
+    @NotNull
+    private byte[] icon;
+
 }

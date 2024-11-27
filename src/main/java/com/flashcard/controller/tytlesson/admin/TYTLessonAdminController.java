@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class TYTLessonAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> save(@RequestBody @Valid TYTLessonSaveRequest tytLessonSaveRequest) {
+    public ResponseEntity<?> save(@RequestBody @Valid TYTLessonSaveRequest tytLessonSaveRequest) throws IOException {
 
         tytLessonService.save(tytLessonSaveRequest);
 

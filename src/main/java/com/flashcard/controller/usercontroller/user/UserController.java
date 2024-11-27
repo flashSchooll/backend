@@ -23,7 +23,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> get() {
         UserDTO userDTO = userService.getUser();
 
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> update(@RequestBody UpdateUserRequest updateUserRequest) {
         UserDTO userDTO = userService.updateUser(updateUserRequest);
 
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteMyAccount() {
         userService.deleteMyAccount();
 
