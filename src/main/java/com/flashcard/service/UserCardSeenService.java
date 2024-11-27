@@ -1,5 +1,6 @@
 package com.flashcard.service;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.usercardseen.request.UserCardSeenRequest;
 import com.flashcard.controller.usercardseen.request.UserCardSeenSaveRequest;
 import com.flashcard.exception.BadRequestException;
@@ -35,12 +36,12 @@ public class UserCardSeenService {
     public void save(@Valid UserCardSeenSaveRequest userCardSeenSaveRequest) {
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(userCardSeenSaveRequest.getFlashcardId())
-                .orElseThrow(() -> new NoSuchElementException("Flashcard bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
         int countCard = tytCardRepository.countByTytFlashcard(flashcard);
 
         if (countCard != userCardSeenSaveRequest.getUserCardSeenRequestList().size()) {
-            throw new BadRequestException("Flashkarda ait bütün kartlar kaydedilmeli");
+            throw new BadRequestException(Constants.ALL_CARDS_ON_FLASHCARD_MUST_BE_SAVE);
         }
 
         User user = authService.getCurrentUser();
@@ -72,7 +73,7 @@ public class UserCardSeenService {
         Objects.requireNonNull(flashcardId);
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
-                .orElseThrow(() -> new NoSuchElementException("Flashcard bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         User user = authService.getCurrentUser();
 
         return userCardSeenRepository.findByUserAndFlashcard(user, flashcard);
@@ -82,7 +83,7 @@ public class UserCardSeenService {
         Objects.requireNonNull(flashcardId);
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
-                .orElseThrow(() -> new NoSuchElementException("Flashcard bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         User user = authService.getCurrentUser();
 
         return userCardSeenRepository.findByUserAndFlashcardAndStateOfKnowledgeIsFalse(user, flashcard);
@@ -92,7 +93,7 @@ public class UserCardSeenService {
         Objects.requireNonNull(flashcardId);
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
-                .orElseThrow(() -> new NoSuchElementException("Flashcard bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         User user = authService.getCurrentUser();
 
         return userCardSeenRepository.findByUserAndFlashcardAndStateOfKnowledgeIsTrue(user, flashcard);

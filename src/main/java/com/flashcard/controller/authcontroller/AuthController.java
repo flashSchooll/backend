@@ -1,5 +1,6 @@
 package com.flashcard.controller.authcontroller;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.authcontroller.request.LoginRequest;
 import com.flashcard.controller.authcontroller.request.SignupRequest;
 import com.flashcard.controller.authcontroller.request.UpdatePasswordRequest;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -21,11 +24,11 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) throws IOException {
 
         authService.register(signUpRequest);
 
-        return ResponseEntity.ok(new MessageResponse("Kullanıcı başarıyla kaydedildi!"));
+        return ResponseEntity.ok(new MessageResponse(Constants.USER_SUCCESSFULLY_SAVED));
     }
 
     @PostMapping("/signin")
@@ -42,10 +45,7 @@ public class AuthController {
 
         authService.updatePassword(updatePasswordRequest);
 
-        return ResponseEntity.ok(new MessageResponse("Şifre başarıyle değiştirildi"));
+        return ResponseEntity.ok(new MessageResponse(Constants.PASSWORD_SUCCESSFULLY_UPDATED));
     }
 
-    public void hello(){
-        System.out.println("Hello World");
-    }
 }

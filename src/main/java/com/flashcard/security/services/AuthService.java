@@ -1,18 +1,18 @@
 package com.flashcard.security.services;
 
-import com.flashcard.controller.authcontroller.request.UpdatePasswordRequest;
-import com.flashcard.exception.BadRequestException;
-import com.flashcard.exception.ResourceNotFoundException;
-import com.flashcard.model.enums.ERole;
-import com.flashcard.model.Role;
-import com.flashcard.model.User;
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.authcontroller.request.LoginRequest;
 import com.flashcard.controller.authcontroller.request.SignupRequest;
+import com.flashcard.controller.authcontroller.request.UpdatePasswordRequest;
 import com.flashcard.controller.authcontroller.response.JwtResponse;
+import com.flashcard.exception.BadRequestException;
+import com.flashcard.exception.ResourceNotFoundException;
+import com.flashcard.model.Role;
+import com.flashcard.model.User;
+import com.flashcard.model.enums.ERole;
 import com.flashcard.repository.RoleRepository;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.jwt.JwtUtils;
-import com.flashcard.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +22,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -39,13 +41,11 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void register(@Valid SignupRequest signUpRequest) {
-        if (userRepository.existsByUserName(signUpRequest.getUserName())) {
-            throw new IllegalArgumentException("Error: Username is already taken!");
-        }
+    @Transactional
+    public void register(@Valid SignupRequest signUpRequest) throws IOException {
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new IllegalArgumentException("Error: Email is already in use!");
+            throw new IllegalArgumentException(Constants.EMAIL_ALREADY_EXISTS);
         }
 
         // Create new user's account
@@ -57,27 +57,25 @@ public class AuthService {
         user.setCreatedDate(LocalDateTime.now());
         user.setStar(0);
         user.setRosette(0);
+        user.setProfilePhoto(signUpRequest.getProfilePhoto() != null ? signUpRequest.getProfilePhoto().getBytes() : null);
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_USER)));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
+                if (role.equals(Constants.ROLE_ADMIN)) {
+                    Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                            .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_ADMIN)));
+                    roles.add(adminRole);
+                } else {
+                    Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                            .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_USER)));
+                    roles.add(userRole);
                 }
             });
         }
@@ -105,11 +103,12 @@ public class AuthService {
                 roles);
     }
 
+    @Transactional
     public void updatePassword(@Valid UpdatePasswordRequest updatePasswordRequest) {
         User user = getCurrentUser();
 
         if (!passwordEncoder.matches(updatePasswordRequest.getOldPassword(), user.getPassword())) {
-            throw new BadRequestException("Eski şifre bilgileri uyuşmuyor");
+            throw new BadRequestException(Constants.PASSWORD_NOT_MISMATCH);
         }
 
         String hashedPassword = passwordEncoder.encode(updatePasswordRequest.getNewPassword());
@@ -120,14 +119,14 @@ public class AuthService {
     public User getCurrentUser() {
 
         String email = SecurityUtils.getCurrentUserLogin().orElseThrow(() ->
-                new ResourceNotFoundException("Kullanıcı bulunamadı"));
+                new ResourceNotFoundException(Constants.USER_NOT_FOUND));
 
         return getUserByEmail(email);
 
     }
 
     private User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("Kullanıcı bulunamadı"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
     }
 
     public String userNameSaveFormat(String username) {

@@ -1,5 +1,6 @@
 package com.flashcard.service;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardSaveRequest;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardUpdateRequest;
 import com.flashcard.controller.tytflashcard.admin.response.TYTFlashcardResponse;
@@ -31,12 +32,12 @@ public class TYTFlashCardService {
         Objects.requireNonNull(tytFlashcardSaveRequest.getCardName());
 
         TYTTopic topic = tytTopicRepository.findById(tytFlashcardSaveRequest.getTopicId())
-                .orElseThrow(() -> new NoSuchElementException("Konu bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
 
         boolean isExist = tytFlashCardRepository.existsByCardName(tytFlashcardSaveRequest.getCardName());
 
         if (isExist) {
-            throw new BadRequestException("Flashcard ismi zaten kayıtlı");
+            throw new BadRequestException(Constants.FLASHCARD_NAME_ALREADY_EXISTS);
         }
 
         TYTFlashcard flashcard = new TYTFlashcard();
@@ -54,12 +55,12 @@ public class TYTFlashCardService {
         Objects.requireNonNull(tytFlashcardUpdateRequest.getCardName());
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(tytFlashcardUpdateRequest.getFlashcardId())
-                .orElseThrow(() -> new NoSuchElementException("Flashcard bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
         boolean isExist = tytFlashCardRepository.existsByCardName(tytFlashcardUpdateRequest.getCardName());
 
         if (isExist) {
-            throw new BadRequestException("Flashcard ismi zaten kayıtlı");
+            throw new BadRequestException(Constants.FLASHCARD_NAME_ALREADY_EXISTS);
         }
 
         flashcard.setCardName(tytFlashcardUpdateRequest.getCardName());
@@ -74,7 +75,7 @@ public class TYTFlashCardService {
         Objects.requireNonNull(id);
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Flashcard bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
         tytFlashCardRepository.delete(flashcard);
     }
@@ -83,7 +84,7 @@ public class TYTFlashCardService {
         Objects.requireNonNull(topicId);
 
         TYTTopic topic = tytTopicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException("Konu bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
 
         return tytFlashCardRepository.findByTopic(topic);
     }

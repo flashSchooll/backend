@@ -1,5 +1,6 @@
 package com.flashcard.service;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.tytlesson.admin.request.TYTLessonSaveRequest;
 import com.flashcard.controller.tytlesson.admin.response.TYTLessonResponse;
 import com.flashcard.model.TYTLesson;
@@ -28,8 +29,9 @@ public class TYTLessonService {
 
     @Transactional
     public void delete(Long id) {
+
         TYTLesson tytLesson = tytLessonRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Ders bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
 
         tytLessonRepository.delete(tytLesson);
     }

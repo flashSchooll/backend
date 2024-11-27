@@ -1,5 +1,6 @@
 package com.flashcard.service;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.tytcard.admin.request.TYTCardSaveAllRequest;
 import com.flashcard.controller.tytcard.admin.request.TYTCardSaveRequest;
 import com.flashcard.controller.tytcard.admin.request.TYTCardUpdateRequest;
@@ -31,18 +32,17 @@ public class TYTCardService {
     private final TYTFlashCardService flashCardService;
     private final TYTFlashCardRepository tytFlashCardRepository;
 
-
     @Transactional
     public TYTCardResponse save(TYTCardSaveRequest tytCardSaveRequest) throws IOException {
         Objects.requireNonNull(tytCardSaveRequest.getTytFlashcardId());
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(tytCardSaveRequest.getTytFlashcardId())
-                .orElseThrow(() -> new NoSuchElementException("Flashcard bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
         int countCartByFlashCard = tytCardRepository.countByTytFlashcard(flashcard);
 
         if (countCartByFlashCard > 20) {
-            throw new BadRequestException("Bir Flashcartda 20 card olabilir");
+            throw new BadRequestException(Constants.FLASHCARD_CAN_HAVE_20_CARDS);
         }
 
         List<ImageData> imageDataList = new ArrayList<>();
@@ -63,7 +63,6 @@ public class TYTCardService {
             imageDataList.add(imageData);
         }
 
-
         TYTCard tytCard = new TYTCard();
         tytCard.setTytFlashcard(flashcard);
         tytCard.setBackFace(tytCardSaveRequest.getBackFace());
@@ -81,7 +80,7 @@ public class TYTCardService {
         Objects.requireNonNull(tytCardUpdateRequest.getId());
 
         TYTCard tytCard = tytCardRepository.findById(tytCardUpdateRequest.getId())
-                .orElseThrow(() -> new NoSuchElementException("Card bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
 
         ImageData imageData;
 
@@ -116,7 +115,7 @@ public class TYTCardService {
         Objects.requireNonNull(id);
 
         TYTCard tytCard = tytCardRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Card bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
 
         tytCardRepository.delete(tytCard);
     }
@@ -125,7 +124,7 @@ public class TYTCardService {
         Objects.requireNonNull(flashcardId);
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
-                .orElseThrow(() -> new NoSuchElementException("Flashcard bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
         List<TYTCard> cards = tytCardRepository.findByTytFlashcard(flashcard);
 
@@ -137,10 +136,10 @@ public class TYTCardService {
         Objects.requireNonNull(flashcardId);
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
-                .orElseThrow(() -> new NoSuchElementException("Flashcard bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
         if (request.getTytCardSaveRequests().size() > 20) {
-            throw new BadRequestException("Bir flashcartta en fazla 20 kart olabilir");
+            throw new BadRequestException(Constants.FLASHCARD_CAN_HAVE_20_CARDS);
         }
 
         for (TYTCardSaveRequest saveRequest : request.getTytCardSaveRequests()) {

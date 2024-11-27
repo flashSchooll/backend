@@ -1,5 +1,6 @@
 package com.flashcard.service;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.model.TYTFlashcard;
 import com.flashcard.model.TYTLesson;
 import com.flashcard.model.User;
@@ -42,7 +43,6 @@ public class UserCardPercentageService {
             percentage.setTotalCard(cardCount);
 
             percentageList.add(percentage);
-
         }
 
         userCardPercentageRepository.saveAll(percentageList);
@@ -54,7 +54,6 @@ public class UserCardPercentageService {
         User user = authService.getCurrentUser();
 
         return userCardPercentageRepository.findByUser(user);
-
     }
 
     @Transactional
@@ -63,7 +62,7 @@ public class UserCardPercentageService {
         TYTLesson lesson = flashcard.getTopic().getTytLesson();
 
         UserCardPercentage userCardPercentage = userCardPercentageRepository.findByUserAndLesson(user, lesson)
-                .orElseThrow(() -> new NoSuchElementException("Öğrenci yüzdelik kart bilgisi bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.USER_PERCENTAGE_NOT_FOUND));
 
         userCardPercentage.increaseCompletedCard(amount);
 

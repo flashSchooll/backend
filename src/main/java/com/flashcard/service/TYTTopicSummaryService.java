@@ -1,5 +1,6 @@
 package com.flashcard.service;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.tyttopicsummary.request.TYTTopicSummarySaveRequest;
 import com.flashcard.controller.tyttopicsummary.request.TYTTopicSummaryUpdateRequest;
 import com.flashcard.controller.tyttopicsummary.response.TYTTopicSummaryResponse;
@@ -28,7 +29,7 @@ public class TYTTopicSummaryService {
         Objects.requireNonNull(request.getSummary());
 
         TYTTopic topic = tytTopicRepository.findById(request.getTopicId())
-                .orElseThrow(() -> new NoSuchElementException("Konu bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
 
         TYTTopicSummary summary = new TYTTopicSummary();
         summary.setTopic(topic);
@@ -43,7 +44,7 @@ public class TYTTopicSummaryService {
         Objects.requireNonNull(request.getSummary());
 
         TYTTopicSummary summary = tytTopicSummaryRepository.findById(request.getSummaryId())
-                .orElseThrow(() -> new NoSuchElementException("Konu özeti bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
 
         summary.setSummary(request.getSummary());
 
@@ -55,7 +56,7 @@ public class TYTTopicSummaryService {
         Objects.requireNonNull(id);
 
         TYTTopicSummary summary = tytTopicSummaryRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Konu özeti bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
 
         tytTopicSummaryRepository.delete(summary);
     }
@@ -64,7 +65,7 @@ public class TYTTopicSummaryService {
         Objects.requireNonNull(id);
 
         TYTTopicSummary summary = tytTopicSummaryRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Konu özeti bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
 
         return new TYTTopicSummaryResponse(summary);
     }
@@ -73,7 +74,7 @@ public class TYTTopicSummaryService {
         Objects.requireNonNull(topicId);
 
         TYTTopic topic = tytTopicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException("Konu bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
 
         List<TYTTopicSummary> summaries = tytTopicSummaryRepository.findByTopic(topic);
 

@@ -1,0 +1,63 @@
+package com.flashcard.controller.repeatflashcard.response;
+
+import com.flashcard.constants.Constants;
+import com.flashcard.model.RepeatFlashcard;
+import com.flashcard.service.RepeatFlashcardService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/api/tyt/repeat-topic")
+@RequiredArgsConstructor
+public class RepeatFlashcardController {
+
+    private final RepeatFlashcardService repeatFlashcardService;
+
+    @PostMapping("/{flashcardId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> save(@RequestParam Long flashcardId,
+                                  @RequestParam LocalDateTime repeatTime) {
+
+        RepeatFlashcard repeatFlashcard = repeatFlashcardService.save(flashcardId, repeatTime);
+
+        return ResponseEntity.ok(repeatFlashcard);
+    }
+
+    @PostMapping("/{topicId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> saveByTopic(@RequestParam Long topicId,
+                                         @RequestParam LocalDateTime repeatTime) {
+
+        RepeatFlashcard repeatFlashcard = repeatFlashcardService.saveByTopic(topicId, repeatTime);
+
+        return ResponseEntity.ok(repeatFlashcard);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+
+        repeatFlashcardService.delete(id);
+
+        return ResponseEntity.ok(Constants.REPEAT_CARD_SUCCESSFULLY_DELETED);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getAll() {
+
+        List<RepeatFlashcard> repeatFlashcards = repeatFlashcardService.getAll();
+
+        List<RepeatFlashcardResponse> responses = repeatFlashcards.stream().map(RepeatFlashcardResponse::new).toList();
+
+        return ResponseEntity.ok(responses);
+    }
+
+
+}

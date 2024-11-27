@@ -1,5 +1,6 @@
 package com.flashcard.service;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.tyttopic.Request.TYTTopicSaveRequest;
 import com.flashcard.controller.tyttopic.Request.TYTTopicUpdateRequest;
 import com.flashcard.controller.tyttopic.Response.TYTTopicAdminResponse;
@@ -28,7 +29,7 @@ public class TYTTopicService {
         Objects.requireNonNull(tytLessonSaveRequest.getSubject());
 
         TYTLesson tytLesson = tytLessonRepository.findById(tytLessonSaveRequest.getLessonId())
-                .orElseThrow(() -> new NoSuchElementException("Ders bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
 
         TYTTopic topic = new TYTTopic();
         topic.setTytLesson(tytLesson);
@@ -45,7 +46,7 @@ public class TYTTopicService {
         Objects.requireNonNull(tytTopicUpdateRequest.getSubject());
 
         TYTTopic topic = tytTopicRepository.findById(tytTopicUpdateRequest.getTopicId())
-                .orElseThrow(() -> new NoSuchElementException("Konu bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
 
         topic.setSubject(tytTopicUpdateRequest.getSubject());
 
@@ -59,7 +60,7 @@ public class TYTTopicService {
         Objects.requireNonNull(id);
 
         TYTTopic topic = tytTopicRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Konu bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
 
         tytTopicRepository.delete(topic);
     }
@@ -68,7 +69,7 @@ public class TYTTopicService {
         Objects.requireNonNull(lessonId);
 
         TYTLesson tytLesson = tytLessonRepository.findById(lessonId)
-                .orElseThrow(() -> new NoSuchElementException("Ders bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
 
         return tytTopicRepository.findByTytLesson(tytLesson).stream().map(TYTTopicAdminResponse::new).toList();
     }

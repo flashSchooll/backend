@@ -1,5 +1,6 @@
 package com.flashcard.service;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.DTO.UserDTO;
@@ -27,7 +28,7 @@ public class UserService {
 
     public UserDTOAdmin getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Kullanıcı bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
 
         return new UserDTOAdmin(user);
     }
@@ -47,7 +48,7 @@ public class UserService {
     @Transactional
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Kullanıcı bulunamadı"));
+                .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
 
         userRepository.delete(user);
     }
@@ -70,7 +71,7 @@ public class UserService {
         User user = authService.getCurrentUser();
 
         if (!user.getEmail().equals(updateUserRequest.getEmail()) && userRepository.existsByEmail(updateUserRequest.getEmail())) {
-            throw new BadRequestException(String.format("Email %s zaten kullanılıyor ", updateUserRequest.getEmail()));
+            throw new BadRequestException(String.format(Constants.EMAIL_ALREADY_EXISTS, updateUserRequest.getEmail()));
         }
 
         user.setUserName(authService.userNameSaveFormat(updateUserRequest.getUserName()));
