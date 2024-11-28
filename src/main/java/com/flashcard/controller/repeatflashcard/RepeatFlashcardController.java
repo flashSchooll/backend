@@ -1,10 +1,11 @@
-package com.flashcard.controller.repeatflashcard.response;
+package com.flashcard.controller.repeatflashcard;
 
 import com.flashcard.constants.Constants;
+import com.flashcard.controller.repeatflashcard.response.RepeatFlashcardResponse;
 import com.flashcard.model.RepeatFlashcard;
+import com.flashcard.payload.response.ResponseObject;
 import com.flashcard.service.RepeatFlashcardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,44 +20,44 @@ public class RepeatFlashcardController {
 
     private final RepeatFlashcardService repeatFlashcardService;
 
-    @PostMapping("/{flashcardId}")
+    @PostMapping("/flashcard")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> save(@RequestParam Long flashcardId,
-                                  @RequestParam LocalDateTime repeatTime) {
+    public ResponseObject save(@RequestParam Long flashcardId,
+                               @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.save(flashcardId, repeatTime);
 
-        return ResponseEntity.ok(repeatFlashcard);
+        return ResponseObject.ok(repeatFlashcard);
     }
 
-    @PostMapping("/{topicId}")
+    @PostMapping("/topic")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> saveByTopic(@RequestParam Long topicId,
-                                         @RequestParam LocalDateTime repeatTime) {
+    public ResponseObject saveByTopic(@RequestParam Long topicId,
+                                      @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.saveByTopic(topicId, repeatTime);
 
-        return ResponseEntity.ok(repeatFlashcard);
+        return ResponseObject.ok(repeatFlashcard);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseObject delete(@PathVariable Long id) {
 
         repeatFlashcardService.delete(id);
 
-        return ResponseEntity.ok(Constants.REPEAT_CARD_SUCCESSFULLY_DELETED);
+        return ResponseObject.ok(Constants.REPEAT_CARD_SUCCESSFULLY_DELETED);
     }
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getAll() {
+    public ResponseObject getAll() {
 
         List<RepeatFlashcard> repeatFlashcards = repeatFlashcardService.getAll();
 
         List<RepeatFlashcardResponse> responses = repeatFlashcards.stream().map(RepeatFlashcardResponse::new).toList();
 
-        return ResponseEntity.ok(responses);
+        return ResponseObject.ok(responses);
     }
 
 

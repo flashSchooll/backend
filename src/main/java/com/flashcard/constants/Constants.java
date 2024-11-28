@@ -21,7 +21,8 @@ public class Constants {
     public static final String ROLE_NOT_FOUND = "ROLE bulunamadı %s ";
     public static final String ROLE_ADMIN = "admin";
     public static final String PASSWORD_NOT_MISMATCH = "Eski şifre bilgileri uyuşmuyor";
-    public static final String USER_SUCCESSFULLY_SAVED ="Kullanıcı başarıyla kaydedildi" ;
+    public static final String USER_SUCCESSFULLY_SAVED = "Kullanıcı başarıyla kaydedildi";
     public static final String PASSWORD_SUCCESSFULLY_UPDATED = "Şifre başarıyle değiştirildi";
     public static final Object REPEAT_CARD_SUCCESSFULLY_DELETED = "Tekrar kartı başarıyla silindi";
+    public static final String TOKEN_NOT_VALID = "Token geçerli değil";
 }

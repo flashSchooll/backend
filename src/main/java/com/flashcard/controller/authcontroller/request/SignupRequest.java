@@ -29,10 +29,10 @@ public class SignupRequest {
   @Size(max = 30)
   private String userSurname;
 
-  private MultipartFile profilePhoto;
-
   private Set<String> role;
 
   @NotNull
   private Boolean userAgreement;
+
+ // byte[] profilePhoto;
 }

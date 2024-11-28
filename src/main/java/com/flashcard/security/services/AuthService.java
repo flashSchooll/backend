@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -42,9 +43,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void register(@Valid SignupRequest signUpRequest) throws IOException {
+    public void register(@Valid SignupRequest signUpRequest,MultipartFile file) throws IOException {
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {
             throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXISTS, signUpRequest.getEmail()));
         }
 
@@ -57,7 +58,7 @@ public class AuthService {
         user.setCreatedDate(LocalDateTime.now());
         user.setStar(0);
         user.setRosette(0);
-        user.setProfilePhoto(signUpRequest.getProfilePhoto() != null ? signUpRequest.getProfilePhoto().getBytes() : null);
+        user.setProfilePhoto(file.getBytes());
         user.setUserAgreement(signUpRequest.getUserAgreement());
 
         Set<String> strRoles = signUpRequest.getRole();

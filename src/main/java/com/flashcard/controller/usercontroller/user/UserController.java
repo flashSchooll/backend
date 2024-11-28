@@ -3,6 +3,7 @@ package com.flashcard.controller.usercontroller.user;
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.model.DTO.UserDTO;
 import com.flashcard.payload.response.MessageResponse;
+import com.flashcard.payload.response.ResponseObject;
 import com.flashcard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -24,43 +25,44 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> get() {
+    public ResponseObject get() {
         UserDTO userDTO = userService.getUser();
 
-        return ResponseEntity.ok(userDTO);
+        return ResponseObject.ok(userDTO);
     }
 
     @PutMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> update(@RequestBody UpdateUserRequest updateUserRequest) {
+    public ResponseObject update(@RequestBody UpdateUserRequest updateUserRequest) {
         UserDTO userDTO = userService.updateUser(updateUserRequest);
 
-        return ResponseEntity.ok(userDTO);
+        return ResponseObject.ok(userDTO);
     }
 
     @DeleteMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteMyAccount() {
+    public ResponseObject deleteMyAccount() {
         userService.deleteMyAccount();
 
-        return ResponseEntity.ok(new MessageResponse("Hesabınız başarıyla silindi"));
+        return ResponseObject.ok(new MessageResponse("Hesabınız başarıyla silindi"));
     }
 
     @PostMapping("/upload-photo")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> uploadPhoto(@RequestBody MultipartFile file) throws IOException {
+    public ResponseObject uploadPhoto(@RequestBody MultipartFile file) throws IOException {
 
         userService.saveImage(file);
 
-        return ResponseEntity.ok("Resim başarıyla yüklendi");
+        return ResponseObject.ok("Resim başarıyla yüklendi");
     }
+
     @DeleteMapping("/photo")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> deletePhoto() {
+    public ResponseObject deletePhoto() {
 
         userService.deletePhoto();
 
-        return ResponseEntity.ok("Resim başarıyla silindi");
+        return ResponseObject.ok("Resim başarıyla silindi");
     }
 
     @GetMapping("/photo")
@@ -68,7 +70,6 @@ public class UserController {
     public ResponseEntity<?> getPhoto() {
 
         byte[] photo = userService.getImage();
-        String name = "profil resmi";
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                         "Content-Disposition", "attachment; filename=\"image.jpg\"").

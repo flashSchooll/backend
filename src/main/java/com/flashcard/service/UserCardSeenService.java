@@ -33,7 +33,7 @@ public class UserCardSeenService {
     private final UserCardPercentageService userCardPercentageService;
 
     @Transactional
-    public void save(@Valid UserCardSeenSaveRequest userCardSeenSaveRequest) {
+    public List<UserSeenCard> save(@Valid UserCardSeenSaveRequest userCardSeenSaveRequest) {
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(userCardSeenSaveRequest.getFlashcardId())
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
@@ -61,12 +61,14 @@ public class UserCardSeenService {
 
             cardList.add(userSeenCard);
         }
-        userCardSeenRepository.saveAll(cardList);
+        cardList = userCardSeenRepository.saveAll(cardList);
 
         user.raiseRosette(1);
         user.raiseRosette(userCardSeenSaveRequest.getUserCardSeenRequestList().size());
 
         userCardPercentageService.updatePercentage(user, flashcard, userCardSeenSaveRequest.getUserCardSeenRequestList().size());
+
+        return cardList;
     }
 
     public List<UserSeenCard> getAllSeenCardsByFlashcard(Long flashcardId) {

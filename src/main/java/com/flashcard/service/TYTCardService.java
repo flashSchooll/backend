@@ -11,12 +11,11 @@ import com.flashcard.model.TYTFlashcard;
 import com.flashcard.model.enums.CardFace;
 import com.flashcard.repository.TYTCardRepository;
 import com.flashcard.repository.TYTFlashCardRepository;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,46 +32,64 @@ public class TYTCardService {
     private final TYTFlashCardRepository tytFlashCardRepository;
 
     @Transactional
-    public TYTCardResponse save(TYTCardSaveRequest tytCardSaveRequest) throws IOException {
-        Objects.requireNonNull(tytCardSaveRequest.getTytFlashcardId());
+    public TYTCardResponse save(TYTCardSaveRequest tytCardSaveRequest) throws BadRequestException {
+        // Null kontrolü
+        Long flashcardId = tytCardSaveRequest.getTytFlashcardId();
+        Objects.requireNonNull(flashcardId, "Flashcard ID cannot be null");
 
-        TYTFlashcard flashcard = tytFlashCardRepository.findById(tytCardSaveRequest.getTytFlashcardId())
+        // Flashcard verisini al, var mı kontrol et
+        TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
-        int countCartByFlashCard = tytCardRepository.countByTytFlashcard(flashcard);
-
-        if (countCartByFlashCard > 20) {
+        // Kart sayısını kontrol et, limit aşıldıysa hata fırlat
+        if (tytCardRepository.countByTytFlashcard(flashcard) > 20) {
             throw new BadRequestException(Constants.FLASHCARD_CAN_HAVE_20_CARDS);
         }
 
-        List<ImageData> imageDataList = new ArrayList<>();
+        // Görselleri işleyip listeye ekle
+        List<ImageData> imageDataList = createImageDataList(tytCardSaveRequest);
 
-        ImageData imageData;
-
-        if (tytCardSaveRequest.getFrontFile() != null) {
-            imageData = new ImageData();
-            imageData.setData(tytCardSaveRequest.getFrontFile().getBytes());
-            imageData.setFace(CardFace.FRONT);
-            imageDataList.add(imageData);
-        }
-
-        if (tytCardSaveRequest.getBackFile() != null) {
-            imageData = new ImageData();
-            imageData.setData(tytCardSaveRequest.getBackFile().getBytes());
-            imageData.setFace(CardFace.BACK);
-            imageDataList.add(imageData);
-        }
-
+        // Yeni TYTCard nesnesini oluştur
         TYTCard tytCard = new TYTCard();
         tytCard.setTytFlashcard(flashcard);
         tytCard.setBackFace(tytCardSaveRequest.getBackFace());
         tytCard.setFrontFace(tytCardSaveRequest.getFrontFace());
         tytCard.setImageData(imageDataList);
 
+        // TYTCard'ı veritabanına kaydet
         tytCard = tytCardRepository.save(tytCard);
 
+        // Response nesnesini döndür
         return new TYTCardResponse(tytCard);
     }
+
+    private List<ImageData> createImageDataList(TYTCardSaveRequest tytCardSaveRequest) throws BadRequestException {
+        List<ImageData> imageDataList = new ArrayList<>();
+
+        // Ön yüz dosyası varsa, onu ekle
+        if (tytCardSaveRequest.getFrontFile() != null) {
+            imageDataList.add(createImageData(tytCardSaveRequest.getFrontFile(), CardFace.FRONT));
+        }
+
+        // Arka yüz dosyası varsa, onu ekle
+        if (tytCardSaveRequest.getBackFile() != null) {
+            imageDataList.add(createImageData(tytCardSaveRequest.getBackFile(), CardFace.BACK));
+        }
+
+        return imageDataList;
+    }
+
+    private ImageData createImageData(MultipartFile file, CardFace face) throws BadRequestException {
+        try {
+            ImageData imageData = new ImageData();
+            imageData.setData(file.getBytes());
+            imageData.setFace(face);
+            return imageData;
+        } catch (IOException e) {
+            throw new BadRequestException("Error processing image file: " + e.getMessage());
+        }
+    }
+
 
     @Transactional
     public TYTCardResponse update(TYTCardUpdateRequest tytCardUpdateRequest) throws IOException {

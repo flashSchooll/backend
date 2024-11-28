@@ -1,10 +1,9 @@
 package com.flashcard.controller.tytflashcard.user;
 
-import com.flashcard.controller.tytflashcard.admin.response.TYTFlashcardResponse;
 import com.flashcard.controller.tytflashcard.user.response.TYTFlashcardUserResponse;
+import com.flashcard.payload.response.ResponseObject;
 import com.flashcard.service.TYTFlashCardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +19,11 @@ public class TYTFlashcardUserController {
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> getAll(@PathVariable Long topicId) {
+    public ResponseObject getAll(@PathVariable Long topicId) {
 
         List<TYTFlashcardUserResponse> response = tytFlashCardService.getAllUser(topicId);
 
-        return ResponseEntity.ok(response);
+        return ResponseObject.ok(response);
     }
 
 

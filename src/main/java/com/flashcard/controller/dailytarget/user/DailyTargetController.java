@@ -1,14 +1,16 @@
 package com.flashcard.controller.dailytarget.user;
 
-import com.flashcard.controller.dailytarget.response.DailyTargetAdminResponse;
 import com.flashcard.controller.dailytarget.response.DailyTargetPastResponse;
 import com.flashcard.controller.dailytarget.response.DailyTargetResponse;
 import com.flashcard.controller.dailytarget.response.DailyTargetStatisticResponse;
+import com.flashcard.payload.response.ResponseObject;
 import com.flashcard.service.DailyTargetService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -22,26 +24,26 @@ public class DailyTargetController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getTarget() {
+    public ResponseObject getTarget() {
         DailyTargetResponse response = dailyTargetService.getTarget();
 
-        return ResponseEntity.ok(response);
+        return ResponseObject.ok(response);
     }
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getTargetMonthly() {
+    public ResponseObject getTargetMonthly() {
         List<DailyTargetStatisticResponse> response = dailyTargetService.getTargetMonthly();
 
-        return ResponseEntity.ok(response);
+        return ResponseObject.ok(response);
     }
 
     @GetMapping("/past")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getTargetPast() {
+    public ResponseObject getTargetPast() {
         List<DailyTargetPastResponse> response = dailyTargetService.getTargetPast();
 
-        return ResponseEntity.ok(response);
+        return ResponseObject.ok(response);
     }
 
 }

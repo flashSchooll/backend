@@ -4,6 +4,7 @@ package com.flashcard.controller.tyttopic.admin;
 import com.flashcard.controller.tyttopic.admin.Request.TYTTopicSaveRequest;
 import com.flashcard.controller.tyttopic.admin.Request.TYTTopicUpdateRequest;
 import com.flashcard.controller.tyttopic.admin.Response.TYTTopicAdminResponse;
+import com.flashcard.payload.response.ResponseObject;
 import com.flashcard.service.TYTTopicService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,38 +24,38 @@ public class TYTTopicAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> save(@RequestBody @Valid TYTTopicSaveRequest tytLessonSaveRequest) {
+    public ResponseObject save(@RequestBody @Valid TYTTopicSaveRequest tytLessonSaveRequest) {
 
         TYTTopicAdminResponse response = tytTopicService.save(tytLessonSaveRequest);
 
-        return ResponseEntity.ok(response);
+        return ResponseObject.ok(response);
     }
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> update(@RequestBody @Valid TYTTopicUpdateRequest tytTopicUpdateRequest) {
+    public ResponseObject update(@RequestBody @Valid TYTTopicUpdateRequest tytTopicUpdateRequest) {
 
         TYTTopicAdminResponse response = tytTopicService.update(tytTopicUpdateRequest);
 
-        return ResponseEntity.ok(response);
+        return ResponseObject.ok(response);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseObject delete(@PathVariable Long id) {
 
         tytTopicService.delete(id);
 
-        return ResponseEntity.ok("Konu başarıyla silindi");
+        return ResponseObject.ok("Konu başarıyla silindi");
     }
 
     @GetMapping("/get-all/{lessonId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAll(@PathVariable Long lessonId) {
+    public ResponseObject getAll(@PathVariable Long lessonId) {
 
         List<TYTTopicAdminResponse> response = tytTopicService.getAll(lessonId);
 
-        return ResponseEntity.ok(response);
+        return ResponseObject.ok(response);
     }
 
 
