@@ -128,7 +128,8 @@ public class AuthService {
     }
 
     private User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
     }
 
     public String userNameSaveFormat(String username) {
