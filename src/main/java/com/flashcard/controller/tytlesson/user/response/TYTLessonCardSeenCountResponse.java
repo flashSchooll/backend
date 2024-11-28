@@ -12,12 +12,13 @@ public class TYTLessonCardSeenCountResponse {
     private final String lesson;
     private final Integer totalCard;
     private final Integer completedCard;
+    private final byte[] icon;
 
     public TYTLessonCardSeenCountResponse(UserCardPercentage userCardPercentage) {
-        this.lessonId=userCardPercentage.getLesson().getId();
+        this.lessonId = userCardPercentage.getLesson().getId();
         this.lesson = userCardPercentage.getLesson().getTyt().label;
         this.totalCard = userCardPercentage.getTotalCard();
         this.completedCard = userCardPercentage.getCompletedCard();
-        ;
+        this.icon = userCardPercentage.getLesson().getIcon();
     }
 }
