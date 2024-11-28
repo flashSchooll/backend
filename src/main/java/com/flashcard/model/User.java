@@ -43,7 +43,7 @@ public class User {
     @NotBlank
     private String password;
 
-    @NotBlank
+    @NotNull
     private Boolean userAgreement;
 
  /*   @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", //(541) 317-8828
