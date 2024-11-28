@@ -35,4 +35,7 @@ public class SignupRequest {
   private MultipartFile profilePhoto;
 
   private Set<String> role;
+
+  @NotBlank
+  private Boolean userAgreement;
 }

@@ -43,6 +43,9 @@ public class User {
     @NotBlank
     private String password;
 
+    @NotBlank
+    private Boolean userAgreement;
+
  /*   @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", //(541) 317-8828
             message = "Please provide valid phone number")
     @Size(min = 14, max = 14)
