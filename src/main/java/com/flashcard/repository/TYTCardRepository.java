@@ -18,6 +18,9 @@ public interface TYTCardRepository extends JpaRepository<TYTCard, Long> {
     @Query("SELECT COUNT(c) FROM TYTCard c WHERE c.tytFlashcard.topic.tytLesson = :lesson")
     int countByTYTFlashcardTopicTytLesson(@Param("lesson") TYTLesson lesson);
 
+    @Query("SELECT c FROM TYTCard c WHERE c.tytFlashcard.topic.tytLesson = :tytLesson")
+    List<TYTCard> findByTYTLesson(TYTLesson tytLesson);
+
   /*  @Query("SELECT new com.flashcard.controller.tytlesson.user.response." +
             "TYTLessonCardSeenCountResponse(c.tytFlashcard.topic.tytLesson, COUNT(c)) " +
             "FROM TYTCard c " +

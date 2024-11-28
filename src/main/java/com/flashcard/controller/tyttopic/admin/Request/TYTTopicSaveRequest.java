@@ -1,4 +1,4 @@
-package com.flashcard.controller.tyttopic.Request;
+package com.flashcard.controller.tyttopic.admin.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

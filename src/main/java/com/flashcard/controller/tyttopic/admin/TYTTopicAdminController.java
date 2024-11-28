@@ -1,9 +1,9 @@
-package com.flashcard.controller.tyttopic;
+package com.flashcard.controller.tyttopic.admin;
 
 
-import com.flashcard.controller.tyttopic.Request.TYTTopicSaveRequest;
-import com.flashcard.controller.tyttopic.Request.TYTTopicUpdateRequest;
-import com.flashcard.controller.tyttopic.Response.TYTTopicAdminResponse;
+import com.flashcard.controller.tyttopic.admin.Request.TYTTopicSaveRequest;
+import com.flashcard.controller.tyttopic.admin.Request.TYTTopicUpdateRequest;
+import com.flashcard.controller.tyttopic.admin.Response.TYTTopicAdminResponse;
 import com.flashcard.service.TYTTopicService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
