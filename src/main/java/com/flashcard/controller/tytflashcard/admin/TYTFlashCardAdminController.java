@@ -4,7 +4,6 @@ package com.flashcard.controller.tytflashcard.admin;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardSaveRequest;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardUpdateRequest;
 import com.flashcard.controller.tytflashcard.admin.response.TYTFlashcardResponse;
-import com.flashcard.model.TYTFlashcard;
 import com.flashcard.service.TYTFlashCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tyt/flashcard/admin")
 @RequiredArgsConstructor
-public class TYTFlashCardController {
+public class TYTFlashCardAdminController {
 
     private final TYTFlashCardService tytFlashCardService;
 

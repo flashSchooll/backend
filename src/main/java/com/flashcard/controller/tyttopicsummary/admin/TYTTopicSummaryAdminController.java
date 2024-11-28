@@ -1,4 +1,4 @@
-package com.flashcard.controller.tyttopicsummary;
+package com.flashcard.controller.tyttopicsummary.admin;
 
 import com.flashcard.controller.tyttopicsummary.request.TYTTopicSummarySaveRequest;
 import com.flashcard.controller.tyttopicsummary.request.TYTTopicSummaryUpdateRequest;

@@ -4,9 +4,13 @@ import com.flashcard.constants.Constants;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardSaveRequest;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardUpdateRequest;
 import com.flashcard.controller.tytflashcard.admin.response.TYTFlashcardResponse;
+import com.flashcard.controller.tytflashcard.user.response.TYTFlashcardUserResponse;
+import com.flashcard.controller.tyttopic.user.response.TYTTopicUserResponse;
 import com.flashcard.exception.BadRequestException;
+import com.flashcard.model.TYTCard;
 import com.flashcard.model.TYTFlashcard;
 import com.flashcard.model.TYTTopic;
+import com.flashcard.repository.TYTCardRepository;
 import com.flashcard.repository.TYTFlashCardRepository;
 import com.flashcard.repository.TYTTopicRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,7 @@ public class TYTFlashCardService {
 
     private final TYTFlashCardRepository tytFlashCardRepository;
     private final TYTTopicRepository tytTopicRepository;
+    private final TYTCardRepository tytCardRepository;
 
     @Transactional
     public TYTFlashcardResponse save(TYTFlashcardSaveRequest tytFlashcardSaveRequest) {
@@ -101,5 +106,25 @@ public class TYTFlashCardService {
                 ));
 
         return flashcardsGroupedByLesson;
+    }
+
+    public List<TYTFlashcardUserResponse> getAllUser(Long topicId) {
+        Objects.requireNonNull(topicId);
+
+        TYTTopic topic = tytTopicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+
+        List<TYTCard> tytCards = tytCardRepository.findByTYTTopic(topic);
+
+        Map<TYTFlashcard, Long> cardCount = tytCards.stream()
+                .collect(Collectors.groupingBy(
+                        TYTCard::getTytFlashcard,
+                        Collectors.counting()
+                ));
+
+        return tytFlashCardRepository.findByTopic(topic)
+                .stream()
+                .map(flashcard->new TYTFlashcardUserResponse(flashcard, Math.toIntExact(cardCount.get(flashcard))))
+                .toList();
     }
 }

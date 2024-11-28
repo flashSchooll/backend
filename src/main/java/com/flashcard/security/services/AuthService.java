@@ -99,6 +99,7 @@ public class AuthService {
         return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
+                userDetails.getSurname(),
                 userDetails.getEmail(),
                 roles);
     }

@@ -7,9 +7,7 @@ import lombok.Getter;
 public class TYTFlashcardResponse {
 
     private final Long id;
-
     private final String topic;
-
     private final String cardName;
 
     public TYTFlashcardResponse(TYTFlashcard flashcard) {

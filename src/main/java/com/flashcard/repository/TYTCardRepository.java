@@ -3,6 +3,7 @@ package com.flashcard.repository;
 import com.flashcard.model.TYTCard;
 import com.flashcard.model.TYTFlashcard;
 import com.flashcard.model.TYTLesson;
+import com.flashcard.model.TYTTopic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +21,9 @@ public interface TYTCardRepository extends JpaRepository<TYTCard, Long> {
 
     @Query("SELECT c FROM TYTCard c WHERE c.tytFlashcard.topic.tytLesson = :tytLesson")
     List<TYTCard> findByTYTLesson(TYTLesson tytLesson);
+
+    @Query("SELECT c FROM TYTCard c WHERE c.tytFlashcard.topic= :topic")
+    List<TYTCard> findByTYTTopic(TYTTopic topic);
 
   /*  @Query("SELECT new com.flashcard.controller.tytlesson.user.response." +
             "TYTLessonCardSeenCountResponse(c.tytFlashcard.topic.tytLesson, COUNT(c)) " +
