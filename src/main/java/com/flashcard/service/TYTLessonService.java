@@ -1,13 +1,14 @@
 package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
-import com.flashcard.controller.tytlesson.admin.request.TYTLessonSaveRequest;
 import com.flashcard.controller.tytlesson.admin.response.TYTLessonResponse;
 import com.flashcard.model.TYTLesson;
+import com.flashcard.model.enums.TYT;
 import com.flashcard.repository.TYTLessonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,11 +21,11 @@ public class TYTLessonService {
     private final TYTLessonRepository tytLessonRepository;
 
     @Transactional
-    public void save(TYTLessonSaveRequest tytLessonSaveRequest) throws IOException {
+    public void save(TYT tyt, MultipartFile icon) throws IOException {
 
         TYTLesson tytLesson = new TYTLesson();
-        tytLesson.setTyt(tytLessonSaveRequest.getTyt());
-        tytLesson.setIcon(tytLessonSaveRequest.getIcon().getBytes());
+        tytLesson.setTyt(tyt);
+        tytLesson.setIcon(icon.getBytes());
 
         tytLessonRepository.save(tytLesson);
     }

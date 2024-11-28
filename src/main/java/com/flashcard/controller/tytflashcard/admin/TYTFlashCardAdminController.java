@@ -4,9 +4,9 @@ package com.flashcard.controller.tytflashcard.admin;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardSaveRequest;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardUpdateRequest;
 import com.flashcard.controller.tytflashcard.admin.response.TYTFlashcardResponse;
-import com.flashcard.payload.response.ResponseObject;
 import com.flashcard.service.TYTFlashCardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,39 +22,39 @@ public class TYTFlashCardAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseObject save(@RequestBody TYTFlashcardSaveRequest tytFlashcardSaveRequest) {
+    public ResponseEntity<?> save(@RequestBody TYTFlashcardSaveRequest tytFlashcardSaveRequest) {
 
         TYTFlashcardResponse response = tytFlashCardService.save(tytFlashcardSaveRequest);
 
-        return ResponseObject.ok(response);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseObject update(@RequestBody TYTFlashcardUpdateRequest tytFlashcardUpdateRequest) {
+    public ResponseEntity<?> update(@RequestBody TYTFlashcardUpdateRequest tytFlashcardUpdateRequest) {
 
         TYTFlashcardResponse response = tytFlashCardService.update(tytFlashcardUpdateRequest);
 
-        return ResponseObject.ok(response);
+        return ResponseEntity.ok(response);
     }
 
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseObject delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
 
         tytFlashCardService.delete(id);
 
-        return ResponseObject.ok("Flashcard başarıyla silindi");
+        return ResponseEntity.ok("Flashcard başarıyla silindi");
     }
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseObject getAll(@PathVariable Long topicId) {
+    public ResponseEntity<?> getAll(@PathVariable Long topicId) {
 
         List<TYTFlashcardResponse> response = tytFlashCardService.getAll(topicId)
                 .stream().map(TYTFlashcardResponse::new).toList();
 
-        return ResponseObject.ok(response);
+        return ResponseEntity.ok(response);
     }
 }

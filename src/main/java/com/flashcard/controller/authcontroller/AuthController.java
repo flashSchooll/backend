@@ -6,13 +6,12 @@ import com.flashcard.controller.authcontroller.request.SignupRequest;
 import com.flashcard.controller.authcontroller.request.UpdatePasswordRequest;
 import com.flashcard.controller.authcontroller.response.JwtResponse;
 import com.flashcard.payload.response.MessageResponse;
-import com.flashcard.payload.response.ResponseObject;
 import com.flashcard.security.services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -25,29 +24,28 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseObject registerUser(@Valid @RequestBody SignupRequest signUpRequest ,
-                                       @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?>  registerUser(@Valid @RequestBody SignupRequest signUpRequest) throws IOException {
 
-        authService.register(signUpRequest,file);
+        authService.register(signUpRequest, null);
 
-        return ResponseObject.ok(Constants.USER_SUCCESSFULLY_SAVED);
+        return ResponseEntity.ok(Constants.USER_SUCCESSFULLY_SAVED);
     }
 
     @PostMapping("/signin")
-    public ResponseObject authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         JwtResponse jwtResponse = authService.signIn(loginRequest);
 
-        return ResponseObject.ok(jwtResponse);
+        return  ResponseEntity.ok(jwtResponse);
     }
 
     @PutMapping("/update-password")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseObject updatePassword(@Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+    public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
 
         authService.updatePassword(updatePasswordRequest);
 
-        return ResponseObject.ok(new MessageResponse(Constants.PASSWORD_SUCCESSFULLY_UPDATED));
+        return ResponseEntity.ok(new MessageResponse(Constants.PASSWORD_SUCCESSFULLY_UPDATED));
     }
 
 }

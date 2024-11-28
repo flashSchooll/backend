@@ -15,7 +15,9 @@ spring:
       enabled: true
       max-file-size: 1MB
       max-request-size: 1MB
-
+  http:
+    multipart:
+      enabled: true
 
 # App Properties
 flashSchool:

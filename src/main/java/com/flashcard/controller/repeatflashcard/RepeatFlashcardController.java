@@ -3,9 +3,9 @@ package com.flashcard.controller.repeatflashcard;
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.repeatflashcard.response.RepeatFlashcardResponse;
 import com.flashcard.model.RepeatFlashcard;
-import com.flashcard.payload.response.ResponseObject;
 import com.flashcard.service.RepeatFlashcardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,42 +22,42 @@ public class RepeatFlashcardController {
 
     @PostMapping("/flashcard")
     @PreAuthorize("hasRole('USER')")
-    public ResponseObject save(@RequestParam Long flashcardId,
-                               @RequestParam LocalDateTime repeatTime) {
+    public ResponseEntity<?> save(@RequestParam Long flashcardId,
+                                  @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.save(flashcardId, repeatTime);
 
-        return ResponseObject.ok(repeatFlashcard);
+        return ResponseEntity.ok(repeatFlashcard);
     }
 
     @PostMapping("/topic")
     @PreAuthorize("hasRole('USER')")
-    public ResponseObject saveByTopic(@RequestParam Long topicId,
+    public ResponseEntity<?> saveByTopic(@RequestParam Long topicId,
                                       @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.saveByTopic(topicId, repeatTime);
 
-        return ResponseObject.ok(repeatFlashcard);
+        return ResponseEntity.ok(repeatFlashcard);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseObject delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
 
         repeatFlashcardService.delete(id);
 
-        return ResponseObject.ok(Constants.REPEAT_CARD_SUCCESSFULLY_DELETED);
+        return ResponseEntity.ok(Constants.REPEAT_CARD_SUCCESSFULLY_DELETED);
     }
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseObject getAll() {
+    public ResponseEntity<?> getAll() {
 
         List<RepeatFlashcard> repeatFlashcards = repeatFlashcardService.getAll();
 
         List<RepeatFlashcardResponse> responses = repeatFlashcards.stream().map(RepeatFlashcardResponse::new).toList();
 
-        return ResponseObject.ok(responses);
+        return ResponseEntity.ok(responses);
     }
 
 

@@ -2,9 +2,9 @@ package com.flashcard.controller.tytlesson.user;
 
 import com.flashcard.controller.tytlesson.user.response.TYTLessonCardSeenCountResponse;
 import com.flashcard.model.UserCardPercentage;
-import com.flashcard.payload.response.ResponseObject;
 import com.flashcard.service.UserCardPercentageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +23,12 @@ public class TYTLessonUserController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseObject getId() {
+    public ResponseEntity<?> getId() {
 
         List<UserCardPercentage> userCardPercentageList = userCardPercentageService.getAllTYT();
 
         List<TYTLessonCardSeenCountResponse> responses = userCardPercentageList.stream().map(TYTLessonCardSeenCountResponse::new).toList();
 
-        return ResponseObject.ok(responses);
+        return ResponseEntity.ok(responses);
     }
 }

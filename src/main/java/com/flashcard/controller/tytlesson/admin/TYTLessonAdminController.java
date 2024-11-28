@@ -1,14 +1,13 @@
 package com.flashcard.controller.tytlesson.admin;
 
-import com.flashcard.controller.tytlesson.admin.request.TYTLessonSaveRequest;
 import com.flashcard.controller.tytlesson.admin.response.TYTLessonResponse;
 import com.flashcard.model.enums.TYT;
-import com.flashcard.payload.response.ResponseObject;
 import com.flashcard.service.TYTLessonService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -24,38 +23,39 @@ public class TYTLessonAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseObject save(@RequestBody @Valid TYTLessonSaveRequest tytLessonSaveRequest) throws IOException {
+    public ResponseEntity<?> save(@RequestParam TYT tyt,
+                                  @RequestBody MultipartFile icon) throws IOException {
 
-        tytLessonService.save(tytLessonSaveRequest);
+        tytLessonService.save(tyt, icon);
 
-        return ResponseObject.ok("Ders başarıyla kaydedildi");
+        return ResponseEntity.ok("Ders başarıyla kaydedildi");
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseObject delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
 
         tytLessonService.delete(id);
 
-        return ResponseObject.ok("Ders başarıyla silindi");
+        return ResponseEntity.ok("Ders başarıyla silindi");
     }
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseObject getId() {
+    public ResponseEntity<?> getId() {
 
         List<TYTLessonResponse> response = tytLessonService.getAll();
 
-        return ResponseObject.ok(response);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/tyt")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseObject getEnums() {
+    public ResponseEntity<?> getEnums() {
 
         List<String> response = Arrays.stream(TYT.values()).map(Enum::name).toList();
 
-        return ResponseObject.ok(response);
+        return ResponseEntity.ok(response);
     }
 
 
