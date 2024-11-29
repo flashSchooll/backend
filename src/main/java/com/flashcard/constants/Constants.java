@@ -25,4 +25,5 @@ public class Constants {
     public static final String PASSWORD_SUCCESSFULLY_UPDATED = "Şifre başarıyle değiştirildi";
     public static final Object REPEAT_CARD_SUCCESSFULLY_DELETED = "Tekrar kartı başarıyla silindi";
     public static final String TOKEN_NOT_VALID = "Token geçerli değil";
+    public static final String EMAIL_NOT_FOUND = "Email %s bulunamadı";
 }

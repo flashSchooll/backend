@@ -1,7 +1,9 @@
 package com.flashcard.controller.tytflashcard.user;
 
+import com.flashcard.controller.tytflashcard.admin.response.TYTFlashcardResponse;
 import com.flashcard.controller.tytflashcard.user.response.TYTFlashcardUserResponse;
 import com.flashcard.service.TYTFlashCardService;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +24,15 @@ public class TYTFlashcardUserController {
     public ResponseEntity<?> getAll(@PathVariable Long topicId) {
 
         List<TYTFlashcardUserResponse> response = tytFlashCardService.getAllUser(topicId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<?> search(@RequestParam @NotBlank String search) {
+
+        List<TYTFlashcardResponse> response = tytFlashCardService.search(search);
 
         return ResponseEntity.ok(response);
     }

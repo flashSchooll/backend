@@ -124,7 +124,14 @@ public class TYTFlashCardService {
 
         return tytFlashCardRepository.findByTopic(topic)
                 .stream()
-                .map(flashcard->new TYTFlashcardUserResponse(flashcard, Math.toIntExact(cardCount.get(flashcard))))
+                .map(flashcard -> new TYTFlashcardUserResponse(flashcard, Math.toIntExact(cardCount.get(flashcard))))
                 .toList();
+    }
+
+    public List<TYTFlashcardResponse> search(String search) {
+
+        List<TYTFlashcard> flashcards = tytFlashCardRepository.search(search);
+
+        return flashcards.stream().map(TYTFlashcardResponse::new).toList();
     }
 }

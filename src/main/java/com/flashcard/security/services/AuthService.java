@@ -43,7 +43,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void register(@Valid SignupRequest signUpRequest,MultipartFile file) throws IOException {
+    public void register(@Valid SignupRequest signUpRequest, MultipartFile file) throws IOException {
 
         if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {
             throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXISTS, signUpRequest.getEmail()));
@@ -61,10 +61,19 @@ public class AuthService {
         user.setProfilePhoto(null);
         user.setUserAgreement(signUpRequest.getUserAgreement());
 
-        Set<String> strRoles = signUpRequest.getRole();
+      //  Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
-        if (strRoles == null) {
+        if (signUpRequest.getRole() == null) {
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_USER)));
+            roles.add(userRole);
+        } else {
+            Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                    .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_ADMIN)));
+            roles.add(adminRole);
+        }
+      /*  if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_USER)));
             roles.add(userRole);
@@ -80,13 +89,18 @@ public class AuthService {
                     roles.add(userRole);
                 }
             });
-        }
+        }*/
+
 
         user.setRoles(roles);
         userRepository.save(user);
     }
 
     public JwtResponse signIn(@Valid LoginRequest loginRequest) {
+        boolean existsEmail = userRepository.existsByEmail(loginRequest.getEmail());
+        if (!existsEmail) {
+            throw new BadRequestException(String.format(Constants.EMAIL_NOT_FOUND, loginRequest.getEmail()));
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 

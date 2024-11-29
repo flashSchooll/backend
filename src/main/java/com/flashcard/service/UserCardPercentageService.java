@@ -10,6 +10,7 @@ import com.flashcard.repository.TYTLessonRepository;
 import com.flashcard.repository.UserCardPercentageRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ public class UserCardPercentageService {
     private final TYTLessonRepository tytLessonRepository;
     private final TYTCardRepository tytCardRepository;
     private final AuthService authService;
+    private final ApplicationContext applicationContext;
 
     @Transactional
     public void save(User user) {
@@ -49,11 +51,21 @@ public class UserCardPercentageService {
 
     }
 
+    @Transactional
     public List<UserCardPercentage> getAllTYT() {
 
         User user = authService.getCurrentUser();
 
-        return userCardPercentageRepository.findByUser(user);
+        List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUser(user);
+
+        if (!percentageList.isEmpty()) {
+            return percentageList;
+        } else {
+            UserCardPercentageService proxy = applicationContext.getBean(UserCardPercentageService.class);
+            proxy.save(user);
+
+            return userCardPercentageRepository.findByUser(user);
+        }
     }
 
     @Transactional

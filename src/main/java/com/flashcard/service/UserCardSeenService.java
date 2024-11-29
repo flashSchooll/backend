@@ -63,8 +63,8 @@ public class UserCardSeenService {
         }
         cardList = userCardSeenRepository.saveAll(cardList);
 
-        user.raiseRosette(1);
-        user.raiseRosette(userCardSeenSaveRequest.getUserCardSeenRequestList().size());
+        user.raiseRosette();
+        user.raiseStar(userCardSeenSaveRequest.getUserCardSeenRequestList().size());
 
         userCardPercentageService.updatePercentage(user, flashcard, userCardSeenSaveRequest.getUserCardSeenRequestList().size());
 

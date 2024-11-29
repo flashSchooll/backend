@@ -12,7 +12,7 @@ import java.util.List;
 public class UserCardSeenSaveRequest {
 
     @NotNull
-    private Long FlashcardId;
+    private Long flashcardId;
 
     @Valid
     private List<UserCardSeenRequest> userCardSeenRequestList;

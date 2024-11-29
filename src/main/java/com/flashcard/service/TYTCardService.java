@@ -13,6 +13,7 @@ import com.flashcard.repository.TYTCardRepository;
 import com.flashcard.repository.TYTFlashCardRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,7 @@ public class TYTCardService {
     private final TYTCardRepository tytCardRepository;
     private final TYTFlashCardService flashCardService;
     private final TYTFlashCardRepository tytFlashCardRepository;
+    private final ApplicationContext applicationContext;
 
     @Transactional
     public TYTCardResponse save(TYTCardSaveRequest tytCardSaveRequest) throws BadRequestException {
@@ -102,7 +104,7 @@ public class TYTCardService {
         ImageData imageData;
 
         List<ImageData> imageDataList = new ArrayList<>();
-        
+
         if (tytCardUpdateRequest.getFrontFile() != null) {
             imageData = new ImageData();
             imageData.setData(tytCardUpdateRequest.getFrontFile().getBytes());
@@ -160,7 +162,8 @@ public class TYTCardService {
         }
 
         for (TYTCardSaveRequest saveRequest : request.getTytCardSaveRequests()) {
-            save(saveRequest);
+            TYTCardService proxy = applicationContext.getBean(TYTCardService.class);
+            proxy.save(saveRequest);
         }
 
         List<TYTCard> cardList = tytCardRepository.findByTytFlashcard(flashcard);

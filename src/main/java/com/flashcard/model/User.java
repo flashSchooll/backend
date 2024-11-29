@@ -75,14 +75,14 @@ public class User {
 
 
     public void raiseStar(int addedStar) {
-        int star = getStar();
+        int alreadyStar = getStar();
 
-        this.setStar(star + addedStar);
+        this.setStar(alreadyStar + addedStar);
     }
 
-    public void raiseRosette(int addedRosette) {
-        int rosette = getRosette();
+    public void raiseRosette() {
+        int alreadyRosette = getRosette();
 
-        this.setStar(rosette + addedRosette);
+        this.setStar(alreadyRosette + 1);
     }
 }
