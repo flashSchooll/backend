@@ -5,18 +5,21 @@ import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardSaveReque
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardUpdateRequest;
 import com.flashcard.controller.tytflashcard.admin.response.TYTFlashcardResponse;
 import com.flashcard.controller.tytflashcard.user.response.TYTFlashcardUserResponse;
-import com.flashcard.controller.tyttopic.user.response.TYTTopicUserResponse;
 import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.TYTCard;
 import com.flashcard.model.TYTFlashcard;
 import com.flashcard.model.TYTTopic;
+import com.flashcard.model.enums.TYT;
 import com.flashcard.repository.TYTCardRepository;
 import com.flashcard.repository.TYTFlashCardRepository;
 import com.flashcard.repository.TYTTopicRepository;
+import com.flashcard.service.excel.FlashcardExcelImporter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -30,6 +33,7 @@ public class TYTFlashCardService {
     private final TYTFlashCardRepository tytFlashCardRepository;
     private final TYTTopicRepository tytTopicRepository;
     private final TYTCardRepository tytCardRepository;
+    private final FlashcardExcelImporter flashcardExcelImporter;
 
     @Transactional
     public TYTFlashcardResponse save(TYTFlashcardSaveRequest tytFlashcardSaveRequest) {
@@ -98,14 +102,13 @@ public class TYTFlashCardService {
 
         List<TYTFlashcard> flashcards = tytFlashCardRepository.findAll();
 
-        Map<String, Long> flashcardsGroupedByLesson = flashcards.stream()
+        return flashcards.stream()
                 // Her bir flashcard'ı lesson'a göre gruplandırıyoruz
                 .collect(Collectors.groupingBy(
                         flashcard -> flashcard.getTopic().getTytLesson().getTyt().label,  // lesson ismi
                         Collectors.counting()  // lesson başına kaç flashcard var
                 ));
 
-        return flashcardsGroupedByLesson;
     }
 
     public List<TYTFlashcardUserResponse> getAllUser(Long topicId) {
@@ -133,5 +136,11 @@ public class TYTFlashCardService {
         List<TYTFlashcard> flashcards = tytFlashCardRepository.search(search);
 
         return flashcards.stream().map(TYTFlashcardResponse::new).toList();
+    }
+
+    public void importExcel(TYT tyt, MultipartFile file) throws IOException {
+
+        flashcardExcelImporter.saveExcel(tyt, file);
+
     }
 }

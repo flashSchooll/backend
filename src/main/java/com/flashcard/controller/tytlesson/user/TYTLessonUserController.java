@@ -29,6 +29,13 @@ public class TYTLessonUserController {
 
         List<TYTLessonCardSeenCountResponse> responses = userCardPercentageList.stream().map(TYTLessonCardSeenCountResponse::new).toList();
 
-        return ResponseEntity.ok(responses);
+        TYTLessonCardSeenCountResponse tytLessonCardSeenCountResponse=TYTLessonCardSeenCountResponse
+                .builder()
+                .lessonId(1L)
+                .lesson("Fizik")
+                .completedCard(123)
+                .totalCard(1000)
+                .build();
+        return ResponseEntity.ok(tytLessonCardSeenCountResponse);
     }
 }
