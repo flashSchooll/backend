@@ -6,6 +6,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/StudyHive
     username: StudyHive
     password: StudyHive
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       dialect: org.hibernate.dialect.PostgreSQLDialect
