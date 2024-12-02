@@ -1,6 +1,7 @@
 package com.flashcard.controller.dailytarget.admin;
 
 import com.flashcard.controller.dailytarget.response.DailyTargetAdminResponse;
+import com.flashcard.model.DailyTarget;
 import com.flashcard.service.DailyTargetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,9 @@ public class DailyTargetAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAll(@RequestParam(required = false) String search,
                                     @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<DailyTargetAdminResponse> response = dailyTargetService.getAllAdmin(search, pageable);
+        Page<DailyTarget> dailyTargets = dailyTargetService.getAllAdmin(search, pageable);
+
+        Page<DailyTargetAdminResponse> response = dailyTargets.map(DailyTargetAdminResponse::new);
 
         return ResponseEntity.ok(response);
     }
@@ -34,7 +37,9 @@ public class DailyTargetAdminController {
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllPage(@RequestParam(required = false) String search) {
-        List<DailyTargetAdminResponse> response = dailyTargetService.getAll(search);
+        List<DailyTarget> dailyTargets = dailyTargetService.getAll(search);
+
+        List<DailyTargetAdminResponse> response = dailyTargets.stream().map(DailyTargetAdminResponse::new).toList();
 
         return ResponseEntity.ok(response);
     }

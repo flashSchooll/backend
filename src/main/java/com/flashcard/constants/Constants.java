@@ -26,4 +26,8 @@ public class Constants {
     public static final Object REPEAT_CARD_SUCCESSFULLY_DELETED = "Tekrar kartı başarıyla silindi";
     public static final String TOKEN_NOT_VALID = "Token geçerli değil";
     public static final String EMAIL_NOT_FOUND = "Email %s bulunamadı";
+    public static final Object LESSON_SUCCESSFULLY_DELETED = "Ders başarıyla silindi";
+    public static final Object TYT_TOPIC_SUCCESSFULLY_DELETE = "Konu başarıyla silindi";
+    public static final Object EXCEL_SUCCESSFULLY_IMPORTED = "Excel başarıyla okundu";
+    public static final Object FLASHCARD_SUCCESSFULLY_DELETED = "Flashcard başarıyla silindi";
 }

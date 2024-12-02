@@ -1,6 +1,7 @@
 package com.flashcard.controller.tyttopicsummary.user;
 
 import com.flashcard.controller.tyttopicsummary.response.TYTTopicSummaryResponse;
+import com.flashcard.model.TYTTopicSummary;
 import com.flashcard.service.TYTTopicSummaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,9 @@ public class TYTTopicSummaryUserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> get(@PathVariable Long id) {
 
-        TYTTopicSummaryResponse response = tytTopicSummaryService.get(id);
+        TYTTopicSummary topicSummary = tytTopicSummaryService.get(id);
+
+        TYTTopicSummaryResponse response = new TYTTopicSummaryResponse(topicSummary);
 
         return ResponseEntity.ok(response);
     }

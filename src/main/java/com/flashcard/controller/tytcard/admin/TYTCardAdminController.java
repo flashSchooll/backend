@@ -27,7 +27,9 @@ public class TYTCardAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> save(@RequestBody @Valid TYTCardSaveRequest tytCardSaveRequest) throws IOException {
 
-        TYTCardResponse response = tytCardService.save(tytCardSaveRequest);
+        TYTCard cardResponse = tytCardService.save(tytCardSaveRequest);
+
+        TYTCardResponse response = new TYTCardResponse(cardResponse);
 
         return ResponseEntity.ok(response);
     }
@@ -37,7 +39,9 @@ public class TYTCardAdminController {
     public ResponseEntity<?> saveAll(@RequestBody @Valid TYTCardSaveAllRequest request,
                                      @PathVariable Long flashcardId) throws IOException {
 
-        List<TYTCardResponse> response = tytCardService.saveAll(flashcardId,request);
+        List<TYTCard> cardResponses = tytCardService.saveAll(flashcardId, request);
+
+        List<TYTCardResponse> response = cardResponses.stream().map(TYTCardResponse::new).toList();
 
         return ResponseEntity.ok(response);
     }
@@ -46,9 +50,11 @@ public class TYTCardAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> update(@RequestBody TYTCardUpdateRequest tytCardUpdateRequest) throws IOException {
 
-        TYTCardResponse response = tytCardService.update(tytCardUpdateRequest);
+        TYTCard response = tytCardService.update(tytCardUpdateRequest);
 
-        return ResponseEntity.ok(response);
+        TYTCardResponse cardResponse = new TYTCardResponse(response);
+
+        return ResponseEntity.ok(cardResponse);
     }
 
     @DeleteMapping("/{id}")

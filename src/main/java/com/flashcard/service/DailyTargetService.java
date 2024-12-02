@@ -1,9 +1,6 @@
 package com.flashcard.service;
 
-import com.flashcard.controller.dailytarget.response.DailyTargetAdminResponse;
-import com.flashcard.controller.dailytarget.response.DailyTargetPastResponse;
 import com.flashcard.controller.dailytarget.response.DailyTargetResponse;
-import com.flashcard.controller.dailytarget.response.DailyTargetStatisticResponse;
 import com.flashcard.model.DailyTarget;
 import com.flashcard.model.MonthDailyTarget;
 import com.flashcard.model.User;
@@ -49,29 +46,26 @@ public class DailyTargetService {
         return optionalDailyTarget.map(DailyTargetResponse::new).orElseGet(() -> new DailyTargetResponse(createTarget()));
     }
 
-    public Page<DailyTargetAdminResponse> getAllAdmin(String search, Pageable pageable) {
+    public Page<DailyTarget> getAllAdmin(String search, Pageable pageable) {
 
-        return dailyTargetRepository.findBySearch(search, pageable).map(DailyTargetAdminResponse::new);
+        return dailyTargetRepository.findBySearch(search, pageable);
     }
 
-    public List<DailyTargetAdminResponse> getAll(String search) {
+    public List<DailyTarget> getAll(String search) {
 
-        return dailyTargetRepository.findBySearch(search).stream().map(DailyTargetAdminResponse::new).toList();
+        return dailyTargetRepository.findBySearch(search);
     }
 
-    public List<DailyTargetStatisticResponse> getTargetMonthly() {
+    public List<DailyTarget> getTargetMonthly() {
         User user = authService.getCurrentUser();
 
-        List<DailyTarget> dailyTargets = dailyTargetRepository.findByUser(user);
+        return dailyTargetRepository.findByUser(user);
 
-        return dailyTargets.stream().map(DailyTargetStatisticResponse::new).toList();
     }
 
-    public List<DailyTargetPastResponse> getTargetPast() {
+    public List<MonthDailyTarget> getTargetPast() {
         User user = authService.getCurrentUser();
 
-        List<MonthDailyTarget> monthDailyTargets = monthDailyTargetRepository.findByUser(user);
-
-        return monthDailyTargets.stream().map(DailyTargetPastResponse::new).toList();
+        return monthDailyTargetRepository.findByUser(user);
     }
 }

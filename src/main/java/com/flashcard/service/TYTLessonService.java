@@ -1,7 +1,6 @@
 package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
-import com.flashcard.controller.tytlesson.admin.response.TYTLessonResponse;
 import com.flashcard.model.TYTLesson;
 import com.flashcard.model.enums.TYT;
 import com.flashcard.repository.TYTLessonRepository;
@@ -21,13 +20,13 @@ public class TYTLessonService {
     private final TYTLessonRepository tytLessonRepository;
 
     @Transactional
-    public void save(TYT tyt, MultipartFile icon) throws IOException {
+    public TYTLesson save(TYT tyt, MultipartFile icon) throws IOException {
 
         TYTLesson tytLesson = new TYTLesson();
         tytLesson.setTyt(tyt);
         tytLesson.setIcon(icon.getBytes());
 
-        tytLessonRepository.save(tytLesson);
+        return tytLessonRepository.save(tytLesson);
     }
 
     @Transactional
@@ -39,10 +38,8 @@ public class TYTLessonService {
         tytLessonRepository.delete(tytLesson);
     }
 
-    public List<TYTLessonResponse> getAll() {
+    public List<TYTLesson> getAll() {
 
-        List<TYTLesson> tytLessons = tytLessonRepository.findAll();
-
-        return tytLessons.stream().map(TYTLessonResponse::new).toList();
+        return tytLessonRepository.findAll();
     }
 }

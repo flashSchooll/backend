@@ -1,6 +1,7 @@
 package com.flashcard.controller.usercontroller.admin;
 
 import com.flashcard.model.DTO.UserDTOAdmin;
+import com.flashcard.model.User;
 import com.flashcard.payload.response.MessageResponse;
 import com.flashcard.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,9 @@ public class UserAdminController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        UserDTOAdmin userDTO = userService.getUserById(id);
+        User user = userService.getUserById(id);
+
+        UserDTOAdmin userDTO = new UserDTOAdmin(user);
 
         return ResponseEntity.ok(userDTO);
     }
@@ -33,7 +36,9 @@ public class UserAdminController {
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
-        List<UserDTOAdmin> allUsers = userService.getAllUsers();
+        List<User> users = userService.getAllUsers();
+
+        List<UserDTOAdmin> allUsers = users.stream().map(UserDTOAdmin::new).toList();
 
         return ResponseEntity.ok(allUsers);
     }
@@ -41,17 +46,19 @@ public class UserAdminController {
     @GetMapping("/pages")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsersByPage(@RequestParam(required = false) String search,
-                                            @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+                                               @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<UserDTOAdmin> userDTOPage = userService.getUserPage(search, pageable);
+        Page<User> users = userService.getUserPage(search, pageable);
+
+        Page<UserDTOAdmin> userDTOPage = users.map(UserDTOAdmin::new);
 
         return ResponseEntity.ok(userDTOPage);
     }
 
-    @DeleteMapping("/{userid}")
+    @DeleteMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userid) {
-        userService.deleteUser(userid);
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
 
         return ResponseEntity.ok(new MessageResponse("Kullanıcı başarıyla silindi"));
     }

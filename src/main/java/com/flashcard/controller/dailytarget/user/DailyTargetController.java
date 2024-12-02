@@ -3,6 +3,8 @@ package com.flashcard.controller.dailytarget.user;
 import com.flashcard.controller.dailytarget.response.DailyTargetPastResponse;
 import com.flashcard.controller.dailytarget.response.DailyTargetResponse;
 import com.flashcard.controller.dailytarget.response.DailyTargetStatisticResponse;
+import com.flashcard.model.DailyTarget;
+import com.flashcard.model.MonthDailyTarget;
 import com.flashcard.service.DailyTargetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,9 @@ public class DailyTargetController {
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getTargetMonthly() {
-        List<DailyTargetStatisticResponse> response = dailyTargetService.getTargetMonthly();
+        List<DailyTarget> dailyTargets = dailyTargetService.getTargetMonthly();
+
+        List<DailyTargetStatisticResponse> response = dailyTargets.stream().map(DailyTargetStatisticResponse::new).toList();
 
         return ResponseEntity.ok(response);
     }
@@ -41,9 +45,11 @@ public class DailyTargetController {
     @GetMapping("/past")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getTargetPast() {
-        List<DailyTargetPastResponse> response = dailyTargetService.getTargetPast();
+        List<MonthDailyTarget> response = dailyTargetService.getTargetPast();
 
-        return ResponseEntity.ok(response);
+        List<DailyTargetPastResponse> responseList = response.stream().map(DailyTargetPastResponse::new).toList();
+
+        return ResponseEntity.ok(responseList);
     }
 
 }

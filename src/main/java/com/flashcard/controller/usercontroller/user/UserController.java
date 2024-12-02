@@ -2,6 +2,7 @@ package com.flashcard.controller.usercontroller.user;
 
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.model.DTO.UserDTO;
+import com.flashcard.model.User;
 import com.flashcard.payload.response.MessageResponse;
 import com.flashcard.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,9 @@ public class UserController {
     @PutMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> update(@RequestBody UpdateUserRequest updateUserRequest) {
-        UserDTO userDTO = userService.updateUser(updateUserRequest);
+        User user  = userService.updateUser(updateUserRequest);
+
+        UserDTO userDTO = new UserDTO(user);
 
         return ResponseEntity.ok(userDTO);
     }

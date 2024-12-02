@@ -37,7 +37,7 @@ public class TYTCardService {
     private final AuthService authService;
 
     @Transactional
-    public TYTCardResponse save(TYTCardSaveRequest tytCardSaveRequest) throws BadRequestException {
+    public TYTCard save(TYTCardSaveRequest tytCardSaveRequest) throws BadRequestException {
         // Null kontrolü
         Long flashcardId = tytCardSaveRequest.getTytFlashcardId();
         Objects.requireNonNull(flashcardId, "Flashcard ID cannot be null");
@@ -62,10 +62,7 @@ public class TYTCardService {
         tytCard.setImageData(imageDataList);
 
         // TYTCard'ı veritabanına kaydet
-        tytCard = tytCardRepository.save(tytCard);
-
-        // Response nesnesini döndür
-        return new TYTCardResponse(tytCard);
+        return tytCardRepository.save(tytCard);
     }
 
     private List<ImageData> createImageDataList(TYTCardSaveRequest tytCardSaveRequest) throws BadRequestException {
@@ -97,7 +94,7 @@ public class TYTCardService {
 
 
     @Transactional
-    public TYTCardResponse update(TYTCardUpdateRequest tytCardUpdateRequest) throws IOException {
+    public TYTCard update(TYTCardUpdateRequest tytCardUpdateRequest) throws IOException {
 
         Objects.requireNonNull(tytCardUpdateRequest.getId());
 
@@ -126,9 +123,7 @@ public class TYTCardService {
         tytCard.setFrontFace(tytCardUpdateRequest.getFrontFace());
         tytCard.setImageData(imageDataList);
 
-        tytCard = tytCardRepository.save(tytCard);
-
-        return new TYTCardResponse(tytCard);
+        return tytCardRepository.save(tytCard);
     }
 
     @Transactional
@@ -152,7 +147,7 @@ public class TYTCardService {
     }
 
     @Transactional
-    public List<TYTCardResponse> saveAll(Long flashcardId, TYTCardSaveAllRequest request) throws IOException {
+    public List<TYTCard> saveAll(Long flashcardId, TYTCardSaveAllRequest request) throws IOException {
         Objects.requireNonNull(flashcardId);
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
@@ -169,7 +164,7 @@ public class TYTCardService {
 
         List<TYTCard> cardList = tytCardRepository.findByTytFlashcard(flashcard);
 
-        return cardList.stream().map(TYTCardResponse::new).toList();
+        return cardList;
     }
 
     public List<TYTCard> explore() {

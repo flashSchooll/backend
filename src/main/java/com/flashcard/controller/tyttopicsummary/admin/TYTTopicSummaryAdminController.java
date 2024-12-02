@@ -3,6 +3,7 @@ package com.flashcard.controller.tyttopicsummary.admin;
 import com.flashcard.controller.tyttopicsummary.request.TYTTopicSummarySaveRequest;
 import com.flashcard.controller.tyttopicsummary.request.TYTTopicSummaryUpdateRequest;
 import com.flashcard.controller.tyttopicsummary.response.TYTTopicSummaryResponse;
+import com.flashcard.model.TYTTopicSummary;
 import com.flashcard.service.TYTTopicSummaryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,9 @@ public class TYTTopicSummaryAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> get(@PathVariable Long id) {
 
-        TYTTopicSummaryResponse response = tytTopicSummaryService.get(id);
+        TYTTopicSummary topicSummary = tytTopicSummaryService.get(id);
+
+        TYTTopicSummaryResponse response = new TYTTopicSummaryResponse(topicSummary);
 
         return ResponseEntity.ok(response);
     }

@@ -36,7 +36,7 @@ public class TYTFlashCardService {
     private final FlashcardExcelImporter flashcardExcelImporter;
 
     @Transactional
-    public TYTFlashcardResponse save(TYTFlashcardSaveRequest tytFlashcardSaveRequest) {
+    public TYTFlashcard save(TYTFlashcardSaveRequest tytFlashcardSaveRequest) {
         Objects.requireNonNull(tytFlashcardSaveRequest.getTopicId());
         Objects.requireNonNull(tytFlashcardSaveRequest.getCardName());
 
@@ -53,13 +53,11 @@ public class TYTFlashCardService {
         flashcard.setTopic(topic);
         flashcard.setCardName(tytFlashcardSaveRequest.getCardName());
 
-        flashcard = tytFlashCardRepository.save(flashcard);
-
-        return new TYTFlashcardResponse(flashcard);
+        return tytFlashCardRepository.save(flashcard);
     }
 
     @Transactional
-    public TYTFlashcardResponse update(TYTFlashcardUpdateRequest tytFlashcardUpdateRequest) {
+    public TYTFlashcard update(TYTFlashcardUpdateRequest tytFlashcardUpdateRequest) {
         Objects.requireNonNull(tytFlashcardUpdateRequest.getFlashcardId());
         Objects.requireNonNull(tytFlashcardUpdateRequest.getCardName());
 
@@ -74,9 +72,7 @@ public class TYTFlashCardService {
 
         flashcard.setCardName(tytFlashcardUpdateRequest.getCardName());
 
-        flashcard = tytFlashCardRepository.save(flashcard);
-
-        return new TYTFlashcardResponse(flashcard);
+        return tytFlashCardRepository.save(flashcard);
     }
 
     @Transactional
@@ -131,11 +127,9 @@ public class TYTFlashCardService {
                 .toList();
     }
 
-    public List<TYTFlashcardResponse> search(String search) {
+    public List<TYTFlashcard> search(String search) {
 
-        List<TYTFlashcard> flashcards = tytFlashCardRepository.search(search);
-
-        return flashcards.stream().map(TYTFlashcardResponse::new).toList();
+        return tytFlashCardRepository.search(search);
     }
 
     public void importExcel(Long lessonId, MultipartFile file) throws IOException {

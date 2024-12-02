@@ -2,6 +2,7 @@ package com.flashcard.controller.tytflashcard.user;
 
 import com.flashcard.controller.tytflashcard.admin.response.TYTFlashcardResponse;
 import com.flashcard.controller.tytflashcard.user.response.TYTFlashcardUserResponse;
+import com.flashcard.model.TYTFlashcard;
 import com.flashcard.service.TYTFlashCardService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,9 @@ public class TYTFlashcardUserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> search(@RequestParam @NotBlank String search) {
 
-        List<TYTFlashcardResponse> response = tytFlashCardService.search(search);
+        List<TYTFlashcard> flashcards = tytFlashCardService.search(search);
+
+        List<TYTFlashcardResponse> response = flashcards.stream().map(TYTFlashcardResponse::new).toList();
 
         return ResponseEntity.ok(response);
     }

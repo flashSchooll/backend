@@ -1,9 +1,11 @@
 package com.flashcard.controller.tytflashcard.admin;
 
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardSaveRequest;
 import com.flashcard.controller.tytflashcard.admin.request.TYTFlashcardUpdateRequest;
 import com.flashcard.controller.tytflashcard.admin.response.TYTFlashcardResponse;
+import com.flashcard.model.TYTFlashcard;
 import com.flashcard.model.enums.TYT;
 import com.flashcard.service.TYTFlashCardService;
 import lombok.RequiredArgsConstructor;
@@ -27,18 +29,22 @@ public class TYTFlashCardAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> save(@RequestBody TYTFlashcardSaveRequest tytFlashcardSaveRequest) {
 
-        TYTFlashcardResponse response = tytFlashCardService.save(tytFlashcardSaveRequest);
+        TYTFlashcard response = tytFlashCardService.save(tytFlashcardSaveRequest);
 
-        return ResponseEntity.ok(response);
+        TYTFlashcardResponse flashcardResponse = new TYTFlashcardResponse(response);
+
+        return ResponseEntity.ok(flashcardResponse);
     }
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> update(@RequestBody TYTFlashcardUpdateRequest tytFlashcardUpdateRequest) {
 
-        TYTFlashcardResponse response = tytFlashCardService.update(tytFlashcardUpdateRequest);
+        TYTFlashcard response = tytFlashCardService.update(tytFlashcardUpdateRequest);
 
-        return ResponseEntity.ok(response);
+        TYTFlashcardResponse flashcardResponse = new TYTFlashcardResponse(response);
+
+        return ResponseEntity.ok(flashcardResponse);
     }
 
 
@@ -48,7 +54,7 @@ public class TYTFlashCardAdminController {
 
         tytFlashCardService.delete(id);
 
-        return ResponseEntity.ok("Flashcard başarıyla silindi");
+        return ResponseEntity.ok(Constants.FLASHCARD_SUCCESSFULLY_DELETED);
     }
 
     @GetMapping("/get-all/{topicId}")
@@ -66,8 +72,8 @@ public class TYTFlashCardAdminController {
     public ResponseEntity<?> importExcel(@RequestBody MultipartFile file,
                                          @RequestParam Long tytLessonId) throws IOException {
 
-         tytFlashCardService.importExcel(tytLessonId,file);
+        tytFlashCardService.importExcel(tytLessonId, file);
 
-        return ResponseEntity.ok("excel başarıyla okundu");
+        return ResponseEntity.ok(Constants.EXCEL_SUCCESSFULLY_IMPORTED);
     }
 }

@@ -26,23 +26,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthService authService;
 
-    public UserDTOAdmin getUserById(Long id) {
-        User user = userRepository.findById(id)
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
-
-        return new UserDTOAdmin(user);
     }
 
-    public List<UserDTOAdmin> getAllUsers() {
-        List<User> users = userRepository.findAll();
-
-        return users.stream().map(UserDTOAdmin::new).toList();
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    public Page<UserDTOAdmin> getUserPage(String search, Pageable pageable) {
-        Page<User> users = userRepository.findAllAsPage(search, pageable);
-
-        return users.map(UserDTOAdmin::new);
+    public Page<User> getUserPage(String search, Pageable pageable) {
+        return userRepository.findAllAsPage(search, pageable);
     }
 
     @Transactional
@@ -67,7 +61,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO updateUser(UpdateUserRequest updateUserRequest) {
+    public User updateUser(UpdateUserRequest updateUserRequest) {
         User user = authService.getCurrentUser();
 
         if (!user.getEmail().equals(updateUserRequest.getEmail()) && userRepository.existsByEmail(updateUserRequest.getEmail())) {
@@ -78,7 +72,7 @@ public class UserService {
         user.setUserSurname(authService.userNameSaveFormat(updateUserRequest.getUserSurname()));
         user.setEmail(updateUserRequest.getEmail());
 
-        return new UserDTO(userRepository.save(user));
+        return userRepository.save(user);
     }
 
 

@@ -30,7 +30,7 @@ public class TYTTopicService {
     private final TYTCardRepository cardRepository;
 
     @Transactional
-    public TYTTopicAdminResponse save(TYTTopicSaveRequest tytLessonSaveRequest) {
+    public TYTTopic save(TYTTopicSaveRequest tytLessonSaveRequest) {
         Objects.requireNonNull(tytLessonSaveRequest.getLessonId());
         Objects.requireNonNull(tytLessonSaveRequest.getSubject());
 
@@ -41,13 +41,11 @@ public class TYTTopicService {
         topic.setTytLesson(tytLesson);
         topic.setSubject(tytLessonSaveRequest.getSubject());
 
-        topic = tytTopicRepository.save(topic);
-
-        return new TYTTopicAdminResponse(topic);
+        return tytTopicRepository.save(topic);
     }
 
     @Transactional
-    public TYTTopicAdminResponse update(TYTTopicUpdateRequest tytTopicUpdateRequest) {
+    public TYTTopic update(TYTTopicUpdateRequest tytTopicUpdateRequest) {
         Objects.requireNonNull(tytTopicUpdateRequest.getTopicId());
         Objects.requireNonNull(tytTopicUpdateRequest.getSubject());
 
@@ -56,9 +54,7 @@ public class TYTTopicService {
 
         topic.setSubject(tytTopicUpdateRequest.getSubject());
 
-        topic = tytTopicRepository.save(topic);
-
-        return new TYTTopicAdminResponse(topic);
+        return tytTopicRepository.save(topic);
     }
 
     @Transactional
@@ -71,13 +67,13 @@ public class TYTTopicService {
         tytTopicRepository.delete(topic);
     }
 
-    public List<TYTTopicAdminResponse> getAll(Long lessonId) {
+    public List<TYTTopic> getAll(Long lessonId) {
         Objects.requireNonNull(lessonId);
 
         TYTLesson tytLesson = tytLessonRepository.findById(lessonId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
 
-        return tytTopicRepository.findByTytLesson(tytLesson).stream().map(TYTTopicAdminResponse::new).toList();
+        return tytTopicRepository.findByTytLesson(tytLesson);
     }
 
     public List<TYTTopicUserResponse> getAllUser(Long lessonId) {
@@ -96,7 +92,7 @@ public class TYTTopicService {
 
         return tytTopicRepository.findByTytLesson(tytLesson)
                 .stream()
-                .map(topic->new TYTTopicUserResponse(topic, Math.toIntExact(cardCount.get(topic))))
+                .map(topic -> new TYTTopicUserResponse(topic, Math.toIntExact(cardCount.get(topic))))
                 .toList();
     }
 }

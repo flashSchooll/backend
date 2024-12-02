@@ -1,6 +1,8 @@
 package com.flashcard.controller.tytlesson.admin;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.tytlesson.admin.response.TYTLessonResponse;
+import com.flashcard.model.TYTLesson;
 import com.flashcard.model.enums.TYT;
 import com.flashcard.service.TYTLessonService;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +28,11 @@ public class TYTLessonAdminController {
     public ResponseEntity<?> save(@RequestParam TYT tyt,
                                   @RequestBody MultipartFile icon) throws IOException {
 
-        tytLessonService.save(tyt, icon);
+        TYTLesson tytLesson = tytLessonService.save(tyt, icon);
 
-        return ResponseEntity.ok("Ders başarıyla kaydedildi");
+        TYTLessonResponse response = new TYTLessonResponse(tytLesson);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
@@ -37,14 +41,16 @@ public class TYTLessonAdminController {
 
         tytLessonService.delete(id);
 
-        return ResponseEntity.ok("Ders başarıyla silindi");
+        return ResponseEntity.ok(Constants.LESSON_SUCCESSFULLY_DELETED);
     }
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getId() {
 
-        List<TYTLessonResponse> response = tytLessonService.getAll();
+        List<TYTLesson> tytLessons = tytLessonService.getAll();
+
+        List<TYTLessonResponse> response = tytLessons.stream().map(TYTLessonResponse::new).toList();
 
         return ResponseEntity.ok(response);
     }

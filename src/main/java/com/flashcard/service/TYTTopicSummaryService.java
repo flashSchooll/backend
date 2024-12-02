@@ -24,7 +24,7 @@ public class TYTTopicSummaryService {
     private final TYTTopicRepository tytTopicRepository;
 
     @Transactional
-    public void save(TYTTopicSummarySaveRequest request) {
+    public TYTTopicSummary save(TYTTopicSummarySaveRequest request) {
         Objects.requireNonNull(request.getTopicId());
         Objects.requireNonNull(request.getSummary());
 
@@ -35,11 +35,11 @@ public class TYTTopicSummaryService {
         summary.setTopic(topic);
         summary.setSummary(request.getSummary());
 
-        tytTopicSummaryRepository.save(summary);
+        return   tytTopicSummaryRepository.save(summary);
     }
 
     @Transactional
-    public void update(TYTTopicSummaryUpdateRequest request) {
+    public TYTTopicSummary update(TYTTopicSummaryUpdateRequest request) {
         Objects.requireNonNull(request.getSummaryId());
         Objects.requireNonNull(request.getSummary());
 
@@ -48,7 +48,7 @@ public class TYTTopicSummaryService {
 
         summary.setSummary(request.getSummary());
 
-        tytTopicSummaryRepository.save(summary);
+      return  tytTopicSummaryRepository.save(summary);
     }
 
     @Transactional
@@ -58,16 +58,14 @@ public class TYTTopicSummaryService {
         TYTTopicSummary summary = tytTopicSummaryRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
 
-        tytTopicSummaryRepository.delete(summary);
+       tytTopicSummaryRepository.delete(summary);
     }
 
-    public TYTTopicSummaryResponse get(Long id) {
+    public TYTTopicSummary  get(Long id) {
         Objects.requireNonNull(id);
 
-        TYTTopicSummary summary = tytTopicSummaryRepository.findById(id)
+        return tytTopicSummaryRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
-
-        return new TYTTopicSummaryResponse(summary);
     }
 
     public List<TYTTopicSummaryResponse> getAllByTopic(Long topicId) {
