@@ -57,7 +57,6 @@ public class UserCardSeenService {
             userSeenCard.setStateOfKnowledge(request.getStateOfKnowledge());
             userSeenCard.setDifficultyLevel(request.getDifficultyLevel());
             userSeenCard.setDuration(duration);
-            userSeenCard.setFlashcard(flashcard);
 
             cardList.add(userSeenCard);
         }
@@ -78,7 +77,7 @@ public class UserCardSeenService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         User user = authService.getCurrentUser();
 
-        return userCardSeenRepository.findByUserAndFlashcard(user, flashcard);
+        return userCardSeenRepository.findByUserAndTytCardTytFlashcard(user, flashcard);
     }
 
     public List<UserSeenCard> getUnknownSeenCardsByFlashcard(Long flashcardId) {
@@ -88,7 +87,7 @@ public class UserCardSeenService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         User user = authService.getCurrentUser();
 
-        return userCardSeenRepository.findByUserAndFlashcardAndStateOfKnowledgeIsFalse(user, flashcard);
+        return userCardSeenRepository.findByUserAndTytCardTytFlashcardAndStateOfKnowledgeIsFalse(user, flashcard);
     }
 
     public List<UserSeenCard> getKnownSeenCardsByFlashcard(Long flashcardId) {
@@ -98,6 +97,6 @@ public class UserCardSeenService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         User user = authService.getCurrentUser();
 
-        return userCardSeenRepository.findByUserAndFlashcardAndStateOfKnowledgeIsTrue(user, flashcard);
+        return userCardSeenRepository.findByUserAndTytCardTytFlashcardAndStateOfKnowledgeIsTrue(user, flashcard);
     }
 }

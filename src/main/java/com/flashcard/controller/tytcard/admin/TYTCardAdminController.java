@@ -4,6 +4,7 @@ import com.flashcard.controller.tytcard.admin.request.TYTCardSaveAllRequest;
 import com.flashcard.controller.tytcard.admin.request.TYTCardSaveRequest;
 import com.flashcard.controller.tytcard.admin.request.TYTCardUpdateRequest;
 import com.flashcard.controller.tytcard.admin.response.TYTCardResponse;
+import com.flashcard.model.TYTCard;
 import com.flashcard.service.TYTCardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,8 +64,10 @@ public class TYTCardAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAll(@PathVariable Long flashcardId) {
 
-        List<TYTCardResponse> response = tytCardService.getAll(flashcardId);
+        List<TYTCard> response = tytCardService.getAll(flashcardId);
 
-        return ResponseEntity.ok(response);
+        List<TYTCardResponse> cardResponses = response.stream().map(TYTCardResponse::new).toList();
+
+        return ResponseEntity.ok(cardResponses);
     }
 }

@@ -13,4 +13,6 @@ public interface UserCardPercentageRepository extends JpaRepository<UserCardPerc
     List<UserCardPercentage> findByUser(User user);
 
     Optional<UserCardPercentage> findByUserAndLesson(User user, TYTLesson lesson);
+
+    List<UserCardPercentage> findByLesson(TYTLesson lesson);
 }

@@ -4,12 +4,9 @@ import com.flashcard.controller.tytlesson.user.response.TYTLessonCardSeenCountRe
 import com.flashcard.model.UserCardPercentage;
 import com.flashcard.service.UserCardPercentageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,19 +20,11 @@ public class TYTLessonUserController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getId() {
+    @ResponseStatus(HttpStatus.OK)
+    public List<TYTLessonCardSeenCountResponse> getId() {
 
         List<UserCardPercentage> userCardPercentageList = userCardPercentageService.getAllTYT();
 
-        List<TYTLessonCardSeenCountResponse> responses = userCardPercentageList.stream().map(TYTLessonCardSeenCountResponse::new).toList();
-
-        TYTLessonCardSeenCountResponse tytLessonCardSeenCountResponse=TYTLessonCardSeenCountResponse
-                .builder()
-                .lessonId(1L)
-                .lesson("Fizik")
-                .completedCard(123)
-                .totalCard(1000)
-                .build();
-        return ResponseEntity.ok(tytLessonCardSeenCountResponse);
+        return userCardPercentageList.stream().map(TYTLessonCardSeenCountResponse::new).toList();
     }
 }

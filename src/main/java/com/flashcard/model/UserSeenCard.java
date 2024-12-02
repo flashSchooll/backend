@@ -31,10 +31,6 @@ public class UserSeenCard {
     @NotNull
     private TYTCard tytCard;
 
-    @ManyToOne
-    @NotNull
-    private TYTFlashcard flashcard;
-
     private Boolean stateOfKnowledge;
 
     @Enumerated(value = EnumType.STRING)

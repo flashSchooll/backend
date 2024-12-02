@@ -8,9 +8,13 @@ import com.flashcard.controller.tytcard.admin.response.TYTCardResponse;
 import com.flashcard.model.ImageData;
 import com.flashcard.model.TYTCard;
 import com.flashcard.model.TYTFlashcard;
+import com.flashcard.model.User;
 import com.flashcard.model.enums.CardFace;
+import com.flashcard.model.enums.DifficultyLevel;
 import com.flashcard.repository.TYTCardRepository;
 import com.flashcard.repository.TYTFlashCardRepository;
+import com.flashcard.repository.UserCardSeenRepository;
+import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.context.ApplicationContext;
@@ -19,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,8 @@ public class TYTCardService {
     private final TYTFlashCardService flashCardService;
     private final TYTFlashCardRepository tytFlashCardRepository;
     private final ApplicationContext applicationContext;
+    private final UserCardSeenRepository userCardSeenRepository;
+    private final AuthService authService;
 
     @Transactional
     public TYTCardResponse save(TYTCardSaveRequest tytCardSaveRequest) throws BadRequestException {
@@ -139,15 +142,13 @@ public class TYTCardService {
         tytCardRepository.delete(tytCard);
     }
 
-    public List<TYTCardResponse> getAll(Long flashcardId) {
+    public List<TYTCard> getAll(Long flashcardId) {
         Objects.requireNonNull(flashcardId);
 
         TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
-        List<TYTCard> cards = tytCardRepository.findByTytFlashcard(flashcard);
-
-        return cards.stream().map(TYTCardResponse::new).toList();
+        return tytCardRepository.findByTytFlashcard(flashcard);
     }
 
     @Transactional
@@ -169,5 +170,45 @@ public class TYTCardService {
         List<TYTCard> cardList = tytCardRepository.findByTytFlashcard(flashcard);
 
         return cardList.stream().map(TYTCardResponse::new).toList();
+    }
+
+    public List<TYTCard> explore() {
+
+        long cardCount = tytCardRepository.count();
+
+        Random random = new Random();
+        Set<Long> uniqueNumbers = new HashSet<>();
+
+        // Set'in boyutu istenilen sayıya ulaşana kadar rastgele sayılar ekle
+        while (uniqueNumbers.size() < 100) {
+            int randomNumber = random.nextInt((int) cardCount) + 1;  // 1 ile n arasında rastgele sayı
+            uniqueNumbers.add((long) randomNumber);
+        }
+
+        List<Long> idList = uniqueNumbers.stream().toList();
+
+        return tytCardRepository.findAllById(idList);
+    }
+
+    public List<TYTCard> exploreForMe(Boolean stateOfKnowledge, DifficultyLevel difficultyLevel) {
+
+        User user = authService.getCurrentUser();
+
+        List<TYTCard> cards = userCardSeenRepository.findByUser(user, stateOfKnowledge, difficultyLevel);
+
+        long quantity;
+
+        if (cards.size() >= 100) {
+            quantity = 100;
+        } else {
+            quantity = (long) (cards.size() * 0.7);
+        }
+
+        Random random = new Random();
+
+        return cards.stream()   //todo burayı tekrar test et
+                .sorted((a, b) -> random.nextInt(2) - 1)  // Rastgele sıralama
+                .limit(quantity)  // Belirtilen sayıda kart al
+                .toList();
     }
 }

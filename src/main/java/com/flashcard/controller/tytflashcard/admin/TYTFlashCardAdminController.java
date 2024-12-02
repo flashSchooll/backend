@@ -64,9 +64,9 @@ public class TYTFlashCardAdminController {
     @PostMapping("/import-excel")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> importExcel(@RequestBody MultipartFile file,
-                                         @RequestParam TYT tyt) throws IOException {
+                                         @RequestParam Long tytLessonId) throws IOException {
 
-         tytFlashCardService.importExcel(tyt,file);
+         tytFlashCardService.importExcel(tytLessonId,file);
 
         return ResponseEntity.ok("excel başarıyla okundu");
     }

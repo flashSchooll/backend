@@ -138,9 +138,9 @@ public class TYTFlashCardService {
         return flashcards.stream().map(TYTFlashcardResponse::new).toList();
     }
 
-    public void importExcel(TYT tyt, MultipartFile file) throws IOException {
+    public void importExcel(Long lessonId, MultipartFile file) throws IOException {
 
-        flashcardExcelImporter.saveExcel(tyt, file);
+        flashcardExcelImporter.saveExcel(lessonId, file);
 
     }
 }

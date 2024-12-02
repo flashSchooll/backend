@@ -11,6 +11,6 @@ public class ExcelCardDTO {
     private String flashcardName;//flashcard ismi
     private String frontFace;//ön yüz
     private String backFace;//arka yüz
-    private Byte[] frontImage;//ön resim
-    private Byte[] backImage;//arka resim
+    private byte[] frontImage;//ön resim
+    private byte[] backImage;//arka resim
 }

@@ -80,4 +80,16 @@ public class UserCardPercentageService {
 
         userCardPercentageRepository.save(userCardPercentage);
     }
+
+    @Transactional
+    public void updateCardCount(TYTLesson lesson, int size) {
+
+        List<UserCardPercentage> percentageList = userCardPercentageRepository.findByLesson(lesson);
+
+        for (UserCardPercentage percentage : percentageList) {
+            percentage.setTotalCard(percentage.getTotalCard() + size);
+        }
+
+        userCardPercentageRepository.saveAll(percentageList);
+    }
 }

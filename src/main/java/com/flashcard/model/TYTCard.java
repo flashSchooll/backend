@@ -3,7 +3,6 @@ package com.flashcard.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,15 +26,15 @@ public class TYTCard {
     @NotNull
     private TYTFlashcard tytFlashcard;
 
-    @Size(min = 0, max = 256)
+    @Column(columnDefinition = "TEXT")
     @NotBlank
     private String frontFace;
 
-    @Size(min = 0, max = 256)
+    @Column(columnDefinition = "TEXT")
     @NotBlank
     private String backFace;
 
-    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ImageData> imageData;
 
 }
