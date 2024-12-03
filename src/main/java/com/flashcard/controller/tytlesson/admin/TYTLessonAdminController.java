@@ -35,6 +35,19 @@ public class TYTLessonAdminController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> update(@RequestParam Long id,
+                                    @RequestParam TYT tyt,
+                                    @RequestBody MultipartFile icon) throws IOException {
+
+        TYTLesson tytLesson = tytLessonService.update(id, tyt, icon);
+
+        TYTLessonResponse response = new TYTLessonResponse(tytLesson);
+
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long id) {

@@ -42,4 +42,17 @@ public class TYTLessonService {
 
         return tytLessonRepository.findAll();
     }
+
+    public TYTLesson update(Long id, TYT tyt, MultipartFile icon) throws IOException {
+
+        TYTLesson lesson = tytLessonRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
+
+        lesson.setTyt(tyt);
+        if (icon != null) {
+            lesson.setIcon(icon.getBytes());
+        }
+
+        return tytLessonRepository.save(lesson);
+    }
 }
