@@ -45,11 +45,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         return new AuthTokenFilter();
     }
 
-// @Override
-// public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-//   authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-// }
-
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -59,12 +54,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 
         return authProvider;
     }
-
-//  @Bean
-//  @Override
-//  public AuthenticationManager authenticationManagerBean() throws Exception {
-//    return super.authenticationManagerBean();
-//  }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -76,18 +65,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
- /* @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http
-            .authorizeRequests()
-            // Swagger UI'yi güvenlikten hariç tutuyoruz
-            .anyRequest("/swagger-ui/**", "/v3/api-docs/**").permitAll()  // Swagger UI ve API dokümanlarını herkese açık hale getiriyoruz
-            .anyRequest().authenticated()  // Diğer tüm isteklere kimlik doğrulama gerektiriyor
-            .and()
-            .csrf().disable();
-
-    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-  }*/
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -113,42 +90,12 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*").
+                registry.addMapping("/**")
+                        .allowedOrigins("*").
                         allowedHeaders("*")
                         .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
             }
         };
     }
-/*
-    private static final String [] AUTH_WHITE_LIST= {
-            "/v3/api-docs/**",
-            "/swagger-ui.html",
-            "swagger-ui/**",
-            "/",
-            "index.html",
-            "/images/**",
-            "/css/**",
-            "/js/**"
-    };
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return new WebSecurityCustomizer() {
-            @Override
-            public void customize(WebSecurity web) {
-                web.ignoring().requestMatchers(AUTH_WHITE_LIST);
-            }
-        };
-    }
-*/
-
- /*   @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .requestMatchers("/swagger-ui.html", "/v3/api-docs/**").permitAll() // Swagger UI'ye erişimi izin verir
-                .anyRequest().authenticated() // Diğer tüm isteklere kimlik doğrulama gerektirir
-                .and()
-                .httpBasic(Customizer.withDefaults()); // Temel HTTP kimlik doğrulama (gerekiyorsa)
-    }*/
 }
