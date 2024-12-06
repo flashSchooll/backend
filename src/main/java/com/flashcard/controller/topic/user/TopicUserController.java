@@ -18,7 +18,7 @@ public class TopicUserController {
     private final TopicService topicService;
 
     @GetMapping("/get-all/{lessonId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> getAll(@PathVariable Long lessonId) {
 
         List<TopicUserResponse> response = topicService.getAllUser(lessonId);
