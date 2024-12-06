@@ -37,7 +37,7 @@ public class RepeatFlashcard {
 
     @OneToMany
     @NotNull
-    private List<TYTFlashcard> tytFlashcard;
+    private List<Flashcard> flashcards;
 
     private LocalDateTime repeatTime;
 

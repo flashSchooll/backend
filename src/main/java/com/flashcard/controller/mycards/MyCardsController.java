@@ -1,8 +1,8 @@
 package com.flashcard.controller.mycards;
 
-import com.flashcard.controller.tytcard.admin.response.TYTCardResponse;
+import com.flashcard.controller.card.admin.response.CardResponse;
 import com.flashcard.model.MyCard;
-import com.flashcard.model.TYTCard;
+import com.flashcard.model.Card;
 import com.flashcard.service.MyCardsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/tyt/mycards/user")
+@RequestMapping("/api/mycards/user")
 @RequiredArgsConstructor
 public class MyCardsController {
 
@@ -23,9 +23,9 @@ public class MyCardsController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> save(@PathVariable Long cardId) {
 
-        TYTCard card = myCardsService.save(cardId);
+        Card card = myCardsService.save(cardId);
 
-        TYTCardResponse response = new TYTCardResponse(card);
+        CardResponse response = new CardResponse(card);
 
         return ResponseEntity.ok(response);
     }
@@ -45,8 +45,8 @@ public class MyCardsController {
 
         List<MyCard> myCards = myCardsService.getAll();
 
-        List<TYTCardResponse> responses = myCards.stream()
-                .map(myCard -> new TYTCardResponse(myCard.getTytCard())).toList();
+        List<CardResponse> responses = myCards.stream()
+                .map(myCard -> new CardResponse(myCard.getCard())).toList();
 
         return ResponseEntity.ok(responses);
     }

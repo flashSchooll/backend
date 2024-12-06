@@ -23,7 +23,7 @@ public class UserCardPercentage {
 
     @ManyToOne
     @NotNull
-    private TYTLesson lesson;
+    private Lesson lesson;
 
     private Integer totalCard;
 

@@ -14,7 +14,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/tyt/repeat-topic")
+@RequestMapping("/api/repeat-topic")
 @RequiredArgsConstructor
 public class RepeatFlashcardController {
 

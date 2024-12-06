@@ -14,7 +14,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/tyt/user-card-seen")
+@RequestMapping("/api/user-card-seen")
 @RequiredArgsConstructor
 public class UserCardSeenController {
 

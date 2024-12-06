@@ -1,0 +1,81 @@
+package com.flashcard.service;
+
+import com.flashcard.constants.Constants;
+import com.flashcard.controller.topicsummary.request.TopicSummarySaveRequest;
+import com.flashcard.controller.topicsummary.request.TopicSummaryUpdateRequest;
+import com.flashcard.controller.topicsummary.response.TopicSummaryResponse;
+import com.flashcard.model.Topic;
+import com.flashcard.model.TopicSummary;
+import com.flashcard.repository.TopicRepository;
+import com.flashcard.repository.TopicSummaryRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
+@Service
+@RequiredArgsConstructor
+public class TopicSummaryService {
+
+    private final TopicSummaryRepository topicSummaryRepository;
+    private final TopicRepository topicRepository;
+
+    @Transactional
+    public TopicSummary save(TopicSummarySaveRequest request) {
+        Objects.requireNonNull(request.getTopicId());
+        Objects.requireNonNull(request.getSummary());
+
+        Topic topic = topicRepository.findById(request.getTopicId())
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+
+        TopicSummary summary = new TopicSummary();
+        summary.setTopic(topic);
+        summary.setSummary(request.getSummary());
+
+        return   topicSummaryRepository.save(summary);
+    }
+
+    @Transactional
+    public TopicSummary update(TopicSummaryUpdateRequest request) {
+        Objects.requireNonNull(request.getSummaryId());
+        Objects.requireNonNull(request.getSummary());
+
+        TopicSummary summary = topicSummaryRepository.findById(request.getSummaryId())
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
+
+        summary.setSummary(request.getSummary());
+
+      return  topicSummaryRepository.save(summary);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        Objects.requireNonNull(id);
+
+        TopicSummary summary = topicSummaryRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
+
+       topicSummaryRepository.delete(summary);
+    }
+
+    public TopicSummary get(Long id) {
+        Objects.requireNonNull(id);
+
+        return topicSummaryRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
+    }
+
+    public List<TopicSummaryResponse> getAllByTopic(Long topicId) {
+        Objects.requireNonNull(topicId);
+
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+
+        List<TopicSummary> summaries = topicSummaryRepository.findByTopic(topic);
+
+        return summaries.stream().map(TopicSummaryResponse::new).toList();
+    }
+}

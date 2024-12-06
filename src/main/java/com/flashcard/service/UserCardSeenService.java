@@ -4,11 +4,11 @@ import com.flashcard.constants.Constants;
 import com.flashcard.controller.usercardseen.request.UserCardSeenRequest;
 import com.flashcard.controller.usercardseen.request.UserCardSeenSaveRequest;
 import com.flashcard.exception.BadRequestException;
-import com.flashcard.model.TYTFlashcard;
+import com.flashcard.model.Flashcard;
 import com.flashcard.model.User;
 import com.flashcard.model.UserSeenCard;
-import com.flashcard.repository.TYTCardRepository;
-import com.flashcard.repository.TYTFlashCardRepository;
+import com.flashcard.repository.CardRepository;
+import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.UserCardSeenRepository;
 import com.flashcard.security.services.AuthService;
 import jakarta.validation.Valid;
@@ -27,18 +27,18 @@ import java.util.Objects;
 public class UserCardSeenService {
 
     private final UserCardSeenRepository userCardSeenRepository;
-    private final TYTFlashCardRepository tytFlashCardRepository;
-    private final TYTCardRepository tytCardRepository;
+    private final FlashCardRepository flashCardRepository;
+    private final CardRepository cardRepository;
     private final AuthService authService;
     private final UserCardPercentageService userCardPercentageService;
 
     @Transactional
     public List<UserSeenCard> save(@Valid UserCardSeenSaveRequest userCardSeenSaveRequest) {
 
-        TYTFlashcard flashcard = tytFlashCardRepository.findById(userCardSeenSaveRequest.getFlashcardId())
+        Flashcard flashcard = flashCardRepository.findById(userCardSeenSaveRequest.getFlashcardId())
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
-        int countCard = tytCardRepository.countByTytFlashcard(flashcard);
+        int countCard = cardRepository.countByFlashcard(flashcard);
 
         if (countCard != userCardSeenSaveRequest.getUserCardSeenRequestList().size()) {
             throw new BadRequestException(Constants.ALL_CARDS_ON_FLASHCARD_MUST_BE_SAVE);
@@ -73,30 +73,30 @@ public class UserCardSeenService {
     public List<UserSeenCard> getAllSeenCardsByFlashcard(Long flashcardId) {
         Objects.requireNonNull(flashcardId);
 
-        TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         User user = authService.getCurrentUser();
 
-        return userCardSeenRepository.findByUserAndTytCardTytFlashcard(user, flashcard);
+        return userCardSeenRepository.findByUserAndCardFlashcard(user, flashcard);
     }
 
     public List<UserSeenCard> getUnknownSeenCardsByFlashcard(Long flashcardId) {
         Objects.requireNonNull(flashcardId);
 
-        TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         User user = authService.getCurrentUser();
 
-        return userCardSeenRepository.findByUserAndTytCardTytFlashcardAndStateOfKnowledgeIsFalse(user, flashcard);
+        return userCardSeenRepository.findByUserAndCardFlashcardAndStateOfKnowledgeIsFalse(user, flashcard);
     }
 
     public List<UserSeenCard> getKnownSeenCardsByFlashcard(Long flashcardId) {
         Objects.requireNonNull(flashcardId);
 
-        TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         User user = authService.getCurrentUser();
 
-        return userCardSeenRepository.findByUserAndTytCardTytFlashcardAndStateOfKnowledgeIsTrue(user, flashcard);
+        return userCardSeenRepository.findByUserAndCardFlashcardAndStateOfKnowledgeIsTrue(user, flashcard);
     }
 }

@@ -25,6 +25,6 @@ public class MyCard {
 
     @ManyToOne
     @NotNull
-    private TYTCard tytCard;
+    private Card card;
 
 }

@@ -2,10 +2,10 @@ package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
 import com.flashcard.model.MyCard;
-import com.flashcard.model.TYTCard;
+import com.flashcard.model.Card;
 import com.flashcard.model.User;
 import com.flashcard.repository.MyCardsRepository;
-import com.flashcard.repository.TYTCardRepository;
+import com.flashcard.repository.CardRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,18 +20,18 @@ public class MyCardsService {
 
     private final MyCardsRepository myCardsRepository;
     private final AuthService authService;
-    private final TYTCardRepository tytCardRepository;
+    private final CardRepository cardRepository;
 
-    public TYTCard save(Long cardId) {
+    public Card save(Long cardId) {
         Objects.requireNonNull(cardId);
 
         User user = authService.getCurrentUser();
 
-        TYTCard tytCard = tytCardRepository.findById(cardId)
+        Card tytCard = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
 
         MyCard myCard = new MyCard();
-        myCard.setTytCard(tytCard);
+        myCard.setCard(tytCard);
         myCard.setUser(user);
 
         myCardsRepository.save(myCard);
@@ -44,10 +44,10 @@ public class MyCardsService {
 
         User user = authService.getCurrentUser();
 
-        TYTCard tytCard = tytCardRepository.findById(cardId)
+        Card tytCard = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
 
-        MyCard myCard = myCardsRepository.findByUserAndTytCard(user, tytCard)
+        MyCard myCard = myCardsRepository.findByUserAndCard(user, tytCard)
                 .orElseThrow(() -> new NoSuchElementException(Constants.MY_CARD_NOT_FOUND));
 
         myCardsRepository.delete(myCard);

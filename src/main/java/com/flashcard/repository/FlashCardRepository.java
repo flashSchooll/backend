@@ -1,0 +1,22 @@
+package com.flashcard.repository;
+
+import com.flashcard.model.Flashcard;
+import com.flashcard.model.Topic;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+
+public interface FlashCardRepository extends JpaRepository<Flashcard, Long> {
+
+    List<Flashcard> findByTopic(Topic topic);
+
+    boolean existsByCardName(String cardName);
+
+
+    @Query("select f from Flashcard f " +
+            "where (f.cardName ilike (%:search%) " +
+            "or f.topic.subject ilike (%:search%) " +
+            "or f.topic.lesson.yksLesson ilike (%:search%))")
+    List<Flashcard> search(String search);
+}

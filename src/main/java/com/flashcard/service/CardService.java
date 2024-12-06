@@ -1,0 +1,207 @@
+package com.flashcard.service;
+
+import com.flashcard.constants.Constants;
+import com.flashcard.controller.card.admin.request.CardSaveAllRequest;
+import com.flashcard.controller.card.admin.request.CardSaveRequest;
+import com.flashcard.controller.card.admin.request.CardUpdateRequest;
+import com.flashcard.model.ImageData;
+import com.flashcard.model.Card;
+import com.flashcard.model.Flashcard;
+import com.flashcard.model.User;
+import com.flashcard.model.enums.CardFace;
+import com.flashcard.model.enums.DifficultyLevel;
+import com.flashcard.repository.CardRepository;
+import com.flashcard.repository.FlashCardRepository;
+import com.flashcard.repository.UserCardSeenRepository;
+import com.flashcard.security.services.AuthService;
+import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.*;
+
+@Service
+@RequiredArgsConstructor
+public class CardService {
+
+    private final CardRepository cardRepository;
+    private final FlashCardRepository flashCardRepository;
+    private final ApplicationContext applicationContext;
+    private final UserCardSeenRepository userCardSeenRepository;
+    private final AuthService authService;
+
+    @Transactional
+    public Card save(CardSaveRequest tytCardSaveRequest) throws BadRequestException {
+        // Null kontrolü
+        Long flashcardId = tytCardSaveRequest.getTytFlashcardId();
+        Objects.requireNonNull(flashcardId, "Flashcard ID cannot be null");
+
+        // Flashcard verisini al, var mı kontrol et
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
+
+        // Kart sayısını kontrol et, limit aşıldıysa hata fırlat
+        if (cardRepository.countByFlashcard(flashcard) > 20) {
+            throw new BadRequestException(Constants.FLASHCARD_CAN_HAVE_20_CARDS);
+        }
+
+        // Görselleri işleyip listeye ekle
+        List<ImageData> imageDataList = createImageDataList(tytCardSaveRequest);
+
+        // Yeni TYTCard nesnesini oluştur
+        Card tytCard = new Card();
+        tytCard.setFlashcard(flashcard);
+        tytCard.setBackFace(tytCardSaveRequest.getBackFace());
+        tytCard.setFrontFace(tytCardSaveRequest.getFrontFace());
+        tytCard.setImageData(imageDataList);
+
+        // TYTCard'ı veritabanına kaydet
+        return cardRepository.save(tytCard);
+    }
+
+    private List<ImageData> createImageDataList(CardSaveRequest tytCardSaveRequest) throws BadRequestException {
+        List<ImageData> imageDataList = new ArrayList<>();
+
+        // Ön yüz dosyası varsa, onu ekle
+        if (tytCardSaveRequest.getFrontFile() != null) {
+            imageDataList.add(createImageData(tytCardSaveRequest.getFrontFile(), CardFace.FRONT));
+        }
+
+        // Arka yüz dosyası varsa, onu ekle
+        if (tytCardSaveRequest.getBackFile() != null) {
+            imageDataList.add(createImageData(tytCardSaveRequest.getBackFile(), CardFace.BACK));
+        }
+
+        return imageDataList;
+    }
+
+    private ImageData createImageData(MultipartFile file, CardFace face) throws BadRequestException {
+        try {
+            ImageData imageData = new ImageData();
+            imageData.setData(file.getBytes());
+            imageData.setFace(face);
+            return imageData;
+        } catch (IOException e) {
+            throw new BadRequestException("Error processing image file: " + e.getMessage());
+        }
+    }
+
+
+    @Transactional
+    public Card update(CardUpdateRequest cardUpdateRequest) throws IOException {
+
+        Objects.requireNonNull(cardUpdateRequest.getId());
+
+        Card tytCard = cardRepository.findById(cardUpdateRequest.getId())
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
+
+        ImageData imageData;
+
+        List<ImageData> imageDataList = new ArrayList<>();
+
+        if (cardUpdateRequest.getFrontFile() != null) {
+            imageData = new ImageData();
+            imageData.setData(cardUpdateRequest.getFrontFile().getBytes());
+            imageData.setFace(CardFace.FRONT);
+            imageDataList.add(imageData);
+        }
+
+        if (cardUpdateRequest.getBackFile() != null) {
+            imageData = new ImageData();
+            imageData.setData(cardUpdateRequest.getBackFile().getBytes());
+            imageData.setFace(CardFace.BACK);
+            imageDataList.add(imageData);
+        }
+
+        tytCard.setBackFace(cardUpdateRequest.getBackFace());
+        tytCard.setFrontFace(cardUpdateRequest.getFrontFace());
+        tytCard.setImageData(imageDataList);
+
+        return cardRepository.save(tytCard);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+
+        Objects.requireNonNull(id);
+
+        Card tytCard = cardRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
+
+        cardRepository.delete(tytCard);
+    }
+
+    public List<Card> getAll(Long flashcardId) {
+        Objects.requireNonNull(flashcardId);
+
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
+
+        return cardRepository.findByFlashcard(flashcard);
+    }
+
+    @Transactional
+    public List<Card> saveAll(Long flashcardId, CardSaveAllRequest request) throws IOException {
+        Objects.requireNonNull(flashcardId);
+
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
+
+        if (request.getCardSaveRequests().size() > 20) {
+            throw new BadRequestException(Constants.FLASHCARD_CAN_HAVE_20_CARDS);
+        }
+
+        for (CardSaveRequest saveRequest : request.getCardSaveRequests()) {
+            CardService proxy = applicationContext.getBean(CardService.class);
+            proxy.save(saveRequest);
+        }
+
+        List<Card> cardList = cardRepository.findByFlashcard(flashcard);
+
+        return cardList;
+    }
+
+    public List<Card> explore() {
+
+        long cardCount = cardRepository.count();
+
+        Random random = new Random();
+        Set<Long> uniqueNumbers = new HashSet<>();
+
+        // Set'in boyutu istenilen sayıya ulaşana kadar rastgele sayılar ekle
+        while (uniqueNumbers.size() < 100) {
+            int randomNumber = random.nextInt((int) cardCount) + 1;  // 1 ile n arasında rastgele sayı
+            uniqueNumbers.add((long) randomNumber);
+        }
+
+        List<Long> idList = uniqueNumbers.stream().toList();
+
+        return cardRepository.findAllById(idList);
+    }
+
+    public List<Card> exploreForMe(Boolean stateOfKnowledge, DifficultyLevel difficultyLevel) {
+
+        User user = authService.getCurrentUser();
+
+        List<Card> cards = userCardSeenRepository.findByUser(user, stateOfKnowledge, difficultyLevel);
+
+        long quantity;
+
+        if (cards.size() >= 100) {
+            quantity = 100;
+        } else {
+            quantity = (long) (cards.size() * 0.7);
+        }
+
+        Random random = new Random();
+
+        return cards.stream()   //todo burayı tekrar test et
+                .sorted((a, b) -> random.nextInt(2) - 1)  // Rastgele sıralama
+                .limit(quantity)  // Belirtilen sayıda kart al
+                .toList();
+    }
+}

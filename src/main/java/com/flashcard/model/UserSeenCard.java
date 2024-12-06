@@ -29,7 +29,7 @@ public class UserSeenCard {
 
     @ManyToOne
     @NotNull
-    private TYTCard tytCard;
+    private Card card;
 
     private Boolean stateOfKnowledge;
 

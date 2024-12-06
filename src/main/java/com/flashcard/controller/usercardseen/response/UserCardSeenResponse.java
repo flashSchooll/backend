@@ -17,7 +17,7 @@ public class UserCardSeenResponse {
     private final Duration duration;
 
     public UserCardSeenResponse(UserSeenCard seenCard) {
-        this.frontFace = seenCard.getTytCard().getFrontFace();
+        this.frontFace = seenCard.getCard().getFrontFace();
         this.stateOfKnowledge = seenCard.getStateOfKnowledge();
         this.difficultyLevel = seenCard.getDifficultyLevel();
         this.duration = seenCard.getDuration();

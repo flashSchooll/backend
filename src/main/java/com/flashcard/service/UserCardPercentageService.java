@@ -1,12 +1,13 @@
 package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
-import com.flashcard.model.TYTFlashcard;
-import com.flashcard.model.TYTLesson;
+import com.flashcard.model.Flashcard;
+import com.flashcard.model.Lesson;
 import com.flashcard.model.User;
 import com.flashcard.model.UserCardPercentage;
-import com.flashcard.repository.TYTCardRepository;
-import com.flashcard.repository.TYTLessonRepository;
+import com.flashcard.model.enums.YKS;
+import com.flashcard.repository.CardRepository;
+import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.UserCardPercentageRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -23,20 +24,20 @@ import java.util.NoSuchElementException;
 public class UserCardPercentageService {
 
     private final UserCardPercentageRepository userCardPercentageRepository;
-    private final TYTLessonRepository tytLessonRepository;
-    private final TYTCardRepository tytCardRepository;
+    private final LessonRepository lessonRepository;
+    private final CardRepository cardRepository;
     private final AuthService authService;
     private final ApplicationContext applicationContext;
 
     @Transactional
     public void save(User user) {
 
-        List<TYTLesson> lessonList = tytLessonRepository.findAll();
+        List<Lesson> lessonList = lessonRepository.findAll();
 
         List<UserCardPercentage> percentageList = new ArrayList<>();
         UserCardPercentage percentage;
-        for (TYTLesson lesson : lessonList) {
-            int cardCount = tytCardRepository.countByTYTFlashcardTopicTytLesson(lesson);
+        for (Lesson lesson : lessonList) {
+            int cardCount = cardRepository.countByFlashcardTopicLesson(lesson);
 
             percentage = new UserCardPercentage();
             percentage.setUser(user);
@@ -52,11 +53,11 @@ public class UserCardPercentageService {
     }
 
     @Transactional
-    public List<UserCardPercentage> getAllTYT() {
+    public List<UserCardPercentage> getAllYks(YKS yks) {
 
         User user = authService.getCurrentUser();
 
-        List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUser(user);
+        List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUserAndLessonYks(user,yks);
 
         if (!percentageList.isEmpty()) {
             return percentageList;
@@ -69,9 +70,9 @@ public class UserCardPercentageService {
     }
 
     @Transactional
-    public void updatePercentage(User user, TYTFlashcard flashcard, int amount) {
+    public void updatePercentage(User user, Flashcard flashcard, int amount) {
 
-        TYTLesson lesson = flashcard.getTopic().getTytLesson();
+        Lesson lesson = flashcard.getTopic().getLesson();
 
         UserCardPercentage userCardPercentage = userCardPercentageRepository.findByUserAndLesson(user, lesson)
                 .orElseThrow(() -> new NoSuchElementException(Constants.USER_PERCENTAGE_NOT_FOUND));
@@ -82,7 +83,7 @@ public class UserCardPercentageService {
     }
 
     @Transactional
-    public void updateCardCount(TYTLesson lesson, int size) {
+    public void updateCardCount(Lesson lesson, int size) {
 
         List<UserCardPercentage> percentageList = userCardPercentageRepository.findByLesson(lesson);
 

@@ -4,10 +4,10 @@ import com.flashcard.constants.Constants;
 import com.flashcard.exception.BusinessException;
 import com.flashcard.model.*;
 import com.flashcard.model.enums.CardFace;
-import com.flashcard.repository.TYTCardRepository;
-import com.flashcard.repository.TYTFlashCardRepository;
-import com.flashcard.repository.TYTLessonRepository;
-import com.flashcard.repository.TYTTopicRepository;
+import com.flashcard.repository.CardRepository;
+import com.flashcard.repository.FlashCardRepository;
+import com.flashcard.repository.LessonRepository;
+import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.UserCardPercentageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,10 +38,10 @@ import java.util.stream.Collectors;
 public class FlashcardExcelImporter {
     private static final Logger logger = LoggerFactory.getLogger(ObjectMetaData.Application.class);
 
-    private final TYTLessonRepository tytLessonRepository;
-    private final TYTTopicRepository tytTopicRepository;
-    private final TYTFlashCardRepository tytFlashCardRepository;
-    private final TYTCardRepository tytCardRepository;
+    private final LessonRepository tytLessonRepository;
+    private final TopicRepository tytTopicRepository;
+    private final FlashCardRepository flashCardRepository;
+    private final CardRepository tytCardRepository;
     private static List<XSSFPictureData> pictures;
     private final UserCardPercentageService userCardPercentageService;
 
@@ -51,7 +51,7 @@ public class FlashcardExcelImporter {
 
         List<ExcelCardDTO> dtoList = getExcelDataFomExcel(file);
 
-        TYTLesson lesson = tytLessonRepository.findById(lessonId)
+        Lesson lesson = tytLessonRepository.findById(lessonId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
 
         Map<String, List<ExcelCardDTO>> groupedBySubject = dtoList.stream()
@@ -60,14 +60,14 @@ public class FlashcardExcelImporter {
         for (Map.Entry<String, List<ExcelCardDTO>> entry : groupedBySubject.entrySet()) {// konulara göre grupladık
             String subject = entry.getKey();
 
-            Optional<TYTTopic> optionalTYTTopic = tytTopicRepository.findBySubject(subject);
+            Optional<Topic> optionalTYTTopic = tytTopicRepository.findBySubject(subject);
 
-            TYTTopic topic;
+            Topic topic;
             if (optionalTYTTopic.isPresent()) {
                 topic = optionalTYTTopic.get();
             } else {
-                topic = new TYTTopic();
-                topic.setTytLesson(lesson);
+                topic = new Topic();
+                topic.setLesson(lesson);
                 topic.setSubject(subject);
             }
 
@@ -80,14 +80,14 @@ public class FlashcardExcelImporter {
             for (Map.Entry<String, List<ExcelCardDTO>> entryFlash : groupedByFlashcard.entrySet()) {// flashcarda göre grupladık
                 String flashCardName = entryFlash.getKey();
 
-                TYTFlashcard flashcard = new TYTFlashcard();
+                Flashcard flashcard = new Flashcard();
                 flashcard.setCardName(flashCardName);
                 flashcard.setTopic(topic);
 
-                flashcard = tytFlashCardRepository.save(flashcard);
+                flashcard = flashCardRepository.save(flashcard);
 
-                List<TYTCard> cards = new ArrayList<>();
-                TYTCard card;
+                List<Card> cards = new ArrayList<>();
+                Card card;
                 ImageData imageDataFront;
                 ImageData imageDataBack;
 
@@ -107,8 +107,8 @@ public class FlashcardExcelImporter {
                         imageData.add(imageDataBack);
                     }
 
-                    card = new TYTCard();
-                    card.setTytFlashcard(flashcard);
+                    card = new Card();
+                    card.setFlashcard(flashcard);
                     card.setFrontFace(dto.getFrontFace());
                     card.setBackFace(dto.getBackFace());
                     card.setImageData(imageData.isEmpty() ? null : imageData);

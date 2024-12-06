@@ -2,12 +2,12 @@ package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
 import com.flashcard.model.RepeatFlashcard;
-import com.flashcard.model.TYTFlashcard;
-import com.flashcard.model.TYTTopic;
+import com.flashcard.model.Flashcard;
+import com.flashcard.model.Topic;
 import com.flashcard.model.User;
 import com.flashcard.repository.RepeatFlashcardRepository;
-import com.flashcard.repository.TYTFlashCardRepository;
-import com.flashcard.repository.TYTTopicRepository;
+import com.flashcard.repository.FlashCardRepository;
+import com.flashcard.repository.TopicRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,22 +24,22 @@ public class RepeatFlashcardService {
 
     private final RepeatFlashcardRepository repeatFlashcardRepository;
     private final AuthService authService;
-    private final TYTFlashCardRepository tytFlashCardRepository;
-    private final TYTTopicRepository tytTopicRepository;
+    private final FlashCardRepository flashCardRepository;
+    private final TopicRepository topicRepository;
 
     @Transactional
     public RepeatFlashcard save(Long flashcardId, LocalDateTime repeatTime) {
         Objects.requireNonNull(flashcardId);
 
         User user = authService.getCurrentUser();
-        TYTFlashcard flashcard = tytFlashCardRepository.findById(flashcardId)
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
         RepeatFlashcard repeatFlashcard = new RepeatFlashcard();
         repeatFlashcard.setUser(user);
-        repeatFlashcard.getTytFlashcard().add(flashcard);
+        repeatFlashcard.getFlashcards().add(flashcard);
         repeatFlashcard.setTopic(flashcard.getTopic().getSubject());
-        repeatFlashcard.setLesson(flashcard.getTopic().getTytLesson().getTyt().label);
+        repeatFlashcard.setLesson(flashcard.getTopic().getLesson().getYksLesson().label);
         repeatFlashcard.setTopicId(flashcard.getTopic().getId());
         repeatFlashcard.setRepeatTime(repeatTime);
 
@@ -65,18 +65,18 @@ public class RepeatFlashcardService {
     public RepeatFlashcard saveByTopic(Long topicId, LocalDateTime repeatTime) {
         Objects.requireNonNull(topicId);
 
-        TYTTopic topic = tytTopicRepository.findById(topicId)
+        Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
 
         User user = authService.getCurrentUser();
 
-        List<TYTFlashcard> flashcards = tytFlashCardRepository.findByTopic(topic);
+        List<Flashcard> flashcards = flashCardRepository.findByTopic(topic);
 
         RepeatFlashcard repeatFlashcard = new RepeatFlashcard();
         repeatFlashcard.setUser(user);
-        repeatFlashcard.setTytFlashcard(flashcards);
+        repeatFlashcard.setFlashcards(flashcards);
         repeatFlashcard.setTopic(topic.getSubject());
-        repeatFlashcard.setLesson(topic.getTytLesson().getTyt().label);
+        repeatFlashcard.setLesson(topic.getLesson().getYksLesson().name());
         repeatFlashcard.setTopicId(topicId);
         repeatFlashcard.setRepeatTime(repeatTime);
 
