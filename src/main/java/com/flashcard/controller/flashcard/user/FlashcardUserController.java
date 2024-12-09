@@ -1,6 +1,6 @@
 package com.flashcard.controller.flashcard.user;
 
-import com.flashcard.controller.flashcard.admin.response.FlashcardResponse;
+import com.flashcard.controller.flashcard.user.response.FlashcardSearchResponse;
 import com.flashcard.controller.flashcard.user.response.FlashcardUserResponse;
 import com.flashcard.model.Flashcard;
 import com.flashcard.service.FlashCardService;
@@ -35,7 +35,7 @@ public class FlashcardUserController {
 
         List<Flashcard> flashcards = flashCardService.search(search);
 
-        List<FlashcardResponse> response = flashcards.stream().map(FlashcardResponse::new).toList();
+        List<FlashcardSearchResponse> response = flashcards.stream().map(FlashcardSearchResponse::new).toList();
 
         return ResponseEntity.ok(response);
     }

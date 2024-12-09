@@ -26,7 +26,7 @@ public class Flashcard {
     private Topic topic;
 
     @NotBlank
-    @Size(min = 0, max = 256)
+    @Column(columnDefinition = "TEXT")
     private String cardName;
 
 }

@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface TopicRepository extends JpaRepository<Topic,Long> {
+public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     List<Topic> findByLesson(Lesson tytLesson);
 
-    Optional<Topic> findBySubject(String subject);
+    Optional<Topic> findBySubjectAndLesson(String subject, Lesson lesson);
 }

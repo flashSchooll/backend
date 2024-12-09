@@ -16,10 +16,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFPictureData;
-import org.apache.poi.xssf.usermodel.XSSFRichTextString;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -60,7 +57,7 @@ public class FlashcardExcelImporter {
         for (Map.Entry<String, List<ExcelCardDTO>> entry : groupedBySubject.entrySet()) {// konulara göre grupladık
             String subject = entry.getKey();
 
-            Optional<Topic> optionalTYTTopic = tytTopicRepository.findBySubject(subject);
+            Optional<Topic> optionalTYTTopic = tytTopicRepository.findBySubjectAndLesson(subject, lesson);
 
             Topic topic;
             if (optionalTYTTopic.isPresent()) {
@@ -174,7 +171,7 @@ public class FlashcardExcelImporter {
         return excelCardDTOS;
     }
 
-    private String getStringCell(Cell cell, String columnName) {
+  /*  private String getStringCell(Cell cell, String columnName) {
         if (cell.toString().isEmpty()) {
             return null;
         }
@@ -188,20 +185,19 @@ public class FlashcardExcelImporter {
             htmlContent.append("<html><body>");
 
             // Cümleleri ayırt etmek için metni bölüyoruz
-            String[] sentences = cellValue.split("(?<=\\.)");  // Noktadan sonra cümleyi ayır
+            String[] sentences = cellValue.split("(?<=[:.,])");// .,: sonra cümleyi ayır
             for (String sentence : sentences) {
                 // Cümledeki her kelimeyi kontrol et
                 String[] words = sentence.split(" ");
                 for (String word : words) {
                     // Her kelimenin stilini kontrol et
                     int start = sentence.indexOf(word);
-                    int end = start + word.length();
 
                     XSSFFont font = richText.getFontAtIndex(start);
                     boolean isBold = font != null && font.getBold();
                     boolean isItalic = font != null && font.getItalic();
                     boolean isUnderlined = font != null && (font.getUnderline() != XSSFFont.U_NONE);
-                    Short fontColor = font != null ? font.getColor() : null;
+                    XSSFColor color = font != null ? font.getXSSFColor() : null;
 
                     // Biçim etiketini başlat
                     htmlContent.append("<span style=\"");
@@ -215,9 +211,14 @@ public class FlashcardExcelImporter {
                     if (isUnderlined) {
                         htmlContent.append("text-decoration: underline; ");
                     }
-                    if (fontColor != null && fontColor != XSSFFont.DEFAULT_FONT_COLOR) {
-                        String hexColor = String.format("#%02x%02x%02x", (fontColor >> 16) & 0xFF, (fontColor >> 8) & 0xFF, fontColor & 0xFF);
-                        htmlContent.append("color: " + hexColor + "; ");
+                    if (color != null) {
+                        byte[] rgb = color.getRGB(); // RGB değerlerini alır
+                        if (rgb != null) {
+                            // RGB değerlerini hex formatına çevir
+                            String hexColor = String.format("#%02x%02x%02x", rgb[0] & 0xFF, rgb[1] & 0xFF, rgb[2] & 0xFF);
+
+                            htmlContent.append("color: ").append(hexColor).append("; ");
+                        }
                     }
 
                     htmlContent.append("\">");
@@ -229,7 +230,7 @@ public class FlashcardExcelImporter {
                     htmlContent.append("</span> ");
                 }
                 // Yeni cümle başladı, buna göre de uygun boşlukları ekleyebilirsiniz.
-                htmlContent.append(". ");
+                // htmlContent.append(". ");
             }
 
             htmlContent.append("</body></html>");
@@ -238,7 +239,7 @@ public class FlashcardExcelImporter {
         } catch (Exception e) {
             throw new InvalidCellException(columnName, cellValue, e);
         }
-    }
+    }*/
 
     public static byte[] getImageFromCell(Cell cell, String columnName, XSSFWorkbook workbook) {
         // Eğer hücre boşsa veya içerik yoksa, null döndür.
@@ -259,6 +260,19 @@ public class FlashcardExcelImporter {
         } catch (Exception e) {
             // Hata durumunda özel exception fırlat
             throw new InvalidCellException(columnName, "Resim alınamadı", e);
+        }
+    }
+
+    private String getStringCell(Cell cell, String columnName) {
+        if (cell.toString().isEmpty()) {
+            return null;
+        }
+        String cellValue = null;
+        try {
+            cellValue = cell.getStringCellValue();
+            return cellValue;
+        } catch (Exception e) {
+            throw new InvalidCellException(columnName, cellValue, e);
         }
     }
 }
