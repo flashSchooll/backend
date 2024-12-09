@@ -17,7 +17,9 @@ public class UserCardSeenSaveRequest {
     @Valid
     private List<UserCardSeenRequest> userCardSeenRequestList;
 
+    @NotNull
     private Long minute;
 
+    @NotNull
     private Long second;
 }
