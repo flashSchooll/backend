@@ -33,7 +33,7 @@ public class RepeatFlashcardController {
     @PostMapping("/topic")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> saveByTopic(@RequestParam Long topicId,
-                                      @RequestParam LocalDateTime repeatTime) {
+                                         @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.saveByTopic(topicId, repeatTime);
 

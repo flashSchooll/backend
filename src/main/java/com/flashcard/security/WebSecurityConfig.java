@@ -68,13 +68,14 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http.cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // burada unauthorizedHandler AuthEntryPointJwt
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll()  // /api/auth/** endpoint'lerine erişim izin veriliyor.
                                 .requestMatchers("/api/test/**").permitAll()  // /api/test/** endpoint'lerine erişim izin veriliyor.
-                                //    .requestMatchers("swagger-ui/**").permitAll()  // /api/test/** endpoint'lerine erişim izin veriliyor.
+                                //.requestMatchers("swagger-ui/**").permitAll()  // /api/test/** endpoint'lerine erişim izin veriliyor.
                                 .anyRequest().authenticated()  // Diğer tüm endpoint'ler kimlik doğrulaması gerektiriyor.
                 );
 
@@ -91,8 +92,8 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*").
-                        allowedHeaders("*")
+                        .allowedOrigins("*")
+                        .allowedHeaders("*")
                         .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
             }
         };
