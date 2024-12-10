@@ -30,7 +30,7 @@ public class CardUserController {
         List<Card> response = cardService.getAll(flashcardId);
         List<MyCard> myCards = myCardsService.getAll(flashcardId);
 
-        List<CardResponse> tytCardResponses = response.stream().map(CardResponse::new).toList();
+        List<CardResponse> tytCardResponses = response.stream().map(card -> new CardResponse(card, myCards)).toList();
 
         return ResponseEntity.ok(tytCardResponses);
     }
