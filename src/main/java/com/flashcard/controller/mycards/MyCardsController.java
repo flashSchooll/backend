@@ -55,7 +55,7 @@ public class MyCardsController {
     @PostMapping("/level/{cardId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> saveWithLevel(@PathVariable Long cardId,
-                                           @RequestParam DifficultyLevel difficultyLevel) {
+                                           @RequestParam String difficultyLevel) {
 
         MyCard card = myCardsService.saveWithLevel(cardId, difficultyLevel);
 

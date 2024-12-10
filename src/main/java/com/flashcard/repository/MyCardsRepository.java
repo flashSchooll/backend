@@ -20,4 +20,6 @@ public interface MyCardsRepository extends JpaRepository<MyCard, Long> {
     Optional<MyCard> findByUserAndCard(User user, Card card);
 
     List<MyCard> findByUserAndCardFlashcard(User user, Flashcard flashcard);
+
+    boolean existsByUserAndCard(User user, Card card);
 }

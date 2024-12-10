@@ -1,6 +1,7 @@
 package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
+import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.Flashcard;
 import com.flashcard.model.MyCard;
 import com.flashcard.model.Card;
@@ -31,16 +32,22 @@ public class MyCardsService {
 
         User user = authService.getCurrentUser();
 
-        Card tytCard = cardRepository.findById(cardId)
+        Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
 
+        boolean isExists = myCardsRepository.existsByUserAndCard(user, card);
+
+        if (isExists) {
+            throw new BadRequestException("Kart zaten kayıtlı");
+        }
+
         MyCard myCard = new MyCard();
-        myCard.setCard(tytCard);
+        myCard.setCard(card);
         myCard.setUser(user);
 
         myCardsRepository.save(myCard);
 
-        return tytCard;
+        return card;
     }
 
     public void delete(Long cardId) {
@@ -70,21 +77,23 @@ public class MyCardsService {
         Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
-        return myCardsRepository.findByUserAndCardFlashcard(user,flashcard);
+        return myCardsRepository.findByUserAndCardFlashcard(user, flashcard);
     }
 
-    public MyCard saveWithLevel(Long cardId, DifficultyLevel difficultyLevel) {
+    public MyCard saveWithLevel(Long cardId, String difficultyLevel) {
         Objects.requireNonNull(cardId);
 
         User user = authService.getCurrentUser();
 
         Card tytCard = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
+        DifficultyLevel newDifficultyLevel = DifficultyLevel.by(difficultyLevel)
+                .orElseThrow(() -> new NoSuchElementException("Zorluk derecesi bulunamadı"));
 
         MyCard myCard = new MyCard();
         myCard.setCard(tytCard);
         myCard.setUser(user);
-        myCard.setDifficultyLevel(difficultyLevel);
+        myCard.setDifficultyLevel(newDifficultyLevel);
 
         return myCardsRepository.save(myCard);
     }
