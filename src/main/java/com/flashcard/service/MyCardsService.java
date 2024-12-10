@@ -1,10 +1,12 @@
 package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
+import com.flashcard.model.Flashcard;
 import com.flashcard.model.MyCard;
 import com.flashcard.model.Card;
 import com.flashcard.model.User;
 import com.flashcard.model.enums.DifficultyLevel;
+import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.MyCardsRepository;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.security.services.AuthService;
@@ -22,6 +24,7 @@ public class MyCardsService {
     private final MyCardsRepository myCardsRepository;
     private final AuthService authService;
     private final CardRepository cardRepository;
+    private final FlashCardRepository flashCardRepository;
 
     public Card save(Long cardId) {
         Objects.requireNonNull(cardId);
@@ -59,6 +62,15 @@ public class MyCardsService {
         User user = authService.getCurrentUser();
 
         return myCardsRepository.findByUser(user, difficultyLevel);
+    }
+
+    public List<MyCard> getAll(Long flashcardId) {
+
+        User user = authService.getCurrentUser();
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
+
+        return myCardsRepository.findByUserAndCardFlashcard(user,flashcard);
     }
 
     public MyCard saveWithLevel(Long cardId, DifficultyLevel difficultyLevel) {

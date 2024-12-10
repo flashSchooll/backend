@@ -1,5 +1,6 @@
 package com.flashcard.repository;
 
+import com.flashcard.model.Flashcard;
 import com.flashcard.model.MyCard;
 import com.flashcard.model.Card;
 import com.flashcard.model.User;
@@ -17,4 +18,6 @@ public interface MyCardsRepository extends JpaRepository<MyCard, Long> {
     List<MyCard> findByUser(User user, DifficultyLevel difficultyLevel);
 
     Optional<MyCard> findByUserAndCard(User user, Card card);
+
+    List<MyCard> findByUserAndCardFlashcard(User user, Flashcard flashcard);
 }

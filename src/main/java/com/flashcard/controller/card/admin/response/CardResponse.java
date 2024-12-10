@@ -8,6 +8,7 @@ import com.flashcard.model.enums.DifficultyLevel;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 public class CardResponse {
@@ -25,6 +26,8 @@ public class CardResponse {
     private final byte[] dataBackFace;
 
     private final DifficultyLevel difficultyLevel;
+
+    private final boolean isSaved;
 
     public CardResponse(Card card) {
 
@@ -48,6 +51,36 @@ public class CardResponse {
         this.dataFrontFace = frontImage;
         this.dataBackFace = backImage;
         this.difficultyLevel = null;
+        this.isSaved = false;
+    }
+
+    public CardResponse(Card card, List<MyCard> myCards) {
+
+        List<ImageData> imageData = card.getImageData();
+
+        byte[] frontImage = null;
+        byte[] backImage = null;
+
+        for (ImageData data : imageData) {
+            if (data.getFace().equals(CardFace.FRONT)) {
+                frontImage = data.getData();
+            } else {
+                backImage = data.getData();
+            }
+        }
+        MyCard myCard = myCards.stream()
+                .filter(myCard1 -> Objects.equals(myCard1.getCard().getId(), card.getId()))
+                .findAny().orElse(null);
+
+        this.id = card.getId();
+        this.tytFlashcardId = card.getFlashcard().getId();
+        this.frontFace = card.getFrontFace();
+        this.backFace = card.getBackFace();
+        this.dataFrontFace = frontImage;
+        this.dataBackFace = backImage;
+        this.difficultyLevel = myCard != null ? myCard.getDifficultyLevel() : null;
+        this.isSaved = myCard != null;
+
     }
 
     public CardResponse(MyCard myCard) {
@@ -72,5 +105,6 @@ public class CardResponse {
         this.dataFrontFace = frontImage;
         this.dataBackFace = backImage;
         this.difficultyLevel = myCard.getDifficultyLevel();
+        this.isSaved = true;
     }
 }
