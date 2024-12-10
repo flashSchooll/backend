@@ -160,9 +160,7 @@ public class CardService {
             proxy.save(saveRequest);
         }
 
-        List<Card> cardList = cardRepository.findByFlashcard(flashcard);
-
-        return cardList;
+        return cardRepository.findByFlashcard(flashcard);
     }
 
     public List<Card> explore() {
@@ -183,11 +181,11 @@ public class CardService {
         return cardRepository.findAllById(idList);
     }
 
-    public List<Card> exploreForMe(Boolean stateOfKnowledge, DifficultyLevel difficultyLevel) {
+    public List<Card> exploreForMe(Boolean stateOfKnowledge) {
 
         User user = authService.getCurrentUser();
 
-        List<Card> cards = userCardSeenRepository.findByUser(user, stateOfKnowledge, difficultyLevel);
+        List<Card> cards = userCardSeenRepository.findByUser(user, stateOfKnowledge);
 
         long quantity;
 

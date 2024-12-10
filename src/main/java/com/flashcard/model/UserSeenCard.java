@@ -33,8 +33,5 @@ public class UserSeenCard {
 
     private Boolean stateOfKnowledge;
 
-    @Enumerated(value = EnumType.STRING)
-    private DifficultyLevel difficultyLevel;
-
     private Duration duration;
 }

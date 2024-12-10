@@ -43,10 +43,9 @@ public class CardUserController {
 
     @GetMapping("/explore/me")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> exploreForMe(@RequestParam Boolean stateOfKnowledge,
-                                          @RequestParam DifficultyLevel difficultyLevel) {
+    public ResponseEntity<?> exploreForMe(@RequestParam Boolean stateOfKnowledge) {
 
-        List<Card> response = cardService.exploreForMe(stateOfKnowledge, difficultyLevel);
+        List<Card> response = cardService.exploreForMe(stateOfKnowledge);
 
         List<CardResponse> tytCardResponses = response.stream().map(CardResponse::new).toList();
 

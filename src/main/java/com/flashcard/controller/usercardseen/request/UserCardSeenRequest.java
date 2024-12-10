@@ -13,6 +13,4 @@ public class UserCardSeenRequest {
     private Long cardId;
 
     private Boolean stateOfKnowledge;
-
-    private DifficultyLevel difficultyLevel;
 }

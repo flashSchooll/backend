@@ -3,13 +3,18 @@ package com.flashcard.repository;
 import com.flashcard.model.MyCard;
 import com.flashcard.model.Card;
 import com.flashcard.model.User;
+import com.flashcard.model.enums.DifficultyLevel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MyCardsRepository extends JpaRepository<MyCard, Long> {
-    List<MyCard> findByUser(User user);
+    @Query("select m from MyCard m " +
+            "where m.user = :user " +
+            "and (:difficultyLevel is null or m.difficultyLevel = :difficultyLevel)")
+    List<MyCard> findByUser(User user, DifficultyLevel difficultyLevel);
 
-    Optional<MyCard> findByUserAndCard(User user, Card Card);
+    Optional<MyCard> findByUserAndCard(User user, Card card);
 }

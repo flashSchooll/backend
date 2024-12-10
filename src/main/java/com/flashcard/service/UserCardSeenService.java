@@ -55,7 +55,6 @@ public class UserCardSeenService {
             userSeenCard = new UserSeenCard();
             userSeenCard.setUser(user);
             userSeenCard.setStateOfKnowledge(request.getStateOfKnowledge());
-            userSeenCard.setDifficultyLevel(request.getDifficultyLevel());
             userSeenCard.setDuration(duration);
 
             cardList.add(userSeenCard);
