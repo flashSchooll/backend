@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -85,15 +86,26 @@ public class MyCardsService {
 
         User user = authService.getCurrentUser();
 
-        Card tytCard = cardRepository.findById(cardId)
+        Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
+
         DifficultyLevel newDifficultyLevel = DifficultyLevel.by(difficultyLevel)
                 .orElseThrow(() -> new NoSuchElementException("Zorluk derecesi bulunamadı"));
 
-        MyCard myCard = new MyCard();
-        myCard.setCard(tytCard);
-        myCard.setUser(user);
-        myCard.setDifficultyLevel(newDifficultyLevel);
+        Optional<MyCard> optionalMyCard = myCardsRepository.findByUserAndCard(user, card);
+
+        MyCard myCard;
+        if (optionalMyCard.isPresent()) {
+            myCard = optionalMyCard.get();
+            myCard.setDifficultyLevel(newDifficultyLevel);
+
+        } else {
+            myCard = new MyCard();
+            myCard.setCard(card);
+            myCard.setUser(user);
+            myCard.setDifficultyLevel(newDifficultyLevel);
+        }
+
 
         return myCardsRepository.save(myCard);
     }
