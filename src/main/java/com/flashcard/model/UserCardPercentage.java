@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 @RequiredArgsConstructor
@@ -24,6 +26,8 @@ public class UserCardPercentage {
     @ManyToOne
     @NotNull
     private Lesson lesson;
+
+    private List<Long> flashCards;
 
     private Integer totalCard;
 

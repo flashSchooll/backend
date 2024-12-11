@@ -57,7 +57,7 @@ public class UserCardPercentageService {
 
         User user = authService.getCurrentUser();
 
-        List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUserAndLessonYks(user,yks);
+        List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUserAndLessonYks(user, yks);
 
         if (!percentageList.isEmpty()) {
             return percentageList;
@@ -77,9 +77,13 @@ public class UserCardPercentageService {
         UserCardPercentage userCardPercentage = userCardPercentageRepository.findByUserAndLesson(user, lesson)
                 .orElseThrow(() -> new NoSuchElementException(Constants.USER_PERCENTAGE_NOT_FOUND));
 
-        userCardPercentage.increaseCompletedCard(amount);
+        if (!userCardPercentage.getFlashCards().contains(flashcard.getId())) {
+            userCardPercentage.increaseCompletedCard(amount);
+            userCardPercentage.getFlashCards().add(flashcard.getId());
 
-        userCardPercentageRepository.save(userCardPercentage);
+            userCardPercentageRepository.save(userCardPercentage);
+        }
+
     }
 
     @Transactional
