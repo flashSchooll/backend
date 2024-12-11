@@ -3,8 +3,6 @@ package com.flashcard.controller.card.user;
 import com.flashcard.controller.card.admin.response.CardResponse;
 import com.flashcard.model.Card;
 import com.flashcard.model.MyCard;
-import com.flashcard.model.enums.DifficultyLevel;
-import com.flashcard.repository.MyCardsRepository;
 import com.flashcard.service.CardService;
 import com.flashcard.service.MyCardsService;
 import lombok.RequiredArgsConstructor;

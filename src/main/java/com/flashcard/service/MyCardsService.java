@@ -78,7 +78,9 @@ public class MyCardsService {
         Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
-        return myCardsRepository.findByUserAndCardFlashcard(user, flashcard);
+        List<Card> cards = cardRepository.findByFlashcard(flashcard);
+
+        return myCardsRepository.findByUserAndCardIn(user, cards);
     }
 
     public MyCard saveWithLevel(Long cardId, String difficultyLevel) {

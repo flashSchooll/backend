@@ -22,4 +22,6 @@ public interface MyCardsRepository extends JpaRepository<MyCard, Long> {
     List<MyCard> findByUserAndCardFlashcard(User user, Flashcard flashcard);
 
     boolean existsByUserAndCard(User user, Card card);
+
+    List<MyCard> findByUserAndCardIn(User user, List<Card> cards);
 }

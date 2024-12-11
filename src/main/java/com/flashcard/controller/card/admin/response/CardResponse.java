@@ -68,8 +68,9 @@ public class CardResponse {
                 backImage = data.getData();
             }
         }
+
         MyCard myCard = myCards.stream()
-                .filter(myCard1 -> Objects.equals(myCard1.getCard().getId(), card.getId()))
+                .filter(cards -> Objects.equals(cards.getCard().getId(), card.getId()))
                 .findAny().orElse(null);
 
         this.id = card.getId();
