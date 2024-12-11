@@ -22,7 +22,7 @@ public class FlashcardUserController {
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> getAll(@PathVariable Long topicId) {
+    public ResponseEntity<List<FlashcardUserResponse>> getAll(@PathVariable Long topicId) {
 
         List<FlashcardUserResponse> response = flashCardService.getAllUser(topicId);
 
@@ -31,7 +31,7 @@ public class FlashcardUserController {
 
     @GetMapping("/search")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> search(@RequestParam @NotBlank String search) {
+    public ResponseEntity<List<FlashcardSearchResponse>> search(@RequestParam @NotBlank String search) {
 
         List<Flashcard> flashcards = flashCardService.search(search);
 

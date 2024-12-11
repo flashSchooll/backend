@@ -38,6 +38,7 @@ public class DailyTargetService {
         return dailyTargetRepository.save(dailyTarget);
     }
 
+
     public DailyTargetResponse getTarget() {
         LocalDate today = LocalDate.now();
 

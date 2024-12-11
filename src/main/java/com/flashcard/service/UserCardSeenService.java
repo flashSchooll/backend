@@ -4,6 +4,7 @@ import com.flashcard.constants.Constants;
 import com.flashcard.controller.usercardseen.request.UserCardSeenRequest;
 import com.flashcard.controller.usercardseen.request.UserCardSeenSaveRequest;
 import com.flashcard.exception.BadRequestException;
+import com.flashcard.model.Card;
 import com.flashcard.model.Flashcard;
 import com.flashcard.model.User;
 import com.flashcard.model.UserSeenCard;
@@ -52,10 +53,13 @@ public class UserCardSeenService {
         UserSeenCard userSeenCard;
 
         for (UserCardSeenRequest request : userCardSeenSaveRequest.getUserCardSeenRequestList()) {
+            Card card = cardRepository.findById(request.getCardId()).orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
+
             userSeenCard = new UserSeenCard();
             userSeenCard.setUser(user);
             userSeenCard.setStateOfKnowledge(request.getStateOfKnowledge());
             userSeenCard.setDuration(duration);
+            userSeenCard.setCard(card);
 
             cardList.add(userSeenCard);
         }

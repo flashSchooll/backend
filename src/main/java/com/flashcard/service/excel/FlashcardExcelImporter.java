@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class FlashcardExcelImporter {
-    private static final Logger logger = LoggerFactory.getLogger(ObjectMetaData.Application.class);
+    private static final Logger logger = LoggerFactory.getLogger(FlashcardExcelImporter.class);
 
     private final LessonRepository tytLessonRepository;
     private final TopicRepository tytTopicRepository;
@@ -155,9 +155,7 @@ public class FlashcardExcelImporter {
                                     cardDTO.setFrontImage(getImageFromCell(cell, "ön resim", workbook));
                             case 5 -> // doğum tarihi sütunu
                                     cardDTO.setBackImage(getImageFromCell(cell, "ön resim", workbook));
-                            default -> {
 
-                            }
                         }
                     }
                     excelCardDTOS.add(cardDTO);
