@@ -39,7 +39,7 @@ public class FlashCardService {
         Objects.requireNonNull(flashcardSaveRequest.getCardName());
 
         Topic topic = topicRepository.findById(flashcardSaveRequest.getTopicId())
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
         boolean isExist = flashCardRepository.existsByCardName(flashcardSaveRequest.getCardName());
 
@@ -87,7 +87,7 @@ public class FlashCardService {
         Objects.requireNonNull(topicId);
 
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
         return flashCardRepository.findByTopic(topic);
     }
@@ -109,7 +109,7 @@ public class FlashCardService {
         Objects.requireNonNull(topicId);
 
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
         List<Card> tytCards = cardRepository.findByTopic(topic);
 

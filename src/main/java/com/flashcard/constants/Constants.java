@@ -12,11 +12,11 @@ public class Constants {
     public static final String FLASHCARD_NOT_FOUND = "Flashcard bulunamadı";
     public static final String REPEAT_CARD_NOT_FOUND = "Tekrar kartı bulunamadı";
     public static final String FLASHCARD_CAN_HAVE_20_CARDS = "Bir Flashcartta 20 card olabilir";
-    public static final String TYT_CARD_NOT_FOUND = "TYTCard bulunamadı";
-    public static final String TYT_TOPIC_NOT_FOUND = "TYT Konu bulunamadı";
+    public static final String CARD_NOT_FOUND = "TYTCard bulunamadı";
+    public static final String TOPIC_NOT_FOUND = "TYT Konu bulunamadı";
     public static final String FLASHCARD_NAME_ALREADY_EXISTS = "Flashcard ismi zaten kayıtlı";
-    public static final String TYT_LESSON_NOT_FOUND = "TYT Ders bulunamadı";
-    public static final String TYT_TOPIC_SUMMARY_NOT_FOUND = "TYT Konu özeti bulunamadı";
+    public static final String LESSON_NOT_FOUND = "TYT Ders bulunamadı";
+    public static final String TOPIC_SUMMARY_NOT_FOUND = "TYT Konu özeti bulunamadı";
     public static final String USER_PERCENTAGE_NOT_FOUND = "Kullanıcı yüzdelik kart bilgisi bulunamadı";
     public static final String ALL_CARDS_ON_FLASHCARD_MUST_BE_SAVE = "Flashkarda ait bütün kartlar kaydedilmeli";
     public static final String USER_NOT_FOUND = "Kullanıcı bulunamadı";
@@ -30,7 +30,7 @@ public class Constants {
     public static final String TOKEN_NOT_VALID = "Token geçerli değil";
     public static final String EMAIL_NOT_FOUND = "Email %s bulunamadı";
     public static final Object LESSON_SUCCESSFULLY_DELETED = "Ders başarıyla silindi";
-    public static final Object TYT_TOPIC_SUCCESSFULLY_DELETE = "Konu başarıyla silindi";
+    public static final Object TOPIC_SUCCESSFULLY_DELETE = "Konu başarıyla silindi";
     public static final Object EXCEL_SUCCESSFULLY_IMPORTED = "Excel başarıyla okundu";
     public static final Object FLASHCARD_SUCCESSFULLY_DELETED = "Flashcard başarıyla silindi";
     public static final String MY_CARD_NOT_FOUND = "Kayıtlı kart bulunamadı";

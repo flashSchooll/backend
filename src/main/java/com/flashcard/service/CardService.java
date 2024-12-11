@@ -11,7 +11,7 @@ import com.flashcard.model.User;
 import com.flashcard.model.enums.CardFace;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.FlashCardRepository;
-import com.flashcard.repository.UserCardSeenRepository;
+import com.flashcard.repository.UserSeenCardRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -30,7 +30,7 @@ public class CardService {
     private final CardRepository cardRepository;
     private final FlashCardRepository flashCardRepository;
     private final ApplicationContext applicationContext;
-    private final UserCardSeenRepository userCardSeenRepository;
+    private final UserSeenCardRepository userSeenCardRepository;
     private final AuthService authService;
 
     @Transactional
@@ -96,7 +96,7 @@ public class CardService {
         Objects.requireNonNull(cardUpdateRequest.getId());
 
         Card tytCard = cardRepository.findById(cardUpdateRequest.getId())
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
         ImageData imageData;
 
@@ -129,7 +129,7 @@ public class CardService {
         Objects.requireNonNull(id);
 
         Card tytCard = cardRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
         cardRepository.delete(tytCard);
     }
@@ -184,7 +184,7 @@ public class CardService {
 
         User user = authService.getCurrentUser();
 
-        List<Card> cards = userCardSeenRepository.findByUser(user, stateOfKnowledge);
+        List<Card> cards = userSeenCardRepository.findByUser(user, stateOfKnowledge);
 
         long quantity;
 

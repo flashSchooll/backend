@@ -66,7 +66,7 @@ public class RepeatFlashcardService {
         Objects.requireNonNull(topicId);
 
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
         User user = authService.getCurrentUser();
 

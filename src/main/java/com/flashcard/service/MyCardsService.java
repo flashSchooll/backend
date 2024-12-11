@@ -34,7 +34,7 @@ public class MyCardsService {
         User user = authService.getCurrentUser();
 
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
         boolean isExists = myCardsRepository.existsByUserAndCard(user, card);
 
@@ -57,7 +57,7 @@ public class MyCardsService {
         User user = authService.getCurrentUser();
 
         Card tytCard = cardRepository.findById(cardId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
         MyCard myCard = myCardsRepository.findByUserAndCard(user, tytCard)
                 .orElseThrow(() -> new NoSuchElementException(Constants.MY_CARD_NOT_FOUND));
@@ -89,7 +89,7 @@ public class MyCardsService {
         User user = authService.getCurrentUser();
 
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_CARD_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
         DifficultyLevel newDifficultyLevel = DifficultyLevel.by(difficultyLevel)
                 .orElseThrow(() -> new NoSuchElementException("Zorluk derecesi bulunamadı"));

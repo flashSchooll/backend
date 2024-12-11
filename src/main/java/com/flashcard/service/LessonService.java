@@ -45,7 +45,7 @@ public class LessonService {
     public void delete(Long id) {
 
         Lesson lesson = lessonRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
         lessonRepository.delete(lesson);
     }
@@ -58,7 +58,7 @@ public class LessonService {
     public Lesson update(Long id, YKSLesson yksLesson, Branch branch, YKS yks, MultipartFile icon) throws IOException {
 
         Lesson lesson = lessonRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
         lesson.setYksLesson(yksLesson);
         lesson.setBranch(branch);

@@ -51,7 +51,7 @@ public class TopicAdminController {
 
         topicService.delete(id);
 
-        return ResponseEntity.ok(Constants.TYT_TOPIC_SUCCESSFULLY_DELETE);
+        return ResponseEntity.ok(Constants.TOPIC_SUCCESSFULLY_DELETE);
     }
 
     @GetMapping("/get-all/{lessonId}")

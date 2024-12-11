@@ -3,7 +3,6 @@ package com.flashcard.controller.authcontroller.request;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
@@ -34,5 +33,4 @@ public class SignupRequest {
   @NotNull
   private Boolean userAgreement;
 
- // byte[] profilePhoto;
 }

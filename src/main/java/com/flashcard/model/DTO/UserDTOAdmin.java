@@ -3,7 +3,6 @@ package com.flashcard.model.DTO;
 import com.flashcard.model.User;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

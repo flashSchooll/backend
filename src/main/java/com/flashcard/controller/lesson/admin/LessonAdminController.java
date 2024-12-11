@@ -27,7 +27,7 @@ public class LessonAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> save(@RequestParam YKSLesson yksLesson,
+    public ResponseEntity<LessonResponse> save(@RequestParam YKSLesson yksLesson,
                                   @RequestParam Branch branch,
                                   @RequestParam YKS yks,
                                   @RequestBody MultipartFile icon) throws IOException {
@@ -41,7 +41,7 @@ public class LessonAdminController {
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> update(@RequestParam Long id,
+    public ResponseEntity<LessonResponse> update(@RequestParam Long id,
                                     @RequestParam YKSLesson yksLesson,
                                     @RequestParam Branch branch,
                                     @RequestParam YKS yks,
@@ -56,7 +56,7 @@ public class LessonAdminController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
 
         lessonService.delete(id);
 
@@ -65,7 +65,7 @@ public class LessonAdminController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getId() {
+    public ResponseEntity<List<LessonResponse>> getId() {
 
         List<Lesson> lessons = lessonService.getAll();
 
@@ -76,7 +76,7 @@ public class LessonAdminController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getEnums() {
+    public ResponseEntity<List<String>> getEnums() {
 
         List<String> response = Arrays.stream(YKSLesson.values()).map(Enum::name).toList();
 

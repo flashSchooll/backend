@@ -34,7 +34,7 @@ public class TopicService {
         Objects.requireNonNull(topicSaveRequest.getSubject());
 
         Lesson tytLesson = lessonRepository.findById(topicSaveRequest.getLessonId())
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
         Topic topic = new Topic();
         topic.setLesson(tytLesson);
@@ -49,7 +49,7 @@ public class TopicService {
         Objects.requireNonNull(topicUpdateRequest.getSubject());
 
         Topic topic = topicRepository.findById(topicUpdateRequest.getTopicId())
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
         topic.setSubject(topicUpdateRequest.getSubject());
 
@@ -61,7 +61,7 @@ public class TopicService {
         Objects.requireNonNull(id);
 
         Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
         topicRepository.delete(topic);
     }
@@ -70,7 +70,7 @@ public class TopicService {
         Objects.requireNonNull(lessonId);
 
         Lesson tytLesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
         return topicRepository.findByLesson(tytLesson);
     }
@@ -79,7 +79,7 @@ public class TopicService {
         Objects.requireNonNull(lessonId);
 
         Lesson tytLesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
         List<Card> tytCards = cardRepository.findByLesson(tytLesson);
 

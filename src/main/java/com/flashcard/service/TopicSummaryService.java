@@ -29,7 +29,7 @@ public class TopicSummaryService {
         Objects.requireNonNull(request.getSummary());
 
         Topic topic = topicRepository.findById(request.getTopicId())
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
         TopicSummary summary = new TopicSummary();
         summary.setTopic(topic);
@@ -44,7 +44,7 @@ public class TopicSummaryService {
         Objects.requireNonNull(request.getSummary());
 
         TopicSummary summary = topicSummaryRepository.findById(request.getSummaryId())
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_SUMMARY_NOT_FOUND));
 
         summary.setSummary(request.getSummary());
 
@@ -56,7 +56,7 @@ public class TopicSummaryService {
         Objects.requireNonNull(id);
 
         TopicSummary summary = topicSummaryRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_SUMMARY_NOT_FOUND));
 
        topicSummaryRepository.delete(summary);
     }
@@ -65,14 +65,14 @@ public class TopicSummaryService {
         Objects.requireNonNull(id);
 
         return topicSummaryRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_SUMMARY_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_SUMMARY_NOT_FOUND));
     }
 
     public List<TopicSummaryResponse> getAllByTopic(Long topicId) {
         Objects.requireNonNull(topicId);
 
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
         List<TopicSummary> summaries = topicSummaryRepository.findByTopic(topic);
 

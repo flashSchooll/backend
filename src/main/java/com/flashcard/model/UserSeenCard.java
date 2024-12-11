@@ -1,7 +1,6 @@
 package com.flashcard.model;
 
 
-import com.flashcard.model.enums.DifficultyLevel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

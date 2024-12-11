@@ -9,7 +9,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class UserCardSeenSaveRequest {
+public class UserSeenCardSaveRequest {
 
     @NotNull
     private Long flashcardId;

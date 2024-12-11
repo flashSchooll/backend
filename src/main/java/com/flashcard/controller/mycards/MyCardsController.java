@@ -22,7 +22,7 @@ public class MyCardsController {
 
     @PostMapping("/{cardId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> save(@PathVariable Long cardId) {
+    public ResponseEntity<CardResponse> save(@PathVariable Long cardId) {
 
         Card card = myCardsService.save(cardId);
 
@@ -33,7 +33,7 @@ public class MyCardsController {
 
     @DeleteMapping("/{cardId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> delete(@PathVariable Long cardId) {
+    public ResponseEntity<Object> delete(@PathVariable Long cardId) {
 
         myCardsService.delete(cardId);
 
@@ -42,7 +42,7 @@ public class MyCardsController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getAll(@RequestParam(required = false) DifficultyLevel difficultyLevel) {
+    public ResponseEntity<List<CardResponse>> getAll(@RequestParam(required = false) DifficultyLevel difficultyLevel) {
 
         List<MyCard> myCards = myCardsService.getAll(difficultyLevel);
 
@@ -54,7 +54,7 @@ public class MyCardsController {
 
     @PostMapping("/level/{cardId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> saveWithLevel(@PathVariable Long cardId,
+    public ResponseEntity<CardResponse> saveWithLevel(@PathVariable Long cardId,
                                            @RequestParam String difficultyLevel) {
 
         MyCard card = myCardsService.saveWithLevel(cardId, difficultyLevel);

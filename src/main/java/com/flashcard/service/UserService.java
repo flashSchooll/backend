@@ -4,7 +4,6 @@ import com.flashcard.constants.Constants;
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.DTO.UserDTO;
-import com.flashcard.model.DTO.UserDTOAdmin;
 import com.flashcard.model.User;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
@@ -64,7 +63,9 @@ public class UserService {
     public User updateUser(UpdateUserRequest updateUserRequest) {
         User user = authService.getCurrentUser();
 
-        if (!user.getEmail().equals(updateUserRequest.getEmail()) && userRepository.existsByEmail(updateUserRequest.getEmail())) {
+        boolean existsEmail = userRepository.existsByEmail(updateUserRequest.getEmail());
+
+        if (!user.getEmail().equals(updateUserRequest.getEmail()) && existsEmail) {
             throw new BadRequestException(String.format(Constants.EMAIL_ALREADY_EXISTS, updateUserRequest.getEmail()));
         }
 

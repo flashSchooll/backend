@@ -1,9 +1,9 @@
 package com.flashcard.controller.usercardseen;
 
-import com.flashcard.controller.usercardseen.request.UserCardSeenSaveRequest;
+import com.flashcard.controller.usercardseen.request.UserSeenCardSaveRequest;
 import com.flashcard.controller.usercardseen.response.UserCardSeenResponse;
 import com.flashcard.model.UserSeenCard;
-import com.flashcard.service.UserCardSeenService;
+import com.flashcard.service.UserSeenCardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserCardSeenController {
 
-    private final UserCardSeenService userCardSeenService;
+    private final UserSeenCardService userCardSeenService;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> save(@RequestBody @Valid UserCardSeenSaveRequest userCardSeenSaveRequest) {
+    public ResponseEntity<?> save(@RequestBody @Valid UserSeenCardSaveRequest userCardSeenSaveRequest) {
 
         List<UserSeenCard> userSeenCard = userCardSeenService.save(userCardSeenSaveRequest);
 

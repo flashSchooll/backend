@@ -11,7 +11,6 @@ import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.UserCardPercentageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.sl.usermodel.ObjectMetaData;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -49,7 +48,7 @@ public class FlashcardExcelImporter {
         List<ExcelCardDTO> dtoList = getExcelDataFomExcel(file);
 
         Lesson lesson = tytLessonRepository.findById(lessonId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TYT_LESSON_NOT_FOUND));
+                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
         Map<String, List<ExcelCardDTO>> groupedBySubject = dtoList.stream()
                 .collect(Collectors.groupingBy(ExcelCardDTO::getSubject));

@@ -22,7 +22,7 @@ public class RepeatFlashcardController {
 
     @PostMapping("/flashcard")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> save(@RequestParam Long flashcardId,
+    public ResponseEntity<RepeatFlashcard> save(@RequestParam Long flashcardId,
                                   @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.save(flashcardId, repeatTime);
@@ -32,7 +32,7 @@ public class RepeatFlashcardController {
 
     @PostMapping("/topic")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> saveByTopic(@RequestParam Long topicId,
+    public ResponseEntity<RepeatFlashcard> saveByTopic(@RequestParam Long topicId,
                                          @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.saveByTopic(topicId, repeatTime);
@@ -42,7 +42,7 @@ public class RepeatFlashcardController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
 
         repeatFlashcardService.delete(id);
 
@@ -51,7 +51,7 @@ public class RepeatFlashcardController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<List<RepeatFlashcardResponse>> getAll() {
 
         List<RepeatFlashcard> repeatFlashcards = repeatFlashcardService.getAll();
 

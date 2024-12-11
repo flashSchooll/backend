@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface UserCardSeenRepository extends JpaRepository<UserSeenCard, Long> {
+public interface UserSeenCardRepository extends JpaRepository<UserSeenCard, Long> {
 
     List<UserSeenCard> findByUserAndCardFlashcard(User user, Flashcard flashcard);
 

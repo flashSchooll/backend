@@ -46,24 +46,12 @@ public class User {
     @NotNull
     private Boolean userAgreement;
 
- /*   @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", //(541) 317-8828
-            message = "Please provide valid phone number")
-    @Size(min = 14, max = 14)
-    @NotBlank(message = "Please provide your phone number")
-    private String phoneNumber;
-
-    @NotNull
-    private LocalDate birthdate;
-
-  */
-
     @NotNull
     private LocalDateTime createdDate;
 
     private Integer star;
 
     private Integer rosette;
-
 
     private byte[] profilePhoto;
 
@@ -83,6 +71,6 @@ public class User {
     public void raiseRosette() {
         int alreadyRosette = getRosette();
 
-        this.setStar(alreadyRosette + 1);
+        this.setRosette(alreadyRosette + 1);
     }
 }
