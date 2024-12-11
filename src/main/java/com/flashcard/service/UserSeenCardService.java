@@ -4,12 +4,10 @@ import com.flashcard.constants.Constants;
 import com.flashcard.controller.usercardseen.request.UserCardSeenRequest;
 import com.flashcard.controller.usercardseen.request.UserSeenCardSaveRequest;
 import com.flashcard.exception.BadRequestException;
-import com.flashcard.model.Card;
-import com.flashcard.model.Flashcard;
-import com.flashcard.model.User;
-import com.flashcard.model.UserSeenCard;
+import com.flashcard.model.*;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.FlashCardRepository;
+import com.flashcard.repository.TopicRepository;
 import com.flashcard.repository.UserSeenCardRepository;
 import com.flashcard.security.services.AuthService;
 import jakarta.validation.Valid;
@@ -32,6 +30,7 @@ public class UserSeenCardService {
     private final CardRepository cardRepository;
     private final AuthService authService;
     private final UserCardPercentageService userCardPercentageService;
+    private final TopicRepository topicRepository;
 
     @Transactional
     public List<UserSeenCard> save(@Valid UserSeenCardSaveRequest userCardSeenSaveRequest) {
@@ -103,5 +102,16 @@ public class UserSeenCardService {
         User user = authService.getCurrentUser();
 
         return userSeenCardRepository.findByUserAndCardFlashcardAndStateOfKnowledgeIsTrue(user, flashcard);
+    }
+
+    public List<UserSeenCard> getAllSeenCardsByTopic(Long topicId) {
+        Objects.requireNonNull(topicId);
+
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+
+        User user = authService.getCurrentUser();
+
+        return userSeenCardRepository.findByUserAndCardFlashcardTopic(user, topic);
     }
 }

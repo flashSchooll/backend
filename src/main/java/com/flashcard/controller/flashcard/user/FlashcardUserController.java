@@ -2,8 +2,11 @@ package com.flashcard.controller.flashcard.user;
 
 import com.flashcard.controller.flashcard.user.response.FlashcardSearchResponse;
 import com.flashcard.controller.flashcard.user.response.FlashcardUserResponse;
+import com.flashcard.model.Card;
 import com.flashcard.model.Flashcard;
+import com.flashcard.model.UserSeenCard;
 import com.flashcard.service.FlashCardService;
+import com.flashcard.service.UserSeenCardService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,7 @@ import java.util.List;
 public class FlashcardUserController {
 
     private final FlashCardService flashCardService;
+    private final UserSeenCardService userSeenCardService;
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")

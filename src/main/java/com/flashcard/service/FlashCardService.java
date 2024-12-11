@@ -8,9 +8,11 @@ import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.Card;
 import com.flashcard.model.Flashcard;
 import com.flashcard.model.Topic;
+import com.flashcard.model.UserSeenCard;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.TopicRepository;
+import com.flashcard.repository.UserSeenCardRepository;
 import com.flashcard.service.excel.FlashcardExcelImporter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class FlashCardService {
     private final TopicRepository topicRepository;
     private final CardRepository cardRepository;
     private final FlashcardExcelImporter flashcardExcelImporter;
+    private final UserSeenCardService userSeenCardService;
 
     @Transactional
     public Flashcard save(FlashcardSaveRequest flashcardSaveRequest) {
@@ -119,9 +122,17 @@ public class FlashCardService {
                         Collectors.counting()
                 ));
 
+        List<UserSeenCard> seenCards = userSeenCardService.getAllSeenCardsByTopic(topicId);
+
+        List<Long> flashcards = seenCards.stream()
+                .map(UserSeenCard::getCard)
+                .map(Card::getFlashcard)
+                .map(Flashcard::getId)
+                .toList();
+
         return flashCardRepository.findByTopic(topic)
                 .stream()
-                .map(flashcard -> new FlashcardUserResponse(flashcard, Math.toIntExact(cardCount.get(flashcard))))
+                .map(flashcard -> new FlashcardUserResponse(flashcard, Math.toIntExact(cardCount.get(flashcard)), flashcards))
                 .toList();
     }
 

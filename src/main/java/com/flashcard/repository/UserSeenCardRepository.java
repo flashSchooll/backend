@@ -1,9 +1,6 @@
 package com.flashcard.repository;
 
-import com.flashcard.model.Card;
-import com.flashcard.model.Flashcard;
-import com.flashcard.model.User;
-import com.flashcard.model.UserSeenCard;
+import com.flashcard.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -22,4 +19,6 @@ public interface UserSeenCardRepository extends JpaRepository<UserSeenCard, Long
     List<Card> findByUser(User user, Boolean stateOfKnowledge);
 
     List<UserSeenCard> findByUserAndCardFlashcardAndStateOfKnowledgeIsTrue(User user, Flashcard flashcard);
+
+    List<UserSeenCard> findByUserAndCardFlashcardTopic(User user, Topic topic);
 }
