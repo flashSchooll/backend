@@ -25,7 +25,7 @@ public class DailyTargetAdminController {
 
     @GetMapping("/page")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAll(@RequestParam(required = false) String search,
+    public ResponseEntity<Page<DailyTargetAdminResponse>> getAll(@RequestParam(required = false) String search,
                                     @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<DailyTarget> dailyTargets = dailyTargetService.getAllAdmin(search, pageable);
 
@@ -36,7 +36,7 @@ public class DailyTargetAdminController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAllPage(@RequestParam(required = false) String search) {
+    public ResponseEntity<List<DailyTargetAdminResponse>> getAllPage(@RequestParam(required = false) String search) {
         List<DailyTarget> dailyTargets = dailyTargetService.getAll(search);
 
         List<DailyTargetAdminResponse> response = dailyTargets.stream().map(DailyTargetAdminResponse::new).toList();

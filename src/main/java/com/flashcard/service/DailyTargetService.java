@@ -43,8 +43,10 @@ public class DailyTargetService {
 
         Optional<DailyTarget> optionalDailyTarget = dailyTargetRepository.findByDay(today);
 
-        return optionalDailyTarget.map(DailyTargetResponse::new).orElseGet(() -> new DailyTargetResponse(createTarget()));
+        return optionalDailyTarget.map(DailyTargetResponse::new)
+                .orElseGet(() -> new DailyTargetResponse(createTarget()));//todo
     }
+
 
     public Page<DailyTarget> getAllAdmin(String search, Pageable pageable) {
 

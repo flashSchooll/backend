@@ -1,6 +1,9 @@
 package com.flashcard.constants;
 
+
+
 import java.util.Locale;
+
 
 public class Constants {
     public static final Locale TURKISH = new Locale("tr", "TR");

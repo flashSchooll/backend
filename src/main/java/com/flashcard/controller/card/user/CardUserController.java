@@ -23,7 +23,7 @@ public class CardUserController {
 
     @GetMapping("/get-all/{flashcardId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getAll(@PathVariable Long flashcardId) {
+    public ResponseEntity<List<CardResponse>> getAll(@PathVariable Long flashcardId) {
 
         List<Card> response = cardService.getAll(flashcardId);
         List<MyCard> myCards = myCardsService.getAll(flashcardId);
@@ -35,7 +35,7 @@ public class CardUserController {
 
     @GetMapping("/explore")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> explore() {
+    public ResponseEntity<List<CardResponse>> explore() {
 
         List<Card> response = cardService.explore();
 
@@ -46,7 +46,7 @@ public class CardUserController {
 
     @GetMapping("/explore/me")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> exploreForMe(@RequestParam Boolean stateOfKnowledge) {
+    public ResponseEntity<List<CardResponse>> exploreForMe(@RequestParam Boolean stateOfKnowledge) {
 
         List<Card> response = cardService.exploreForMe(stateOfKnowledge);
 

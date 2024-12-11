@@ -26,7 +26,7 @@ public class DailyTargetController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getTarget() {
+    public ResponseEntity<DailyTargetResponse> getTarget() {
         DailyTargetResponse response = dailyTargetService.getTarget();
 
         return ResponseEntity.ok(response);
@@ -34,7 +34,7 @@ public class DailyTargetController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getTargetMonthly() {
+    public ResponseEntity<List<DailyTargetStatisticResponse>> getTargetMonthly() {
         List<DailyTarget> dailyTargets = dailyTargetService.getTargetMonthly();
 
         List<DailyTargetStatisticResponse> response = dailyTargets.stream().map(DailyTargetStatisticResponse::new).toList();
@@ -44,7 +44,7 @@ public class DailyTargetController {
 
     @GetMapping("/past")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getTargetPast() {
+    public ResponseEntity<List<DailyTargetPastResponse>> getTargetPast() {
         List<MonthDailyTarget> response = dailyTargetService.getTargetPast();
 
         List<DailyTargetPastResponse> responseList = response.stream().map(DailyTargetPastResponse::new).toList();

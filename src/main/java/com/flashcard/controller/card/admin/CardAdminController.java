@@ -25,7 +25,7 @@ public class CardAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> save(@RequestBody @Valid CardSaveRequest tytCardSaveRequest) throws IOException {
+    public ResponseEntity<CardResponse> save(@RequestBody @Valid CardSaveRequest tytCardSaveRequest) throws IOException {
 
         Card cardResponse = cardService.save(tytCardSaveRequest);
 
@@ -36,7 +36,7 @@ public class CardAdminController {
 
     @PostMapping("/create-all/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> saveAll(@RequestBody @Valid CardSaveAllRequest request,
+    public ResponseEntity<List<CardResponse>> saveAll(@RequestBody @Valid CardSaveAllRequest request,
                                      @PathVariable Long flashcardId) throws IOException {
 
         List<Card> cardResponses = cardService.saveAll(flashcardId, request);
@@ -48,7 +48,7 @@ public class CardAdminController {
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> update(@RequestBody CardUpdateRequest tytCardUpdateRequest) throws IOException {
+    public ResponseEntity<CardResponse> update(@RequestBody CardUpdateRequest tytCardUpdateRequest) throws IOException {
 
         Card response = cardService.update(tytCardUpdateRequest);
 
@@ -59,7 +59,7 @@ public class CardAdminController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
 
         cardService.delete(id);
 
@@ -68,7 +68,7 @@ public class CardAdminController {
 
     @GetMapping("/get-all/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAll(@PathVariable Long flashcardId) {
+    public ResponseEntity<List<CardResponse>> getAll(@PathVariable Long flashcardId) {
 
         List<Card> response = cardService.getAll(flashcardId);
 

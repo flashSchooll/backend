@@ -59,14 +59,16 @@ public class UserCardSeenService {
 
             cardList.add(userSeenCard);
         }
-        cardList = userCardSeenRepository.saveAll(cardList);
+        userCardSeenRepository.saveAll(cardList);
+
+        List<UserSeenCard> seenCards = cardList.stream().toList();
 
         user.raiseRosette();
         user.raiseStar(userCardSeenSaveRequest.getUserCardSeenRequestList().size());
 
         userCardPercentageService.updatePercentage(user, flashcard, userCardSeenSaveRequest.getUserCardSeenRequestList().size());
 
-        return cardList;
+        return seenCards;
     }
 
     public List<UserSeenCard> getAllSeenCardsByFlashcard(Long flashcardId) {

@@ -12,9 +12,9 @@ public class DailyTargetAdminResponse {
     private final Integer made;
 
     public DailyTargetAdminResponse(DailyTarget dailyTarget) {
-        this.userName = this.getUserName();
-        this.userSurname = this.getUserSurname();
-        this.target = this.getTarget();
-        this.made = this.target;
+        this.userName = dailyTarget.getUser().getUserName();
+        this.userSurname = dailyTarget.getUser().getUserSurname();
+        this.target = dailyTarget.getTarget();
+        this.made = dailyTarget.getMade();
     }
 }

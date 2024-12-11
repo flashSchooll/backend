@@ -25,13 +25,5 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("SELECT c FROM Card c WHERE c.flashcard.topic= :topic")
     List<Card> findByTopic(Topic topic);
 
-  /*  @Query("SELECT new com.flashcard.controller.tytlesson.user.response." +
-            "TYTLessonCardSeenCountResponse(c.tytFlashcard.topic.tytLesson, COUNT(c)) " +
-            "FROM TYTCard c " +
-            "GROUP BY c.tytFlashcard.topic.tytLesson")
-    List<TYTLessonCardSeenCountResponse> countCardsByLesson();
-
-   */
-
 
 }

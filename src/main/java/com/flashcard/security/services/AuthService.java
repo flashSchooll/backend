@@ -43,7 +43,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void register(@Valid SignupRequest signUpRequest, MultipartFile file) throws IOException {
+    public void register(@Valid SignupRequest signUpRequest, MultipartFile file) {
 
         if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {
             throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXISTS, signUpRequest.getEmail()));
@@ -61,7 +61,7 @@ public class AuthService {
         user.setProfilePhoto(null);
         user.setUserAgreement(signUpRequest.getUserAgreement());
 
-      //  Set<String> strRoles = signUpRequest.getRole();
+        //  Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
         if (signUpRequest.getRole() == null) {
@@ -110,7 +110,7 @@ public class AuthService {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+                .toList();
 
         return new JwtResponse(jwt,
                 userDetails.getId(),

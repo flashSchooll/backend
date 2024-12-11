@@ -26,7 +26,7 @@ public class FlashCardAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> save(@RequestBody FlashcardSaveRequest tytFlashcardSaveRequest) {
+    public ResponseEntity<FlashcardResponse> save(@RequestBody FlashcardSaveRequest tytFlashcardSaveRequest) {
 
         Flashcard response = flashCardService.save(tytFlashcardSaveRequest);
 
@@ -37,7 +37,7 @@ public class FlashCardAdminController {
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> update(@RequestBody FlashcardUpdateRequest tytFlashcardUpdateRequest) {
+    public ResponseEntity<FlashcardResponse> update(@RequestBody FlashcardUpdateRequest tytFlashcardUpdateRequest) {
 
         Flashcard response = flashCardService.update(tytFlashcardUpdateRequest);
 
@@ -49,7 +49,7 @@ public class FlashCardAdminController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
 
         flashCardService.delete(id);
 
@@ -58,7 +58,7 @@ public class FlashCardAdminController {
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAll(@PathVariable Long topicId) {
+    public ResponseEntity<List<FlashcardResponse>> getAll(@PathVariable Long topicId) {
 
         List<FlashcardResponse> response = flashCardService.getAll(topicId)
                 .stream().map(FlashcardResponse::new).toList();
@@ -68,8 +68,8 @@ public class FlashCardAdminController {
 
     @PostMapping("/import-excel")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> importExcel(@RequestBody MultipartFile file,
-                                         @RequestParam Long lessonId) throws IOException {
+    public ResponseEntity<Object> importExcel(@RequestBody MultipartFile file,
+                                              @RequestParam Long lessonId) throws IOException {
 
         flashCardService.importExcel(lessonId, file);
 
