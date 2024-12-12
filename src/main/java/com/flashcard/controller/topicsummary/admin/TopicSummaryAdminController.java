@@ -23,7 +23,7 @@ public class TopicSummaryAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> save(@RequestBody @Valid TopicSummarySaveRequest request) {
+    public ResponseEntity<Object> save(@RequestBody @Valid TopicSummarySaveRequest request) {
 
         topicSummaryService.save(request);
 
@@ -32,7 +32,7 @@ public class TopicSummaryAdminController {
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> update(@RequestBody @Valid TopicSummaryUpdateRequest request) {
+    public ResponseEntity<Object> update(@RequestBody @Valid TopicSummaryUpdateRequest request) {
 
         topicSummaryService.update(request);
 
@@ -41,7 +41,7 @@ public class TopicSummaryAdminController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
 
         topicSummaryService.delete(id);
 
@@ -50,7 +50,7 @@ public class TopicSummaryAdminController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> get(@PathVariable Long id) {
+    public ResponseEntity<TopicSummaryResponse> get(@PathVariable Long id) {
 
         TopicSummary topicSummary = topicSummaryService.get(id);
 
@@ -61,7 +61,7 @@ public class TopicSummaryAdminController {
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAll(@PathVariable Long topicId) {
+    public ResponseEntity<List<TopicSummaryResponse>> getAll(@PathVariable Long topicId) {
 
         List<TopicSummaryResponse> response = topicSummaryService.getAllByTopic(topicId);
 

@@ -22,7 +22,7 @@ public class UserCardSeenController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> save(@RequestBody @Valid UserSeenCardSaveRequest userCardSeenSaveRequest) {
+    public ResponseEntity<List<UserCardSeenResponse>> save(@RequestBody @Valid UserSeenCardSaveRequest userCardSeenSaveRequest) {
 
         List<UserSeenCard> userSeenCard = userCardSeenService.save(userCardSeenSaveRequest);
 
@@ -33,7 +33,7 @@ public class UserCardSeenController {
 
     @GetMapping("/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> get(@PathVariable Long flashcardId) {
+    public ResponseEntity<List<UserCardSeenResponse>> get(@PathVariable Long flashcardId) {
 
         List<UserSeenCard> response = userCardSeenService.getAllSeenCardsByFlashcard(flashcardId);
 
@@ -44,7 +44,7 @@ public class UserCardSeenController {
 
     @GetMapping("/unknown/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> getUnknown(@PathVariable Long flashcardId) {
+    public ResponseEntity<List<UserCardSeenResponse>> getUnknown(@PathVariable Long flashcardId) {
 
         List<UserSeenCard> response = userCardSeenService.getUnknownSeenCardsByFlashcard(flashcardId);
 
@@ -55,7 +55,7 @@ public class UserCardSeenController {
 
     @GetMapping("/known/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> getKnown(@PathVariable Long flashcardId) {
+    public ResponseEntity<List<UserCardSeenResponse>> getKnown(@PathVariable Long flashcardId) {
 
         List<UserSeenCard> response = userCardSeenService.getKnownSeenCardsByFlashcard(flashcardId);
 

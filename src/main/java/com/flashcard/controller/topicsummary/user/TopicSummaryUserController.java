@@ -20,7 +20,7 @@ public class TopicSummaryUserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> get(@PathVariable Long id) {
+    public ResponseEntity<TopicSummaryResponse> get(@PathVariable Long id) {
 
         TopicSummary topicSummary = topicSummaryService.get(id);
 
@@ -31,7 +31,7 @@ public class TopicSummaryUserController {
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> getAll(@PathVariable Long topicId) {
+    public ResponseEntity<List<TopicSummaryResponse>> getAll(@PathVariable Long topicId) {
 
         List<TopicSummaryResponse> response = topicSummaryService.getAllByTopic(topicId);
 

@@ -14,7 +14,7 @@ import java.time.Month;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MonthDailyTarget {
+public class MonthDailyTarget {// geçmiş aylara yönelik günlük hedef bilgisini ay ortalaması olarak tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

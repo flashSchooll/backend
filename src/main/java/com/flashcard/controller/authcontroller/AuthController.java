@@ -24,7 +24,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?>  registerUser(@Valid @RequestBody SignupRequest signUpRequest) throws IOException {
+    public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 
         authService.register(signUpRequest, null);
 
@@ -32,16 +32,16 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         JwtResponse jwtResponse = authService.signIn(loginRequest);
 
-        return  ResponseEntity.ok(jwtResponse);
+        return ResponseEntity.ok(jwtResponse);
     }
 
     @PutMapping("/update-password")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+    public ResponseEntity<Object> updatePassword(@Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
 
         authService.updatePassword(updatePasswordRequest);
 

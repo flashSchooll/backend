@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Entity(name = "DailyTarget")
 @Table(name = "daily_target")
-public class DailyTarget {
+public class DailyTarget {// günlük hedef bilgisini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

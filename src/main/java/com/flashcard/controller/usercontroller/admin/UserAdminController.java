@@ -1,6 +1,6 @@
 package com.flashcard.controller.usercontroller.admin;
 
-import com.flashcard.model.DTO.UserDTOAdmin;
+import com.flashcard.model.dto.UserDTOAdmin;
 import com.flashcard.model.User;
 import com.flashcard.payload.response.MessageResponse;
 import com.flashcard.service.UserService;
@@ -25,7 +25,7 @@ public class UserAdminController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDTOAdmin> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
 
         UserDTOAdmin userDTO = new UserDTOAdmin(user);
@@ -35,7 +35,7 @@ public class UserAdminController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<List<UserDTOAdmin>> getAllUsers() {
         List<User> users = userService.getAllUsers();
 
         List<UserDTOAdmin> allUsers = users.stream().map(UserDTOAdmin::new).toList();
@@ -45,7 +45,7 @@ public class UserAdminController {
 
     @GetMapping("/pages")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAllUsersByPage(@RequestParam(required = false) String search,
+    public ResponseEntity<Page<UserDTOAdmin>> getAllUsersByPage(@RequestParam(required = false) String search,
                                                @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<User> users = userService.getUserPage(search, pageable);
@@ -57,7 +57,7 @@ public class UserAdminController {
 
     @DeleteMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<Object> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
 
         return ResponseEntity.ok(new MessageResponse("Kullanıcı başarıyla silindi"));

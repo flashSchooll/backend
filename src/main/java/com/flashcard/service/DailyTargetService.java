@@ -8,6 +8,7 @@ import com.flashcard.repository.DailyTargetRepository;
 import com.flashcard.repository.MonthDailyTargetRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class DailyTargetService {
     private final DailyTargetRepository dailyTargetRepository;
     private final AuthService authService;
     private final MonthDailyTargetRepository monthDailyTargetRepository;
+    private final ApplicationContext applicationContext;
 
     @Transactional
     public DailyTarget createTarget() {
@@ -44,8 +46,10 @@ public class DailyTargetService {
 
         Optional<DailyTarget> optionalDailyTarget = dailyTargetRepository.findByDay(today);
 
+        DailyTargetService proxy = applicationContext.getBean(DailyTargetService.class);
+
         return optionalDailyTarget.map(DailyTargetResponse::new)
-                .orElseGet(() -> new DailyTargetResponse(createTarget()));//todo
+                .orElseGet(() -> new DailyTargetResponse(proxy.createTarget()));
     }
 
 

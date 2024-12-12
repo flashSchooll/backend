@@ -1,4 +1,4 @@
-package com.flashcard.model.DTO;
+package com.flashcard.model.dto;
 
 import com.flashcard.model.User;
 import lombok.Getter;

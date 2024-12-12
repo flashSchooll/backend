@@ -3,7 +3,7 @@ package com.flashcard.service;
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.exception.BadRequestException;
-import com.flashcard.model.DTO.UserDTO;
+import com.flashcard.model.dto.UserDTO;
 import com.flashcard.model.User;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;

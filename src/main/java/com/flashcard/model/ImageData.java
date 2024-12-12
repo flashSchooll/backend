@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageData {
+public class ImageData {// card larda bulunan ön ve arka yüz resimlerini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

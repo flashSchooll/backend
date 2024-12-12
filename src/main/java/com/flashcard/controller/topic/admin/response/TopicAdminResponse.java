@@ -1,4 +1,4 @@
-package com.flashcard.controller.topic.admin.Response;
+package com.flashcard.controller.topic.admin.response;
 
 import com.flashcard.model.Topic;
 import lombok.Getter;

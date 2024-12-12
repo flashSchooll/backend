@@ -2,9 +2,9 @@ package com.flashcard.controller.topic.admin;
 
 
 import com.flashcard.constants.Constants;
-import com.flashcard.controller.topic.admin.Request.TopicSaveRequest;
-import com.flashcard.controller.topic.admin.Request.TopicUpdateRequest;
-import com.flashcard.controller.topic.admin.Response.TopicAdminResponse;
+import com.flashcard.controller.topic.admin.request.TopicSaveRequest;
+import com.flashcard.controller.topic.admin.request.TopicUpdateRequest;
+import com.flashcard.controller.topic.admin.response.TopicAdminResponse;
 import com.flashcard.model.Topic;
 import com.flashcard.service.TopicService;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class TopicAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> save(@RequestBody @Valid TopicSaveRequest topicSaveRequest) {
+    public ResponseEntity<TopicAdminResponse> save(@RequestBody @Valid TopicSaveRequest topicSaveRequest) {
 
         Topic topic = topicService.save(topicSaveRequest);
 
@@ -36,7 +36,7 @@ public class TopicAdminController {
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> update(@RequestBody @Valid TopicUpdateRequest topicUpdateRequest) {
+    public ResponseEntity<TopicAdminResponse> update(@RequestBody @Valid TopicUpdateRequest topicUpdateRequest) {
 
         Topic topic = topicService.update(topicUpdateRequest);
 
@@ -47,7 +47,7 @@ public class TopicAdminController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
 
         topicService.delete(id);
 
@@ -56,7 +56,7 @@ public class TopicAdminController {
 
     @GetMapping("/get-all/{lessonId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAll(@PathVariable Long lessonId) {
+    public ResponseEntity<List<TopicAdminResponse>> getAll(@PathVariable Long lessonId) {
 
         List<Topic> tytTopics = topicService.getAll(lessonId);
 

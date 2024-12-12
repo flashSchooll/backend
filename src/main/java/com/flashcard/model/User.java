@@ -21,7 +21,7 @@ import java.util.Set;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
         })
-public class User {
+public class User {// kullanıcı bilgisini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

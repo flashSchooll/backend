@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MyCard {
+public class MyCard {// kartlarım bilgisini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Role {
+public class Role {// role türlerini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

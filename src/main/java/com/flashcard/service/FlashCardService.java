@@ -12,7 +12,6 @@ import com.flashcard.model.UserSeenCard;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.TopicRepository;
-import com.flashcard.repository.UserSeenCardRepository;
 import com.flashcard.service.excel.FlashcardExcelImporter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

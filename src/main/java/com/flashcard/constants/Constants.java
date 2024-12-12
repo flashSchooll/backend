@@ -35,4 +35,8 @@ public class Constants {
     public static final Object FLASHCARD_SUCCESSFULLY_DELETED = "Flashcard başarıyla silindi";
     public static final String MY_CARD_NOT_FOUND = "Kayıtlı kart bulunamadı";
     public static final String LESSON_ALREADY_SAVED = "Ders zaten kayıtlı";
+
+
+    private Constants() {
+    }
 }

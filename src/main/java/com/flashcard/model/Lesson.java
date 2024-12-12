@@ -17,7 +17,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Lesson {
+public class Lesson {//ders bilgisini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

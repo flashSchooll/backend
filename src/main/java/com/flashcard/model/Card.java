@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Card {
+public class Card {// kart bilgisini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

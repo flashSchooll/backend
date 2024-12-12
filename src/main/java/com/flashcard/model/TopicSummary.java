@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TopicSummary {
+public class TopicSummary {// konu özetleri bilgisini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

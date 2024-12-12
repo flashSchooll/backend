@@ -16,7 +16,7 @@ import java.time.Duration;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSeenCard {
+public class UserSeenCard {// kullanıcının bitirmiş olduğu kart bilgilerini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,8 +1,8 @@
 package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
-import com.flashcard.controller.topic.admin.Request.TopicSaveRequest;
-import com.flashcard.controller.topic.admin.Request.TopicUpdateRequest;
+import com.flashcard.controller.topic.admin.request.TopicSaveRequest;
+import com.flashcard.controller.topic.admin.request.TopicUpdateRequest;
 import com.flashcard.controller.topic.user.response.TopicUserResponse;
 import com.flashcard.model.Card;
 import com.flashcard.model.Lesson;

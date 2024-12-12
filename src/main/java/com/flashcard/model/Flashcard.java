@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Flashcard {
+public class Flashcard {// flashcard bilgisini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

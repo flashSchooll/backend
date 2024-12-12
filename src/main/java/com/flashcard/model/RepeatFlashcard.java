@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RepeatFlashcard {
+public class RepeatFlashcard {// tekrar karlarım bilgisi tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

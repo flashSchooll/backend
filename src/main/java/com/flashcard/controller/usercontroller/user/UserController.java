@@ -1,7 +1,7 @@
 package com.flashcard.controller.usercontroller.user;
 
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
-import com.flashcard.model.DTO.UserDTO;
+import com.flashcard.model.dto.UserDTO;
 import com.flashcard.model.User;
 import com.flashcard.payload.response.MessageResponse;
 import com.flashcard.service.UserService;
@@ -25,7 +25,7 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> get() {
+    public ResponseEntity<UserDTO> get() {
         UserDTO userDTO = userService.getUser();
 
         return ResponseEntity.ok(userDTO);
@@ -33,7 +33,7 @@ public class UserController {
 
     @PutMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> update(@RequestBody UpdateUserRequest updateUserRequest) {
+    public ResponseEntity<UserDTO> update(@RequestBody UpdateUserRequest updateUserRequest) {
         User user  = userService.updateUser(updateUserRequest);
 
         UserDTO userDTO = new UserDTO(user);
@@ -43,7 +43,7 @@ public class UserController {
 
     @DeleteMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteMyAccount() {
+    public ResponseEntity<Object> deleteMyAccount() {
         userService.deleteMyAccount();
 
         return ResponseEntity.ok(new MessageResponse("Hesabınız başarıyla silindi"));
@@ -51,7 +51,7 @@ public class UserController {
 
     @PostMapping("/upload-photo")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> uploadPhoto(@RequestBody MultipartFile file) throws IOException {
+    public ResponseEntity<Object> uploadPhoto(@RequestBody MultipartFile file) throws IOException {
 
         userService.saveImage(file);
 
@@ -60,7 +60,7 @@ public class UserController {
 
     @DeleteMapping("/photo")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> deletePhoto() {
+    public ResponseEntity<Object> deletePhoto() {
 
         userService.deletePhoto();
 
@@ -69,7 +69,7 @@ public class UserController {
 
     @GetMapping("/photo")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<?> getPhoto() {
+    public ResponseEntity<Object> getPhoto() {
 
         byte[] photo = userService.getImage();
 

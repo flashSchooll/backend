@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Entity(name = "UserCardPercentage")
 @Table(name = "user_card_percentage")
-public class UserCardPercentage {
+public class UserCardPercentage {// kullanıcı kart tamamlama yüzdesini tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
