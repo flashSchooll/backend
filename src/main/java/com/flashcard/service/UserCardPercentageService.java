@@ -77,7 +77,7 @@ public class UserCardPercentageService {
         UserCardPercentage userCardPercentage = userCardPercentageRepository.findByUserAndLesson(user, lesson)
                 .orElseThrow(() -> new NoSuchElementException(Constants.USER_PERCENTAGE_NOT_FOUND));
 
-        if (!userCardPercentage.getFlashCards().contains(flashcard.getId())) {
+        if (userCardPercentage.getFlashCards() != null && !userCardPercentage.getFlashCards().contains(flashcard.getId())) {
             userCardPercentage.increaseCompletedCard(amount);
             userCardPercentage.getFlashCards().add(flashcard.getId());
 

@@ -7,6 +7,8 @@ import com.flashcard.model.DailyTarget;
 import com.flashcard.service.CardService;
 import com.flashcard.service.DailyTargetService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,6 +23,8 @@ import java.util.List;
 @RequestMapping("/api/statistic/user")
 @RequiredArgsConstructor
 public class UserStatisticController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserStatisticController.class);
 
     private final DailyTargetService dailyTargetService;
     private final CardService cardService;
@@ -40,7 +44,7 @@ public class UserStatisticController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserCardStatisticResponse> getCards() {
         UserCardStatisticResponse response = cardService.getUserStatistic();
-
+        LOGGER.info("UserCardStatisticResponse: {}", response);
         return ResponseEntity.ok(response);
     }
 

@@ -11,6 +11,7 @@ import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.UserCardPercentageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -110,6 +111,10 @@ public class FlashcardExcelImporter {
                     card.setImageData(imageData.isEmpty() ? null : imageData);
 
                     cards.add(card);
+                }
+
+                if (cards.size() < 4) {
+                    throw new BadRequestException("Bir flashcard taki kart sayısı 4 ten az olamaz");
                 }
 
                 tytCardRepository.saveAll(cards);

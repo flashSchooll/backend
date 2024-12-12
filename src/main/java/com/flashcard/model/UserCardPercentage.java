@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -27,7 +28,7 @@ public class UserCardPercentage {// kullanıcı kart tamamlama yüzdesini tutar
     @NotNull
     private Lesson lesson;
 
-    private List<Long> flashCards;
+    private List<Long> flashCards = new ArrayList<>();
 
     private Integer totalCard;
 
