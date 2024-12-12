@@ -1,9 +1,7 @@
 package com.flashcard.repository;
 
-import com.flashcard.model.Card;
-import com.flashcard.model.Flashcard;
-import com.flashcard.model.Lesson;
-import com.flashcard.model.Topic;
+import com.flashcard.model.*;
+import com.flashcard.model.enums.YKS;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,6 +22,9 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query("SELECT c FROM Card c WHERE c.flashcard.topic= :topic")
     List<Card> findByTopic(Topic topic);
+
+
+    int countByFlashcardTopicLessonYks(YKS yks);
 
 
 }

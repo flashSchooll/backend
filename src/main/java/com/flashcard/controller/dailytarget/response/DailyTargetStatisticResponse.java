@@ -12,7 +12,7 @@ public class DailyTargetStatisticResponse {
     private final LocalDate day;
 
     public DailyTargetStatisticResponse(DailyTarget dailyTarget) {
-        this.percent = dailyTarget.getMade() / dailyTarget.getTarget();
+        this.percent = dailyTarget.getMade();
         this.day = dailyTarget.getDay();
     }
 }

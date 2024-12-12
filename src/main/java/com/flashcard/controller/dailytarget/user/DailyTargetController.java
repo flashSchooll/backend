@@ -52,4 +52,5 @@ public class DailyTargetController {
         return ResponseEntity.ok(responseList);
     }
 
+
 }

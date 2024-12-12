@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface DailyTargetRepository extends JpaRepository<DailyTarget,Long> {
+public interface DailyTargetRepository extends JpaRepository<DailyTarget, Long> {
 
     Optional<DailyTarget> findByDay(LocalDate today);
 
@@ -26,4 +26,7 @@ public interface DailyTargetRepository extends JpaRepository<DailyTarget,Long> {
     Page<DailyTarget> findBySearch(String search, Pageable pageable);
 
     List<DailyTarget> findByUser(User user);
+
+    @Query("SELECT d FROM DailyTarget d WHERE d.day BETWEEN :startDate AND :endDate ORDER BY d.day")
+    List<DailyTarget> findByStartDateAndEndDate(LocalDate startDate, LocalDate endDate);
 }

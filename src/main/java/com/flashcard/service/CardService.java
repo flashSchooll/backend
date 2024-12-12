@@ -4,11 +4,12 @@ import com.flashcard.constants.Constants;
 import com.flashcard.controller.card.admin.request.CardSaveAllRequest;
 import com.flashcard.controller.card.admin.request.CardSaveRequest;
 import com.flashcard.controller.card.admin.request.CardUpdateRequest;
-import com.flashcard.model.Card;
-import com.flashcard.model.Flashcard;
-import com.flashcard.model.ImageData;
-import com.flashcard.model.User;
+import com.flashcard.controller.statistic.response.UserCardStatisticResponse;
+import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
+import com.flashcard.model.*;
 import com.flashcard.model.enums.CardFace;
+import com.flashcard.model.enums.YKS;
+import com.flashcard.model.enums.YKSLesson;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.UserSeenCardRepository;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -201,4 +203,54 @@ public class CardService {
                 .limit(quantity)  // Belirtilen sayıda kart al
                 .toList();
     }
+
+    public UserCardStatisticResponse getUserStatistic() {
+
+        User user = authService.getCurrentUser();
+
+        int totalCountAyt = cardRepository.countByFlashcardTopicLessonYks(YKS.AYT);
+        int totalCountTyt = cardRepository.countByFlashcardTopicLessonYks(YKS.TYT);
+        int seenCard = userSeenCardRepository.countByUser(user);
+
+        int totalCard = totalCountAyt + totalCountTyt;
+        int unseenCard = totalCard - seenCard;
+        double percentage = (double) seenCard / totalCard;
+
+        return UserCardStatisticResponse
+                .builder()
+                .seenCard(seenCard)
+                .percentage(percentage)
+                .totalCard(totalCard)
+                .unseenCard(unseenCard)
+                .build();
+    }
+
+    public List<UserStatisticLessonResponse> getUserStatisticByLesson() {
+
+        User user = authService.getCurrentUser();
+
+        List<UserSeenCard> cards = userSeenCardRepository.findByUser(user);
+
+        Map<YKSLesson, Long> seenCardGroup = cards.stream()
+                .collect(Collectors.groupingBy(
+                        card -> card.getCard().getFlashcard().getTopic().getLesson().getYksLesson(),
+                        Collectors.counting())
+                );
+
+        List<Card> cardList = cardRepository.findAll();
+        Map<YKSLesson, Long> cardGroup = cardList.stream()
+                .collect(Collectors.groupingBy(
+                        card -> card.getFlashcard().getTopic().getLesson().getYksLesson(),
+                        Collectors.counting())
+                );
+
+
+        return cardGroup.keySet().stream()
+                .map(aLong -> new UserStatisticLessonResponse(aLong.label,
+                        seenCardGroup.get(aLong) == null ? 0 : seenCardGroup.get(aLong),
+                        (seenCardGroup.get(aLong) != null ? ((double) seenCardGroup.get(aLong) / cardGroup.get(aLong)) : 0)))
+                .toList();
+    }
+
+
 }

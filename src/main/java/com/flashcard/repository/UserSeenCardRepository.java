@@ -21,4 +21,8 @@ public interface UserSeenCardRepository extends JpaRepository<UserSeenCard, Long
     List<UserSeenCard> findByUserAndCardFlashcardAndStateOfKnowledgeIsTrue(User user, Flashcard flashcard);
 
     List<UserSeenCard> findByUserAndCardFlashcardTopic(User user, Topic topic);
+
+    int countByUser(User user);
+
+    List<UserSeenCard> findByUser(User user);
 }

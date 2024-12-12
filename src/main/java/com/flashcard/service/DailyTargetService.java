@@ -11,10 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +29,7 @@ public class DailyTargetService {
     private final AuthService authService;
     private final MonthDailyTargetRepository monthDailyTargetRepository;
     private final ApplicationContext applicationContext;
+    private final JdbcTemplate jdbcTemplate;
 
     @Transactional
     public DailyTarget createTarget() {
@@ -74,5 +78,30 @@ public class DailyTargetService {
         User user = authService.getCurrentUser();
 
         return monthDailyTargetRepository.findByUser(user);
+    }
+
+    public List<DailyTarget> getWeeklyTarget() {
+
+        LocalDate today = LocalDate.now();
+
+        if (today.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+            //  List<DailyTarget> dailyTargets=dailyTargetRepository.findLastWeek();
+        }
+        return null;
+    }
+
+    public List<DailyTarget> getWeeklyTargets() {
+
+        LocalDate today = LocalDate.now();
+
+        LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
+
+        LocalDate endOfWeek = today;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(startOfWeek.format(formatter));
+        LocalDate endDate = LocalDate.parse(endOfWeek.format(formatter));
+
+        return dailyTargetRepository.findByStartDateAndEndDate(startDate, endDate);
     }
 }
