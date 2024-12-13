@@ -5,6 +5,7 @@ import com.flashcard.controller.card.admin.request.CardSaveAllRequest;
 import com.flashcard.controller.card.admin.request.CardSaveRequest;
 import com.flashcard.controller.card.admin.request.CardUpdateRequest;
 import com.flashcard.controller.statistic.response.UserCardStatisticResponse;
+import com.flashcard.controller.statistic.response.UserRosetteStatistic;
 import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
 import com.flashcard.model.*;
 import com.flashcard.model.enums.CardFace;
@@ -251,6 +252,5 @@ public class CardService {
                         (seenCardGroup.get(aLong) != null ? ((double) seenCardGroup.get(aLong) / cardGroup.get(aLong)) : 0)))
                 .toList();
     }
-
 
 }

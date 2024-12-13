@@ -15,7 +15,9 @@ public class CardResponse {
 
     private final Long id;
 
-    private final Long tytFlashcardId;
+    private final Long flashcardId;
+
+    private final String flashcardName;
 
     private final String frontFace;
 
@@ -45,7 +47,8 @@ public class CardResponse {
         }
 
         this.id = card.getId();
-        this.tytFlashcardId = card.getFlashcard().getId();
+        this.flashcardId = card.getFlashcard().getId();
+        this.flashcardName = card.getFlashcard().getCardName();
         this.frontFace = card.getFrontFace();
         this.backFace = card.getBackFace();
         this.dataFrontFace = frontImage;
@@ -74,7 +77,8 @@ public class CardResponse {
                 .findAny().orElse(null);
 
         this.id = card.getId();
-        this.tytFlashcardId = card.getFlashcard().getId();
+        this.flashcardId = card.getFlashcard().getId();
+        this.flashcardName = card.getFlashcard().getCardName();
         this.frontFace = card.getFrontFace();
         this.backFace = card.getBackFace();
         this.dataFrontFace = frontImage;
@@ -100,7 +104,8 @@ public class CardResponse {
         }
 
         this.id = myCard.getCard().getId();
-        this.tytFlashcardId = myCard.getCard().getFlashcard().getId();
+        this.flashcardId = myCard.getCard().getFlashcard().getId();
+        this.flashcardName = myCard.getCard().getFlashcard().getCardName();
         this.frontFace = myCard.getCard().getFrontFace();
         this.backFace = myCard.getCard().getBackFace();
         this.dataFrontFace = frontImage;

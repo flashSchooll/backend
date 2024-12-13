@@ -97,4 +97,14 @@ public class UserCardPercentageService {
 
         userCardPercentageRepository.saveAll(percentageList);
     }
+
+    public long countAverageFifty() {
+
+        List<UserCardPercentage> percentages = userCardPercentageRepository.findAll();
+
+        return percentages
+                .stream()
+                .filter(percentage -> ((double) percentage.getCompletedCard() / percentage.getTotalCard()) >= 50)
+                .count();
+    }
 }

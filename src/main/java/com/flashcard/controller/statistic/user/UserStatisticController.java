@@ -2,10 +2,12 @@ package com.flashcard.controller.statistic.user;
 
 import com.flashcard.controller.dailytarget.response.DailyTargetStatisticResponse;
 import com.flashcard.controller.statistic.response.UserCardStatisticResponse;
+import com.flashcard.controller.statistic.response.UserRosetteStatistic;
 import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
 import com.flashcard.model.DailyTarget;
 import com.flashcard.service.CardService;
 import com.flashcard.service.DailyTargetService;
+import com.flashcard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ public class UserStatisticController {
 
     private final DailyTargetService dailyTargetService;
     private final CardService cardService;
+    private final UserService userService;
 
 
     @GetMapping("/weekly")
@@ -53,6 +56,15 @@ public class UserStatisticController {
     public ResponseEntity<List<UserStatisticLessonResponse>> getCardsBylesson() {
 
         List<UserStatisticLessonResponse> response = cardService.getUserStatisticByLesson();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/rosette")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<UserRosetteStatistic>> getByRosette() {
+
+        List<UserRosetteStatistic> response = userService.getUsersStatisticList();
 
         return ResponseEntity.ok(response);
     }

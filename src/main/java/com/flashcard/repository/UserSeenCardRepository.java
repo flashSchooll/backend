@@ -4,6 +4,7 @@ import com.flashcard.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface UserSeenCardRepository extends JpaRepository<UserSeenCard, Long> {
@@ -25,4 +26,6 @@ public interface UserSeenCardRepository extends JpaRepository<UserSeenCard, Long
     int countByUser(User user);
 
     List<UserSeenCard> findByUser(User user);
+
+    Integer countByUserAndCardFlashcard(User user, Flashcard flashcard);
 }

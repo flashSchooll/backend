@@ -28,9 +28,9 @@ public class LessonAdminController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LessonResponse> save(@RequestParam YKSLesson yksLesson,
-                                  @RequestParam Branch branch,
-                                  @RequestParam YKS yks,
-                                  @RequestBody MultipartFile icon) throws IOException {
+                                               @RequestParam Branch branch,
+                                               @RequestParam YKS yks,
+                                               @RequestBody MultipartFile icon) throws IOException {
 
         Lesson lesson = lessonService.save(yks, branch, yksLesson, icon);
 
@@ -42,10 +42,10 @@ public class LessonAdminController {
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LessonResponse> update(@RequestParam Long id,
-                                    @RequestParam YKSLesson yksLesson,
-                                    @RequestParam Branch branch,
-                                    @RequestParam YKS yks,
-                                    @RequestBody MultipartFile icon) throws IOException {
+                                                 @RequestParam YKSLesson yksLesson,
+                                                 @RequestParam Branch branch,
+                                                 @RequestParam YKS yks,
+                                                 @RequestBody MultipartFile icon) throws IOException {
 
         Lesson lesson = lessonService.update(id, yksLesson, branch, yks, icon);
 
@@ -82,7 +82,6 @@ public class LessonAdminController {
 
         return ResponseEntity.ok(response);
     }
-
 
 
 }

@@ -1,6 +1,7 @@
 package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
+import com.flashcard.controller.statistic.response.UserRosetteStatistic;
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.dto.UserDTO;
@@ -15,8 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -99,5 +99,37 @@ public class UserService {
         user.setProfilePhoto(null);
 
         userRepository.save(user);
+    }
+
+    public List<UserRosetteStatistic> getUsersStatisticList() {
+
+        User user = authService.getCurrentUser();
+
+        List<User> users = userRepository.findAll()
+                .stream()
+                .sorted(
+                        Comparator.comparing(User::getRosette)
+                                .reversed()
+                                .thenComparing(Comparator.comparing(User::getStar).reversed())
+                )
+                .toList();
+
+        List<UserRosetteStatistic> statistics = new ArrayList<>();
+
+        users.forEach(u -> {
+            UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
+                    .userName(u.getUserName())
+                    .userSurname(u.getUserSurname())
+                    .id(u.getId())
+                    .star(u.getStar())
+                    .rosette(u.getRosette())
+                    .order(statistics.size())
+                    .me(Objects.equals(u.getId(), user.getId()))
+                    .build();
+
+            statistics.add(userStatistic);
+        });
+
+        return statistics;
     }
 }

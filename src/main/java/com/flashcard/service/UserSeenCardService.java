@@ -45,29 +45,36 @@ public class UserSeenCardService {
         }
 
         User user = authService.getCurrentUser();
-        Duration duration = Duration.ofMinutes(userCardSeenSaveRequest.getMinute()).plusSeconds(userCardSeenSaveRequest.getSecond());
 
-        List<UserSeenCard> cardList = new ArrayList<>();
+        int countFlashcard = userSeenCardRepository.countByUserAndCardFlashcard(user, flashcard);
 
-        UserSeenCard userSeenCard;
+        List<UserSeenCard> seenCards = new ArrayList<>();
 
-        for (UserCardSeenRequest request : userCardSeenSaveRequest.getUserCardSeenRequestList()) {
-            Card card = cardRepository.findById(request.getCardId()).orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
+        if (countFlashcard != 0) {
+            Duration duration = Duration.ofMinutes(userCardSeenSaveRequest.getMinute()).plusSeconds(userCardSeenSaveRequest.getSecond());
 
-            userSeenCard = new UserSeenCard();
-            userSeenCard.setUser(user);
-            userSeenCard.setStateOfKnowledge(request.getStateOfKnowledge());
-            userSeenCard.setDuration(duration);
-            userSeenCard.setCard(card);
+            List<UserSeenCard> cardList = new ArrayList<>();
 
-            cardList.add(userSeenCard);
+            UserSeenCard userSeenCard;
+
+            for (UserCardSeenRequest request : userCardSeenSaveRequest.getUserCardSeenRequestList()) {
+                Card card = cardRepository.findById(request.getCardId()).orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
+
+                userSeenCard = new UserSeenCard();
+                userSeenCard.setUser(user);
+                userSeenCard.setStateOfKnowledge(request.getStateOfKnowledge());
+                userSeenCard.setDuration(duration);
+                userSeenCard.setCard(card);
+
+                cardList.add(userSeenCard);
+            }
+            userSeenCardRepository.saveAll(cardList);
+
+            seenCards = cardList.stream().toList();
+
+            user.raiseRosette();
+            user.raiseStar(userCardSeenSaveRequest.getUserCardSeenRequestList().size());
         }
-        userSeenCardRepository.saveAll(cardList);
-
-        List<UserSeenCard> seenCards = cardList.stream().toList();
-
-        user.raiseRosette();
-        user.raiseStar(userCardSeenSaveRequest.getUserCardSeenRequestList().size());
 
         userCardPercentageService.updatePercentage(user, flashcard, userCardSeenSaveRequest.getUserCardSeenRequestList().size());
 
