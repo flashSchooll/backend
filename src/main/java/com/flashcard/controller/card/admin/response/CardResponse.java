@@ -31,6 +31,8 @@ public class CardResponse {
 
     private final boolean isSaved;
 
+    private final String lesson;
+
     public CardResponse(Card card) {
 
         List<ImageData> imageData = card.getImageData();
@@ -55,6 +57,7 @@ public class CardResponse {
         this.dataBackFace = backImage;
         this.difficultyLevel = null;
         this.isSaved = false;
+        this.lesson = card.getFlashcard().getTopic().getLesson().getYksLesson().label;
     }
 
     public CardResponse(Card card, List<MyCard> myCards) {
@@ -85,7 +88,7 @@ public class CardResponse {
         this.dataBackFace = backImage;
         this.difficultyLevel = myCard != null ? myCard.getDifficultyLevel() : null;
         this.isSaved = myCard != null;
-
+        this.lesson = card.getFlashcard().getTopic().getLesson().getYksLesson().label;
     }
 
     public CardResponse(MyCard myCard) {
@@ -112,5 +115,6 @@ public class CardResponse {
         this.dataBackFace = backImage;
         this.difficultyLevel = myCard.getDifficultyLevel();
         this.isSaved = true;
+        this.lesson = myCard.getCard().getFlashcard().getTopic().getLesson().getYksLesson().label;
     }
 }
