@@ -47,7 +47,7 @@ public class MyCardsController {
         List<MyCard> myCards = myCardsService.getAll(difficultyLevel);
 
         List<CardResponse> responses = myCards.stream()
-                .map(myCard -> new CardResponse(myCard.getCard())).toList();
+                .map(CardResponse::new).toList();
 
         return ResponseEntity.ok(responses);
     }
@@ -55,7 +55,7 @@ public class MyCardsController {
     @PostMapping("/level/{cardId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<CardResponse> saveWithLevel(@PathVariable Long cardId,
-                                           @RequestParam String difficultyLevel) {
+                                                      @RequestParam String difficultyLevel) {
 
         MyCard card = myCardsService.saveWithLevel(cardId, difficultyLevel);
 
