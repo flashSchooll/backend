@@ -14,24 +14,16 @@ import java.util.Objects;
 public class CardResponse {
 
     private final Long id;
-
     private final Long flashcardId;
-
     private final String flashcardName;
-
     private final String frontFace;
-
     private final String backFace;
-
     private final byte[] dataFrontFace;
-
     private final byte[] dataBackFace;
-
     private final DifficultyLevel difficultyLevel;
-
     private final boolean isSaved;
-
     private final String lesson;
+    private final String yks;
 
     public CardResponse(Card card) {
 
@@ -58,6 +50,7 @@ public class CardResponse {
         this.difficultyLevel = null;
         this.isSaved = false;
         this.lesson = card.getFlashcard().getTopic().getLesson().getYksLesson().label;
+        this.yks = card.getFlashcard().getTopic().getLesson().getYks().name();
     }
 
     public CardResponse(Card card, List<MyCard> myCards) {
@@ -89,6 +82,7 @@ public class CardResponse {
         this.difficultyLevel = myCard != null ? myCard.getDifficultyLevel() : null;
         this.isSaved = myCard != null;
         this.lesson = card.getFlashcard().getTopic().getLesson().getYksLesson().label;
+        this.yks = card.getFlashcard().getTopic().getLesson().getYks().name();
     }
 
     public CardResponse(MyCard myCard) {
@@ -116,5 +110,6 @@ public class CardResponse {
         this.difficultyLevel = myCard.getDifficultyLevel();
         this.isSaved = true;
         this.lesson = myCard.getCard().getFlashcard().getTopic().getLesson().getYksLesson().label;
+        this.yks = myCard.getCard().getFlashcard().getTopic().getLesson().getYks().name();
     }
 }
