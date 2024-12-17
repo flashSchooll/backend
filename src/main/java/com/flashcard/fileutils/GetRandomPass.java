@@ -19,4 +19,7 @@ public class GetRandomPass {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
+
+    private GetRandomPass() {
+    }
 }

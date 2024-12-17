@@ -13,6 +13,7 @@ import com.flashcard.repository.CardRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -28,6 +29,7 @@ public class MyCardsService {
     private final CardRepository cardRepository;
     private final FlashCardRepository flashCardRepository;
 
+    @Transactional
     public Card save(Long cardId) {
         Objects.requireNonNull(cardId);
 
@@ -51,6 +53,7 @@ public class MyCardsService {
         return card;
     }
 
+    @Transactional
     public void delete(Long cardId) {
         Objects.requireNonNull(cardId);
 
@@ -83,6 +86,7 @@ public class MyCardsService {
         return myCardsRepository.findByUserAndCardIn(user, cards);
     }
 
+    @Transactional
     public MyCard saveWithLevel(Long cardId, String difficultyLevel) {
         Objects.requireNonNull(cardId);
 

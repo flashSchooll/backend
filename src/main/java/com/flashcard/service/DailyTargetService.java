@@ -80,15 +80,6 @@ public class DailyTargetService {
         return monthDailyTargetRepository.findByUser(user);
     }
 
-    public List<DailyTarget> getWeeklyTarget() {
-
-        LocalDate today = LocalDate.now();
-
-        if (today.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
-            //  List<DailyTarget> dailyTargets=dailyTargetRepository.findLastWeek();
-        }
-        return null;
-    }
 
     public List<DailyTarget> getWeeklyTargets() {
 

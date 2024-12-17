@@ -38,9 +38,7 @@ public class RepeatFlashcardService {
         RepeatFlashcard repeatFlashcard = new RepeatFlashcard();
         repeatFlashcard.setUser(user);
         repeatFlashcard.getFlashcards().add(flashcard);
-        repeatFlashcard.setTopic(flashcard.getTopic().getSubject());
-        repeatFlashcard.setLesson(flashcard.getTopic().getLesson().getYksLesson().label);
-        repeatFlashcard.setTopicId(flashcard.getTopic().getId());
+        repeatFlashcard.setTopic(flashcard.getTopic());
         repeatFlashcard.setRepeatTime(repeatTime);
 
         return repeatFlashcardRepository.save(repeatFlashcard);
@@ -62,6 +60,7 @@ public class RepeatFlashcardService {
         return repeatFlashcardRepository.findByUser(user);
     }
 
+    @Transactional
     public RepeatFlashcard saveByTopic(Long topicId, LocalDateTime repeatTime) {
         Objects.requireNonNull(topicId);
 
@@ -75,9 +74,7 @@ public class RepeatFlashcardService {
         RepeatFlashcard repeatFlashcard = new RepeatFlashcard();
         repeatFlashcard.setUser(user);
         repeatFlashcard.setFlashcards(flashcards);
-        repeatFlashcard.setTopic(topic.getSubject());
-        repeatFlashcard.setLesson(topic.getLesson().getYksLesson().name());
-        repeatFlashcard.setTopicId(topicId);
+        repeatFlashcard.setTopic(topic);
         repeatFlashcard.setRepeatTime(repeatTime);
 
         return repeatFlashcardRepository.save(repeatFlashcard);

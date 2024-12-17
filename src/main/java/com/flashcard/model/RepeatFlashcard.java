@@ -26,14 +26,8 @@ public class RepeatFlashcard {// tekrar karlarım bilgisi tutar
     @NotNull
     private User user;
 
-    @NotNull
-    private Long topicId;
-
-    @NotNull
-    private String topic;
-
-    @NotNull
-    private String lesson;
+    @ManyToOne
+    private Topic topic;
 
     @OneToMany
     @NotNull

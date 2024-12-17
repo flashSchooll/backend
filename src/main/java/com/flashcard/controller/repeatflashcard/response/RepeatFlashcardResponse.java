@@ -15,15 +15,17 @@ public class RepeatFlashcardResponse {
     private final String topic;
     private final String lesson;
     private final Long topicId;
-    private List<FlashcardResponse> tytFlashcard;
-    private LocalDateTime repeatTime;
+    private final List<FlashcardResponse> flashcards;
+    private final LocalDateTime repeatTime;
+    private final byte[] icon;
 
     public RepeatFlashcardResponse(RepeatFlashcard repeatFlashcard) {
-        this.topic = repeatFlashcard.getTopic();
-        this.lesson = repeatFlashcard.getLesson();
-        this.topicId = repeatFlashcard.getTopicId();
+        this.topic = repeatFlashcard.getTopic().getSubject();
+        this.lesson = repeatFlashcard.getTopic().getLesson().getYksLesson().label;
+        this.topicId = repeatFlashcard.getTopic().getId();
         this.repeatTime = repeatFlashcard.getRepeatTime();
-        this.tytFlashcard = repeatFlashcard.getFlashcards().stream().map(FlashcardResponse::new).toList();
+        this.flashcards = repeatFlashcard.getFlashcards().stream().map(FlashcardResponse::new).toList();
+        this.icon = repeatFlashcard.getTopic().getLesson().getIcon();
     }
 }
 

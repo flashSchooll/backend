@@ -9,11 +9,11 @@ import lombok.Setter;
 @Builder
 public class AdminDashboardResponse {
 
-    public Long countUser;
-    public Long countLesson;
-    public Long countTopic;
-    public Long countTopicSummary;
-    public Long countFlashcard;
-    public Long countCard;
-    public Long countAverageFifty;
+    public final Long countUser;
+    public final Long countLesson;
+    public final Long countTopic;
+    public final Long countTopicSummary;
+    public final Long countFlashcard;
+    public final Long countCard;
+    public final Long countAverageFifty;
 }

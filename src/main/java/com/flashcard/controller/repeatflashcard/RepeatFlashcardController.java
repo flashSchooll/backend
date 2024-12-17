@@ -23,7 +23,7 @@ public class RepeatFlashcardController {
     @PostMapping("/flashcard")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<RepeatFlashcard> save(@RequestParam Long flashcardId,
-                                  @RequestParam LocalDateTime repeatTime) {
+                                                @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.save(flashcardId, repeatTime);
 
@@ -33,7 +33,7 @@ public class RepeatFlashcardController {
     @PostMapping("/topic")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<RepeatFlashcard> saveByTopic(@RequestParam Long topicId,
-                                         @RequestParam LocalDateTime repeatTime) {
+                                                       @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.saveByTopic(topicId, repeatTime);
 

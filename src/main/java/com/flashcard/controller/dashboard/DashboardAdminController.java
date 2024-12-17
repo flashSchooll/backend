@@ -3,7 +3,6 @@ package com.flashcard.controller.dashboard;
 import com.flashcard.controller.dashboard.response.AdminDashboardResponse;
 import com.flashcard.repository.*;
 import com.flashcard.service.UserCardPercentageService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

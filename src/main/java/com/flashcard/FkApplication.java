@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
 import java.util.Locale;
-
 @SpringBootApplication(exclude = {UserDetailsServiceAutoConfiguration.class})
 public class FkApplication {
 

@@ -55,6 +55,7 @@ public class LessonService {
         return lessonRepository.findAll();
     }
 
+    @Transactional
     public Lesson update(Long id, YKSLesson yksLesson, Branch branch, YKS yks, MultipartFile icon) throws IOException {
 
         Lesson lesson = lessonRepository.findById(id)
