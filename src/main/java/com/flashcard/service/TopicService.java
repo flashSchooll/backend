@@ -66,7 +66,7 @@ public class TopicService {
         topicRepository.delete(topic);
     }
 
-    public List<Topic> getAll(Long lessonId) {
+    public List<Topic> getAllWithLesson(Long lessonId) {
         Objects.requireNonNull(lessonId);
 
         Lesson tytLesson = lessonRepository.findById(lessonId)
@@ -93,5 +93,9 @@ public class TopicService {
                 .stream()
                 .map(topic -> new TopicUserResponse(topic, Math.toIntExact(cardCount.get(topic))))
                 .toList();
+    }
+
+    public List<Topic> getAll() {
+        return topicRepository.findAll();
     }
 }

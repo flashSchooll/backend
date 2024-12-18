@@ -56,9 +56,20 @@ public class TopicAdminController {
 
     @GetMapping("/get-all/{lessonId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<TopicAdminResponse>> getAll(@PathVariable Long lessonId) {
+    public ResponseEntity<List<TopicAdminResponse>> getAllWithLesson(@PathVariable Long lessonId) {
 
-        List<Topic> tytTopics = topicService.getAll(lessonId);
+        List<Topic> tytTopics = topicService.getAllWithLesson(lessonId);
+
+        List<TopicAdminResponse> response = tytTopics.stream().map(TopicAdminResponse::new).toList();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/get-all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<TopicAdminResponse>> getAll() {
+
+        List<Topic> tytTopics = topicService.getAll();
 
         List<TopicAdminResponse> response = tytTopics.stream().map(TopicAdminResponse::new).toList();
 
