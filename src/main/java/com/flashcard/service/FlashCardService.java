@@ -131,7 +131,11 @@ public class FlashCardService {
 
         return flashCardRepository.findByTopic(topic)
                 .stream()
-                .map(flashcard -> new FlashcardUserResponse(flashcard, Math.toIntExact(cardCount.get(flashcard)), flashcards))
+                .map(flashcard ->
+                        new FlashcardUserResponse(
+                                flashcard,
+                                Math.toIntExact(cardCount.get(flashcard)),
+                                flashcards.contains(flashcard.getId())))
                 .toList();
     }
 

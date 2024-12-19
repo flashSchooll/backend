@@ -20,7 +20,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("SELECT c FROM Card c WHERE c.flashcard.topic.lesson = :lesson")
     List<Card> findByLesson(Lesson lesson);
 
-    @Query("SELECT c FROM Card c WHERE c.flashcard.topic= :topic")
+    @Query("SELECT c FROM Card c WHERE c.flashcard.topic = :topic")
     List<Card> findByTopic(Topic topic);
 
 
