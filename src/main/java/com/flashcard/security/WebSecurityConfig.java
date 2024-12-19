@@ -10,8 +10,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,7 +24,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableMethodSecurity
+@EnableWebSecurity
 // (securedEnabled = true,
 // jsr250Enabled = true,
 // prePostEnabled = true) // by default
@@ -60,15 +62,22 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // burada unauthorizedHandler AuthEntryPointJwt
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll()  // /api/auth/** endpoint'lerine erişim izin veriliyor.
-                                .requestMatchers("/api/test/**").permitAll()  // /api/test/** endpoint'lerine erişim izin veriliyor.
-                                //.requestMatchers("swagger-ui/**").permitAll()  // /api/test/** endpoint'lerine erişim izin veriliyor.
+                                .requestMatchers("/api/test/**").permitAll()
+                                .requestMatchers("/actuator/**").hasRole("ADMIN")// /api/test/** endpoint'lerine erişim izin veriliyor.
+                                .requestMatchers(
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html"
+                                ).permitAll() // /api/test/** endpoint'lerine erişim izin veriliyor.
+                                .requestMatchers("/favicon.ico.").permitAll()  // /api/test/** endpoint'lerine erişim izin veriliyor.
+                                .requestMatchers("/swagger-ui.html").permitAll()
                                 .anyRequest().authenticated()  // Diğer tüm endpoint'ler kimlik doğrulaması gerektiriyor.
                 );
 
@@ -90,6 +99,32 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                         .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
             }
         };
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(
+                "/swagger-ui/**", "/v3/api-docs/**"
+        );
+    }
+
+
+    protected void configure(WebSecurity web)  {
+        web.ignoring().requestMatchers(
+                "/favicon.ico",
+                "/resources/**",
+                "/static/**",
+                "/public/**",
+                "/webjars/**");
+    }
+
+    @Bean
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(request -> request.requestMatchers("/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html").permitAll()
+                .anyRequest().authenticated());
+        return http.build();
     }
 
 }
