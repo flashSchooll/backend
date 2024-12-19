@@ -14,9 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -35,11 +34,28 @@ public class RepeatFlashcardService {
         Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
-        RepeatFlashcard repeatFlashcard = new RepeatFlashcard();
-        repeatFlashcard.setUser(user);
-        repeatFlashcard.getFlashcards().add(flashcard);
-        repeatFlashcard.setTopic(flashcard.getTopic());
-        repeatFlashcard.setRepeatTime(repeatTime);
+        Optional<RepeatFlashcard> optionalRepeatFlashcard = repeatFlashcardRepository.findByUserAndTopic(user, flashcard.getTopic());
+
+        RepeatFlashcard repeatFlashcard;
+
+        if (optionalRepeatFlashcard.isPresent()) {
+            repeatFlashcard = optionalRepeatFlashcard.get();
+
+            List<Long> flashcardIds = repeatFlashcard.getFlashcards().stream().map(Flashcard::getId).toList();
+
+            if (!flashcardIds.contains(flashcard.getId())) {
+                List<Flashcard> flashcards = repeatFlashcard.getFlashcards();
+                flashcards.add(flashcard);
+                repeatFlashcard.setFlashcards(flashcards);
+            }
+
+        } else {
+            repeatFlashcard = new RepeatFlashcard();
+            repeatFlashcard.setUser(user);
+            repeatFlashcard.setFlashcards(List.of(flashcard));
+            repeatFlashcard.setTopic(flashcard.getTopic());
+            repeatFlashcard.setRepeatTime(repeatTime);
+        }
 
         return repeatFlashcardRepository.save(repeatFlashcard);
     }
@@ -69,13 +85,26 @@ public class RepeatFlashcardService {
 
         User user = authService.getCurrentUser();
 
+        Optional<RepeatFlashcard> optionalRepeatFlashcard = repeatFlashcardRepository.findByUserAndTopic(user, topic);
+
         List<Flashcard> flashcards = flashCardRepository.findByTopic(topic);
 
-        RepeatFlashcard repeatFlashcard = new RepeatFlashcard();
-        repeatFlashcard.setUser(user);
-        repeatFlashcard.setFlashcards(flashcards);
-        repeatFlashcard.setTopic(topic);
-        repeatFlashcard.setRepeatTime(repeatTime);
+        Set<Flashcard> flashcardSet = new HashSet<>(flashcards);
+
+        RepeatFlashcard repeatFlashcard = optionalRepeatFlashcard
+                .map(existingRepeatFlashcard -> {
+                    existingRepeatFlashcard.setFlashcards(flashcardSet.stream().toList());
+                    return existingRepeatFlashcard;
+                })
+                .orElseGet(() -> {
+                    RepeatFlashcard newRepeatFlashcard = new RepeatFlashcard();
+                    newRepeatFlashcard.setUser(user);
+                    newRepeatFlashcard.setFlashcards(flashcardSet.stream().toList());
+                    newRepeatFlashcard.setTopic(topic);
+                    newRepeatFlashcard.setRepeatTime(repeatTime);
+                    return newRepeatFlashcard;
+                });
+
 
         return repeatFlashcardRepository.save(repeatFlashcard);
     }
