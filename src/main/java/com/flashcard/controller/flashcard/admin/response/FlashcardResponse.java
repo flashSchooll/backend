@@ -8,7 +8,7 @@ public class FlashcardResponse {
 
     private final Long id;
     private final String topic;
-    private final String cardName;
+    private final String cardName;//todo seen eklenecek
 
     public FlashcardResponse(Flashcard flashcard) {
         this.id = flashcard.getId();

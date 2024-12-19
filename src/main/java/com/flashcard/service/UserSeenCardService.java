@@ -50,7 +50,7 @@ public class UserSeenCardService {
 
         List<UserSeenCard> seenCards = new ArrayList<>();
 
-        if (countFlashcard != 0) {
+        if (countFlashcard == 0) {
             Duration duration = Duration.ofMinutes(userCardSeenSaveRequest.getMinute()).plusSeconds(userCardSeenSaveRequest.getSecond());
 
             List<UserSeenCard> cardList = new ArrayList<>();
@@ -74,9 +74,10 @@ public class UserSeenCardService {
 
             user.raiseRosette();
             user.raiseStar(userCardSeenSaveRequest.getUserCardSeenRequestList().size());
+
+            userCardPercentageService.updatePercentage(user, flashcard, userCardSeenSaveRequest.getUserCardSeenRequestList().size());
         }
 
-        userCardPercentageService.updatePercentage(user, flashcard, userCardSeenSaveRequest.getUserCardSeenRequestList().size());
 
         return seenCards;
     }
