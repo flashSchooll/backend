@@ -17,10 +17,12 @@ public class FlashcardUserResponse {
     private final boolean isSeen;
 
     public FlashcardUserResponse(Flashcard flashcard, Integer count, List<Long> flashcards) {
+        boolean seen = flashcards.contains(flashcard.getId());
+
         this.id = flashcard.getId();
         this.topic = flashcard.getTopic().getSubject();
         this.cardName = flashcard.getCardName();
         this.cardCount = count;
-        this.isSeen = flashcards.contains(flashcard.getId());
+        this.isSeen = seen;//todo kontrol et çalışmıyor
     }
 }
