@@ -22,6 +22,6 @@ public class FlashcardUserResponse {
         this.topic = flashcard.getTopic().getSubject();
         this.cardName = flashcard.getCardName();
         this.cardCount = count;
-        this.isSeen = seen;//todo kontrol et çalışmıyor
+        this.isSeen = seen;
     }
 }

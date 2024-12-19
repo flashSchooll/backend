@@ -1,13 +1,12 @@
 package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
-import com.flashcard.model.RepeatFlashcard;
-import com.flashcard.model.Flashcard;
-import com.flashcard.model.Topic;
-import com.flashcard.model.User;
+import com.flashcard.controller.repeatflashcard.response.RepeatFlashcardResponse;
+import com.flashcard.model.*;
 import com.flashcard.repository.RepeatFlashcardRepository;
 import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.TopicRepository;
+import com.flashcard.repository.UserSeenCardRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,7 @@ public class RepeatFlashcardService {
     private final AuthService authService;
     private final FlashCardRepository flashCardRepository;
     private final TopicRepository topicRepository;
+    private final UserSeenCardRepository userSeenCardRepository;
 
     @Transactional
     public RepeatFlashcard save(Long flashcardId, LocalDateTime repeatTime) {
@@ -73,7 +73,17 @@ public class RepeatFlashcardService {
     public List<RepeatFlashcard> getAll() {
         User user = authService.getCurrentUser();
 
-        return repeatFlashcardRepository.findByUser(user);
+        List<RepeatFlashcard> repeatFlashcards = repeatFlashcardRepository.findByUser(user);
+
+        List<RepeatFlashcardResponse> responses = repeatFlashcards.stream().map(RepeatFlashcardResponse::new).toList();
+
+
+        List<UserSeenCard> seenCards = userSeenCardRepository.findAll();
+
+
+
+
+        return null;
     }
 
     @Transactional

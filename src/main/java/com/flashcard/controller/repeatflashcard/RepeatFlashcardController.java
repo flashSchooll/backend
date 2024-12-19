@@ -3,6 +3,7 @@ package com.flashcard.controller.repeatflashcard;
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.repeatflashcard.response.RepeatFlashcardResponse;
 import com.flashcard.model.RepeatFlashcard;
+import com.flashcard.repository.UserSeenCardRepository;
 import com.flashcard.service.RepeatFlashcardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 public class RepeatFlashcardController {
 
     private final RepeatFlashcardService repeatFlashcardService;
+    private final UserSeenCardRepository userSeenCardRepository;
 
     @PostMapping("/flashcard")
     @PreAuthorize("hasRole('USER')")
@@ -54,6 +56,8 @@ public class RepeatFlashcardController {
     public ResponseEntity<List<RepeatFlashcardResponse>> getAll() {
 
         List<RepeatFlashcard> repeatFlashcards = repeatFlashcardService.getAll();
+
+
 
         List<RepeatFlashcardResponse> responses = repeatFlashcards.stream().map(RepeatFlashcardResponse::new).toList();
 
