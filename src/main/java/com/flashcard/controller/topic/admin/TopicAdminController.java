@@ -9,6 +9,10 @@ import com.flashcard.model.Topic;
 import com.flashcard.service.TopicService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -54,22 +58,19 @@ public class TopicAdminController {
         return ResponseEntity.ok(Constants.TOPIC_SUCCESSFULLY_DELETE);
     }
 
-    @GetMapping("/get-all/{lessonId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<TopicAdminResponse>> getAllWithLesson(@PathVariable Long lessonId) {
-
-        List<Topic> tytTopics = topicService.getAllWithLesson(lessonId);
-
-        List<TopicAdminResponse> response = tytTopics.stream().map(TopicAdminResponse::new).toList();
-
-        return ResponseEntity.ok(response);
-    }
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<TopicAdminResponse>> getAll() {
+    public ResponseEntity<List<TopicAdminResponse>> getAll(@RequestParam(required = false) Long lessonId,
+                                                           @PageableDefault(sort = "subject", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        List<Topic> tytTopics = topicService.getAll();
+        Page<Topic> tytTopics;
+
+        if (lessonId == null) {
+            tytTopics = topicService.getAll(pageable);
+        } else {
+            tytTopics = topicService.getAllWithLesson(lessonId, pageable);
+        }
 
         List<TopicAdminResponse> response = tytTopics.stream().map(TopicAdminResponse::new).toList();
 

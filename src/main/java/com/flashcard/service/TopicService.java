@@ -11,9 +11,10 @@ import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -66,13 +67,13 @@ public class TopicService {
         topicRepository.delete(topic);
     }
 
-    public List<Topic> getAllWithLesson(Long lessonId) {
+    public Page<Topic> getAllWithLesson(Long lessonId,Pageable pageable) {
         Objects.requireNonNull(lessonId);
 
         Lesson tytLesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
-        return topicRepository.findByLesson(tytLesson);
+        return topicRepository.findByLesson(tytLesson,pageable);
     }
 
     public List<TopicUserResponse> getAllUser(Long lessonId) {
@@ -95,7 +96,7 @@ public class TopicService {
                 .toList();
     }
 
-    public List<Topic> getAll() {
-        return topicRepository.findAll();
+    public Page<Topic> getAll(Pageable pageable) {
+        return topicRepository.findAll(pageable);
     }
 }

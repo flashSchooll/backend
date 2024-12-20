@@ -14,6 +14,8 @@ import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.excel.FlashcardExcelImporter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,13 +87,18 @@ public class FlashCardService {
         flashCardRepository.delete(flashcard);
     }
 
-    public List<Flashcard> getAll(Long topicId) {
+    public Page<Flashcard> getAll(Long topicId,Pageable pageable) {
         Objects.requireNonNull(topicId);
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        return flashCardRepository.findByTopic(topic);
+        return flashCardRepository.findByTopic(topic,pageable);
+    }
+
+    public Page<Flashcard> getAll(Pageable pageable) {
+
+        return flashCardRepository.findAll(pageable);
     }
 
     public Map<String, Long> getAllByLesson() {

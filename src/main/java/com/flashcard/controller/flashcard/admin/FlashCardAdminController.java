@@ -8,6 +8,10 @@ import com.flashcard.controller.flashcard.admin.response.FlashcardResponse;
 import com.flashcard.model.Flashcard;
 import com.flashcard.service.FlashCardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -56,12 +60,18 @@ public class FlashCardAdminController {
         return ResponseEntity.ok(Constants.FLASHCARD_SUCCESSFULLY_DELETED);
     }
 
-    @GetMapping("/get-all/{topicId}")
+    @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<FlashcardResponse>> getAll(@PathVariable Long topicId) {
+    public ResponseEntity<Page<FlashcardResponse>> getAll(@RequestParam(required = false) Long topicId,
+                                                          @PageableDefault(sort = "cardName", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        List<FlashcardResponse> response = flashCardService.getAll(topicId)
-                .stream().map(FlashcardResponse::new).toList();
+        Page<FlashcardResponse> response;
+
+        if (topicId == null) {
+            response = flashCardService.getAll(pageable).map(FlashcardResponse::new);
+        } else {
+            response = flashCardService.getAll(topicId, pageable).map(FlashcardResponse::new);
+        }
 
         return ResponseEntity.ok(response);
     }
