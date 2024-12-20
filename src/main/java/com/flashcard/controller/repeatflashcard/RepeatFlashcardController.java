@@ -55,11 +55,7 @@ public class RepeatFlashcardController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<RepeatFlashcardResponse>> getAll() {
 
-        List<RepeatFlashcard> repeatFlashcards = repeatFlashcardService.getAll();
-
-
-
-        List<RepeatFlashcardResponse> responses = repeatFlashcards.stream().map(RepeatFlashcardResponse::new).toList();
+        List<RepeatFlashcardResponse> responses = repeatFlashcardService.getAll();
 
         return ResponseEntity.ok(responses);
     }

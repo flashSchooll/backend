@@ -70,20 +70,18 @@ public class RepeatFlashcardService {
         repeatFlashcardRepository.delete(repeatFlashcard);
     }
 
-    public List<RepeatFlashcard> getAll() {
+    public List<RepeatFlashcardResponse> getAll() {
         User user = authService.getCurrentUser();
 
         List<RepeatFlashcard> repeatFlashcards = repeatFlashcardRepository.findByUser(user);
+        List<UserSeenCard> seenCards = userSeenCardRepository.findByUser(user);
+        List<Long> flashcards = seenCards.stream().map(f -> f.getCard().getFlashcard().getId()).toList();
 
-        List<RepeatFlashcardResponse> responses = repeatFlashcards.stream().map(RepeatFlashcardResponse::new).toList();
-
-
-        List<UserSeenCard> seenCards = userSeenCardRepository.findAll();
-
-
-
-
-        return null;
+        return repeatFlashcards
+                .stream()
+                .map(
+                        flashcard -> new RepeatFlashcardResponse(flashcard, flashcards))
+                .toList();
     }
 
     @Transactional

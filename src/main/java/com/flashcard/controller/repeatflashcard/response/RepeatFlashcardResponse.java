@@ -19,12 +19,12 @@ public class RepeatFlashcardResponse {
     private final LocalDateTime repeatTime;
     private final byte[] icon;
 
-    public RepeatFlashcardResponse(RepeatFlashcard repeatFlashcard) {
+    public RepeatFlashcardResponse(RepeatFlashcard repeatFlashcard,List<Long> flashcardIds) {
         this.topic = repeatFlashcard.getTopic().getSubject();
         this.lesson = repeatFlashcard.getTopic().getLesson().getYksLesson().label;
         this.topicId = repeatFlashcard.getTopic().getId();
         this.repeatTime = repeatFlashcard.getRepeatTime();
-        this.flashcards = repeatFlashcard.getFlashcards().stream().map(FlashcardResponse::new).toList();
+        this.flashcards = repeatFlashcard.getFlashcards().stream().map(flashcard -> new FlashcardResponse(flashcard, flashcardIds)).toList();
         this.icon = repeatFlashcard.getTopic().getLesson().getIcon();
     }
 }
