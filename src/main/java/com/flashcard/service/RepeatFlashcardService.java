@@ -80,7 +80,7 @@ public class RepeatFlashcardService {
         return repeatFlashcards
                 .stream()
                 .map(
-                        flashcard -> new RepeatFlashcardResponse(flashcard, flashcards))
+                        repeatFlashcard -> new RepeatFlashcardResponse(repeatFlashcard, flashcards))
                 .toList();
     }
 
