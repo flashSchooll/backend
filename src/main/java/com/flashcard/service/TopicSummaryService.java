@@ -9,6 +9,7 @@ import com.flashcard.model.TopicSummary;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.repository.TopicSummaryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,13 +62,15 @@ public class TopicSummaryService {
        topicSummaryRepository.delete(summary);
     }
 
-    public TopicSummary get(Long id) {
-        Objects.requireNonNull(id);
+    @Cacheable(value = "topicSummary",key = "#summaryId")
+    public TopicSummary get(Long summaryId) {
+        Objects.requireNonNull(summaryId);
 
-        return topicSummaryRepository.findById(id)
+        return topicSummaryRepository.findById(summaryId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_SUMMARY_NOT_FOUND));
     }
 
+    @Cacheable(value = "topicSummaries",key = "#topicId")
     public List<TopicSummaryResponse> getAllByTopic(Long topicId) {
         Objects.requireNonNull(topicId);
 

@@ -10,6 +10,7 @@ import com.flashcard.model.enums.Branch;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
     }
 
+    @Cacheable(value = "users")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

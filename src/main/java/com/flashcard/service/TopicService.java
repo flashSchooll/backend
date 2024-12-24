@@ -11,6 +11,7 @@ import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -75,7 +76,7 @@ public class TopicService {
 
         return topicRepository.findByLesson(tytLesson,pageable);
     }
-
+    @Cacheable(value = "lessonTopic",key = "#lessonId")
     public List<TopicUserResponse> getAllUser(Long lessonId) {
         Objects.requireNonNull(lessonId);
 

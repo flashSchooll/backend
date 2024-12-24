@@ -101,19 +101,6 @@ public class FlashCardService {
         return flashCardRepository.findAll(pageable);
     }
 
-    public Map<String, Long> getAllByLesson() {
-
-        List<Flashcard> flashcards = flashCardRepository.findAll();
-
-        return flashcards.stream()
-                // Her bir flashcard'ı lesson'a göre gruplandırıyoruz
-                .collect(Collectors.groupingBy(
-                        flashcard -> flashcard.getTopic().getLesson().getYksLesson().label,  // lesson ismi
-                        Collectors.counting()  // lesson başına kaç flashcard var
-                ));
-
-    }
-
     public List<FlashcardUserResponse> getAllUser(Long topicId) {
         Objects.requireNonNull(topicId);
 
