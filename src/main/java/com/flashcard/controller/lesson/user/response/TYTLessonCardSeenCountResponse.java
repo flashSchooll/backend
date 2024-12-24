@@ -10,11 +10,11 @@ import lombok.Setter;
 @Builder
 public class TYTLessonCardSeenCountResponse {
 
-    private  Long lessonId;
-    private  String lesson;
-    private  Integer totalCard;
-    private  Integer completedCard;
-    private  byte[] icon;
+    private final Long lessonId;
+    private final String lesson;
+    private final Integer totalCard;
+    private final Integer completedCard;
+    private final byte[] icon;
 
     public TYTLessonCardSeenCountResponse(UserCardPercentage userCardPercentage) {
         this.lessonId = userCardPercentage.getLesson().getId();
@@ -22,9 +22,6 @@ public class TYTLessonCardSeenCountResponse {
         this.totalCard = userCardPercentage.getTotalCard();
         this.completedCard = userCardPercentage.getCompletedCard();
         this.icon = userCardPercentage.getLesson().getIcon();
-    }
-
-    public TYTLessonCardSeenCountResponse() {
     }
 
     public TYTLessonCardSeenCountResponse(Long lessonId, String lesson, Integer totalCard, Integer completedCard, byte[] icon) {

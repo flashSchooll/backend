@@ -19,7 +19,10 @@ spring:
   http:
     multipart:
       enabled: true
-
+  cache:
+    jcache:
+      config:
+        classpath: ehcache.xml
 # App Properties
 flashSchool:
   app:

@@ -11,6 +11,7 @@ import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.UserCardPercentageRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,7 @@ public class UserCardPercentageService {
 
     }
 
-    @Transactional
+    @Cacheable(value = "yksLesson",key = "#yks")
     public List<UserCardPercentage> getAllYks(YKS yks) {
 
         User user = authService.getCurrentUser();
