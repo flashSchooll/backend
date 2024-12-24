@@ -1,5 +1,6 @@
 package com.flashcard.model;
 
+import com.flashcard.model.enums.Branch;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -54,6 +55,9 @@ public class User {// kullanıcı bilgisini tutar
     private Integer rosette;
 
     private byte[] profilePhoto;
+
+    @Enumerated(EnumType.STRING)
+    private Branch branch;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

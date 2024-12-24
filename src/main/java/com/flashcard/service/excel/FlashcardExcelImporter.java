@@ -163,7 +163,12 @@ public class FlashcardExcelImporter {
 
                         }
                     }
-                    excelCardDTOS.add(cardDTO);
+                    if (cardDTO.getSubject() != null) {
+                        excelCardDTOS.add(cardDTO);
+                    } else {
+                        break;
+                    }
+
 
                 } catch (InvalidCellException e) {
                     log.debug("Hata oluştu. Satır: " + (row.getRowNum() + 1) + ", Hata: " + e.getMessage(), e);

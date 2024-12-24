@@ -1,5 +1,6 @@
 package com.flashcard.controller.usercontroller.user.request;
 
+import com.flashcard.model.enums.Branch;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -22,5 +23,7 @@ public class UpdateUserRequest {
     @NotBlank
     @Size(max = 30)
     private String userSurname;
+
+    private Branch branch;
 
 }

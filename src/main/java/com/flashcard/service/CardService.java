@@ -7,6 +7,7 @@ import com.flashcard.controller.card.admin.request.CardUpdateRequest;
 import com.flashcard.controller.statistic.response.UserCardStatisticResponse;
 import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
 import com.flashcard.model.*;
+import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.CardFace;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.model.enums.YKSLesson;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CardService {
 
+    private static final Random random = new Random();
     private final CardRepository cardRepository;
     private final FlashCardRepository flashCardRepository;
     private final ApplicationContext applicationContext;
@@ -168,7 +170,6 @@ public class CardService {
 
         long cardCount = cardRepository.count();
 
-        Random random = new Random();
         Set<Long> uniqueNumbers = new HashSet<>();
 
         // Set'in boyutu istenilen sayıya ulaşana kadar rastgele sayılar ekle
@@ -182,26 +183,13 @@ public class CardService {
         return cardRepository.findAllById(idList);
     }
 
-    public List<Card> exploreForMe(Boolean stateOfKnowledge) {
+    public List<Card> exploreForMe() {
 
         User user = authService.getCurrentUser();
 
-        List<Card> cards = userSeenCardRepository.findByUser(user, stateOfKnowledge);
+        Branch branch = user.getBranch();
 
-        long quantity;
-
-        if (cards.size() >= 100) {
-            quantity = 100;
-        } else {
-            quantity = (long) (cards.size() * 0.7);
-        }
-
-        Random random = new Random();
-
-        return cards.stream()   //todo burayı tekrar test et
-                .sorted((a, b) -> random.nextInt(2) - 1)  // Rastgele sıralama
-                .limit(quantity)  // Belirtilen sayıda kart al
-                .toList();
+        return cardRepository.findRandomCardsByBranch(branch != null ? branch.name() : null);
     }
 
     public UserCardStatisticResponse getUserStatistic() {

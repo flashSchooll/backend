@@ -6,6 +6,7 @@ import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.dto.UserDTO;
 import com.flashcard.model.User;
+import com.flashcard.model.enums.Branch;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -72,6 +73,7 @@ public class UserService {
         user.setUserName(authService.userNameSaveFormat(updateUserRequest.getUserName()));
         user.setUserSurname(authService.userNameSaveFormat(updateUserRequest.getUserSurname()));
         user.setEmail(updateUserRequest.getEmail());
+        user.setBranch(updateUserRequest.getBranch());
 
         return userRepository.save(user);
     }
@@ -131,5 +133,14 @@ public class UserService {
         });
 
         return statistics;
+    }
+
+    public User updateBranch(Branch branch) {
+
+        User user = authService.getCurrentUser();
+
+        user.setBranch(branch);
+
+        return userRepository.save(user);
     }
 }

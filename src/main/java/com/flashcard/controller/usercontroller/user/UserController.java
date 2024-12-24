@@ -3,6 +3,7 @@ package com.flashcard.controller.usercontroller.user;
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.model.dto.UserDTO;
 import com.flashcard.model.User;
+import com.flashcard.model.enums.Branch;
 import com.flashcard.payload.response.MessageResponse;
 import com.flashcard.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -77,5 +78,15 @@ public class UserController {
                         "Content-Disposition", "attachment; filename=\"image.jpg\"").
                 contentType(MediaType.IMAGE_JPEG).
                 body(photo);
+    }
+
+    @PutMapping("/update-branch")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<UserDTO> updateBranch(@RequestParam Branch branch) {
+        User user  = userService.updateBranch(branch);
+
+        UserDTO userDTO = new UserDTO(user);
+
+        return ResponseEntity.ok(userDTO);
     }
 }

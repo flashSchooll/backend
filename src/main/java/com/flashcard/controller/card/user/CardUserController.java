@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -39,16 +41,21 @@ public class CardUserController {
 
         List<Card> response = cardService.explore();
 
-        List<CardResponse> tytCardResponses = response.stream().map(CardResponse::new).toList();
+        List<CardResponse> cardResponses = response.stream()
+                .map(CardResponse::new)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
+                    Collections.shuffle(list);
+                    return list;
+                }));
 
-        return ResponseEntity.ok(tytCardResponses);
+        return ResponseEntity.ok(cardResponses);
     }
 
     @GetMapping("/explore/me")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<CardResponse>> exploreForMe(@RequestParam Boolean stateOfKnowledge) {
+    public ResponseEntity<List<CardResponse>> exploreForMe() {
 
-        List<Card> response = cardService.exploreForMe(stateOfKnowledge);
+        List<Card> response = cardService.exploreForMe();
 
         List<CardResponse> tytCardResponses = response.stream().map(CardResponse::new).toList();
 

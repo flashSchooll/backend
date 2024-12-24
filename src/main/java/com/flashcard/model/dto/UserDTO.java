@@ -1,6 +1,7 @@
 package com.flashcard.model.dto;
 
 import com.flashcard.model.User;
+import com.flashcard.model.enums.Branch;
 import lombok.Getter;
 
 @Getter
@@ -12,6 +13,7 @@ public class UserDTO {
     private final byte[] profilePhoto;
     private final Integer star;
     private final Integer rosette;
+    private final Branch branch;
 
     public UserDTO(User user) {
         this.username = user.getUserName();
@@ -20,5 +22,6 @@ public class UserDTO {
         this.profilePhoto = user.getProfilePhoto();
         this.star = user.getStar();
         this.rosette = user.getRosette();
+        this.branch = user.getBranch();
     }
 }
