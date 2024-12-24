@@ -135,6 +135,7 @@ public class UserService {
         return statistics;
     }
 
+    @Transactional
     public User updateBranch(Branch branch) {
 
         User user = authService.getCurrentUser();
