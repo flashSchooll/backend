@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface DailyTargetRepository extends JpaRepository<DailyTarget, Long> {
 
-    Optional<DailyTarget> findByDay(LocalDate today);
+    Optional<DailyTarget> findByUserAndDay(User user, LocalDate today);
 
     @Query("SELECT d " +
             "FROM DailyTarget d " +

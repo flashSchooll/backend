@@ -32,4 +32,10 @@ public class DailyTarget {// günlük hedef bilgisini tutar
 
     @NotNull
     private Integer made;
+
+
+    public void updateMade(int made) {
+
+        this.made = getMade() + made;
+    }
 }

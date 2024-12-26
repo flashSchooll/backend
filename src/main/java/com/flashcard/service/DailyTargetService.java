@@ -1,6 +1,5 @@
 package com.flashcard.service;
 
-import com.flashcard.controller.dailytarget.response.DailyTargetResponse;
 import com.flashcard.model.DailyTarget;
 import com.flashcard.model.MonthDailyTarget;
 import com.flashcard.model.User;
@@ -45,15 +44,16 @@ public class DailyTargetService {
     }
 
 
-    public DailyTargetResponse getTarget() {
+    public DailyTarget getTarget() {
         LocalDate today = LocalDate.now();
 
-        Optional<DailyTarget> optionalDailyTarget = dailyTargetRepository.findByDay(today);
+        User user = authService.getCurrentUser();
+
+        Optional<DailyTarget> optionalDailyTarget = dailyTargetRepository.findByUserAndDay(user, today);
 
         DailyTargetService proxy = applicationContext.getBean(DailyTargetService.class);
 
-        return optionalDailyTarget.map(DailyTargetResponse::new)
-                .orElseGet(() -> new DailyTargetResponse(proxy.createTarget()));
+        return optionalDailyTarget.orElseGet(proxy::createTarget);
     }
 
 
@@ -94,5 +94,12 @@ public class DailyTargetService {
         LocalDate endDate = LocalDate.parse(endOfWeek.format(formatter));
 
         return dailyTargetRepository.findByStartDateAndEndDate(startDate, endDate);
+    }
+
+    public void updateDailyTarget(int cardCount) {
+        DailyTarget dailyTarget = getTarget();
+        dailyTarget.updateMade(cardCount);
+
+        dailyTargetRepository.save(dailyTarget);
     }
 }

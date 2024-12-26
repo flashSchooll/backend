@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -31,6 +32,7 @@ public class UserSeenCardService {
     private final AuthService authService;
     private final UserCardPercentageService userCardPercentageService;
     private final TopicRepository topicRepository;
+    private final DailyTargetService dailyTargetService;
 
     @Transactional
     public List<UserSeenCard> save(@Valid UserSeenCardSaveRequest userCardSeenSaveRequest) {
@@ -78,6 +80,9 @@ public class UserSeenCardService {
             userCardPercentageService.updatePercentage(user, flashcard, userCardSeenSaveRequest.getUserCardSeenRequestList().size());
         }
 
+        int cardCount = userCardSeenSaveRequest.getUserCardSeenRequestList().size();
+
+        dailyTargetService.updateDailyTarget(cardCount);
 
         return seenCards;
     }

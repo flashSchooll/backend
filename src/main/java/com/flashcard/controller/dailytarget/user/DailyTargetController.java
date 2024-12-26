@@ -27,7 +27,9 @@ public class DailyTargetController {
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<DailyTargetResponse> getTarget() {
-        DailyTargetResponse response = dailyTargetService.getTarget();
+        DailyTarget dailyTarget = dailyTargetService.getTarget();
+
+        DailyTargetResponse response = new DailyTargetResponse(dailyTarget);
 
         return ResponseEntity.ok(response);
     }
