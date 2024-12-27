@@ -3,6 +3,7 @@ package com.flashcard.repository;
 import com.flashcard.model.Lesson;
 import com.flashcard.model.User;
 import com.flashcard.model.UserCardPercentage;
+import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.YKS;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -18,4 +19,6 @@ public interface UserCardPercentageRepository extends JpaRepository<UserCardPerc
     List<UserCardPercentage> findByLesson(Lesson lesson);
 
     List<UserCardPercentage> findByUserAndLessonYks(User user, YKS yks);
+
+    List<UserCardPercentage> findByUserAndLessonYksAndLessonBranch(User user, YKS yks, Branch branch);
 }

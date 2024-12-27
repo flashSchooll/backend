@@ -24,7 +24,7 @@ public class LessonUserController {
     @ResponseStatus(HttpStatus.OK)
     public List<TYTLessonCardSeenCountResponse> getTyt() {
 
-        List<UserCardPercentage> userCardPercentageList = userCardPercentageService.getAllYks(YKS.TYT);
+        List<UserCardPercentage> userCardPercentageList = userCardPercentageService.getTyt();
 
         return userCardPercentageList.stream().map(TYTLessonCardSeenCountResponse::new).toList();
     }
@@ -34,7 +34,7 @@ public class LessonUserController {
     @ResponseStatus(HttpStatus.OK)
     public List<TYTLessonCardSeenCountResponse> getAyt() {
 
-        List<UserCardPercentage> userCardPercentageList = userCardPercentageService.getAllYks(YKS.AYT);
+        List<UserCardPercentage> userCardPercentageList = userCardPercentageService.getAyt();
 
         return userCardPercentageList.stream().map(TYTLessonCardSeenCountResponse::new).toList();
     }

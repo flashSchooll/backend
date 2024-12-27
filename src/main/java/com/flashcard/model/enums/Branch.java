@@ -9,8 +9,7 @@ public enum Branch {
     NUMERICAL("Sayısal"),
     EQUAL_WEIGHT("Eşit Ağırlık"),
     VERBAL("Sözel"),
-    FOREIGN_LANGUAGE("Yabancı Dil"),
-    ALL_GROUPS("Bütün Gruplar");
+    FOREIGN_LANGUAGE("Yabancı Dil");
 
     public final String label;
 }

@@ -28,7 +28,7 @@ public class LessonAdminController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LessonResponse> save(@RequestParam YKSLesson yksLesson,
-                                               @RequestParam Branch branch,
+                                               @RequestParam(required = false) Branch branch,
                                                @RequestParam YKS yks,
                                                @RequestBody MultipartFile icon) throws IOException {
 

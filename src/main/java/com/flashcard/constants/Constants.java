@@ -37,6 +37,7 @@ public class Constants {
     public static final String LESSON_ALREADY_SAVED = "Ders zaten kayıtlı";
     public static final String CONTACT_MESSAGE_NOT_FOUND = "Kontakt mesajı bulunamadı";
     public static final String CONTACT_MESSAGE_SUCCESSFULLY_DELETED = "Kontakt mesajı başarıyla silindi";
+    public static final String WRONG_PARAMETER = "Yanlış parametre";
 
 
     private Constants() {
