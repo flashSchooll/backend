@@ -85,13 +85,13 @@ public class DailyTargetService {
 
         LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
 
-        LocalDate endOfWeek = today;
+        User user = authService.getCurrentUser();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate startDate = LocalDate.parse(startOfWeek.format(formatter));
-        LocalDate endDate = LocalDate.parse(endOfWeek.format(formatter));
+        LocalDate endDate = LocalDate.parse(today.format(formatter));
 
-        return dailyTargetRepository.findByStartDateAndEndDate(startDate, endDate);
+        return dailyTargetRepository.findByUserAndStartDateAndEndDate(user, startDate, endDate);
     }
 
     public void updateDailyTarget(int cardCount) {

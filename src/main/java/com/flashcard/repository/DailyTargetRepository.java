@@ -27,6 +27,9 @@ public interface DailyTargetRepository extends JpaRepository<DailyTarget, Long> 
 
     List<DailyTarget> findByUser(User user);
 
-    @Query("SELECT d FROM DailyTarget d WHERE d.day BETWEEN :startDate AND :endDate ORDER BY d.day")
-    List<DailyTarget> findByStartDateAndEndDate(LocalDate startDate, LocalDate endDate);
+    @Query("SELECT d FROM DailyTarget d " +
+            "WHERE (d.day BETWEEN :startDate AND :endDate) " +
+            "AND d.user = :user " +
+            "ORDER BY d.day")
+    List<DailyTarget> findByUserAndStartDateAndEndDate(User user, LocalDate startDate, LocalDate endDate);
 }
