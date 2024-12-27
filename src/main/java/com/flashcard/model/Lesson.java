@@ -28,7 +28,6 @@ public class Lesson {//ders bilgisini tutar
     private YKSLesson yksLesson;
 
     @Enumerated(value = EnumType.STRING)
-    @NotNull()
     private Branch branch;
 
     @Enumerated(value = EnumType.STRING)
