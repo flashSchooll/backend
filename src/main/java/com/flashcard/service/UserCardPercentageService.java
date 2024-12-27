@@ -65,10 +65,10 @@ public class UserCardPercentageService {
             UserCardPercentageService proxy = applicationContext.getBean(UserCardPercentageService.class);
             proxy.save(user);
 
-            return userCardPercentageRepository.findByUserAndLessonYks(user, yks);
         }
-    }
+        return userCardPercentageRepository.findByUserAndLessonYks(user, yks);
 
+    }
     @Transactional
     public void updatePercentage(User user, Flashcard flashcard, int amount) {
 
