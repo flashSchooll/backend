@@ -233,7 +233,9 @@ public class CardService {
                 );
 
         List<Card> cardList = cardRepository.findAll();
-        Map<YKSLesson, Long> cardGroup = cardList.stream()
+
+        Map<YKSLesson, Long> cardGroup = cardList.stream().filter(card -> card.getFlashcard().getTopic().getLesson().getBranch() == null
+                        || card.getFlashcard().getTopic().getLesson().getBranch().equals(branch))
                 .collect(Collectors.groupingBy(
                         card -> card.getFlashcard().getTopic().getLesson().getYksLesson(),
                         Collectors.counting())
