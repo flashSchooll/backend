@@ -138,7 +138,8 @@ public class CardService {
 
         cardRepository.delete(tytCard);
     }
-    @Cacheable(value = "flashcardCard",key = "#flashcardId")
+
+    @Cacheable(value = "flashcardCard", key = "#flashcardId")
     public List<Card> getAll(Long flashcardId) {
         Objects.requireNonNull(flashcardId);
 
@@ -219,9 +220,13 @@ public class CardService {
 
         User user = authService.getCurrentUser();
 
+        Branch branch = user.getBranch();
+
         List<UserSeenCard> cards = userSeenCardRepository.findByUser(user);
 
         Map<YKSLesson, Long> seenCardGroup = cards.stream()
+                .filter(card -> card.getCard().getFlashcard().getTopic().getLesson().getBranch() == null
+                        || card.getCard().getFlashcard().getTopic().getLesson().getBranch().equals(branch))
                 .collect(Collectors.groupingBy(
                         card -> card.getCard().getFlashcard().getTopic().getLesson().getYksLesson(),
                         Collectors.counting())

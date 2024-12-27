@@ -53,7 +53,7 @@ public class UserStatisticController {
 
     @GetMapping("/lesson")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<UserStatisticLessonResponse>> getCardsBylesson() {
+    public ResponseEntity<List<UserStatisticLessonResponse>> getCardsByLesson() {
 
         List<UserStatisticLessonResponse> response = cardService.getUserStatisticByLesson();
 
