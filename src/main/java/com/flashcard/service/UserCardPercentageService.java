@@ -30,52 +30,50 @@ public class UserCardPercentageService {
     public void save(User user, YKS yks, Branch branch) {
 
         List<Card> cards = cardRepository.findAll();
-        Map<Lesson, Long> lessonCountMap = cards.stream().collect(Collectors.groupingBy(
-                card -> card.getFlashcard().getTopic().getLesson(),
-                Collectors.counting()));
+        Map<Lesson, Long> lessonCountMap = cards.stream()
+                .collect(Collectors.groupingBy(
+                        card -> card.getFlashcard().getTopic().getLesson(),
+                        Collectors.counting()));
 
         List<Lesson> lessonList;
 
         if (yks.equals(YKS.TYT)) {
-            lessonList = cards
-                    .stream()
+            lessonList = cards.stream()
                     .map(card -> card.getFlashcard().getTopic().getLesson())
+                    .distinct()
                     .filter(lesson -> lesson.getYks().equals(YKS.TYT))
-                    .toList();
+                    .collect(Collectors.toList());
 
             saveCardPercentage(user, lessonList, lessonCountMap);
         } else if (yks.equals(YKS.AYT)) {
-            lessonList = cards
-                    .stream()
+            lessonList = cards.stream()
                     .map(card -> card.getFlashcard().getTopic().getLesson())
+                    .distinct()
                     .filter(lesson -> lesson.getYks().equals(YKS.AYT) && lesson.getBranch().equals(branch))
-                    .toList();
+                    .collect(Collectors.toList());
 
             saveCardPercentage(user, lessonList, lessonCountMap);
-
         } else {
             throw new IllegalArgumentException(Constants.WRONG_PARAMETER);
         }
-
     }
 
-    private void saveCardPercentage(User user, List<Lesson> lessonList, Map<Lesson, Long> lessonCountMap) {
-        List<UserCardPercentage> percentageList = new ArrayList<>();
-        UserCardPercentage percentage;
-        for (Lesson lesson : lessonList) {
-            int cardCount = Math.toIntExact(lessonCountMap.get(lesson));
-
-            percentage = new UserCardPercentage();
-            percentage.setUser(user);
-            percentage.setCompletedCard(0);
-            percentage.setLesson(lesson);
-            percentage.setTotalCard(cardCount);
-
-            percentageList.add(percentage);
-        }
+    void saveCardPercentage(User user, List<Lesson> lessonList, Map<Lesson, Long> lessonCountMap) {
+        List<UserCardPercentage> percentageList = lessonList.stream()
+                .map(lesson -> {
+                    int cardCount = Math.toIntExact(lessonCountMap.getOrDefault(lesson, 0L));  // null olmasi durumunda 0 döndür
+                    UserCardPercentage percentage = new UserCardPercentage();
+                    percentage.setUser(user);
+                    percentage.setCompletedCard(0);
+                    percentage.setLesson(lesson);
+                    percentage.setTotalCard(cardCount);
+                    return percentage;
+                })
+                .collect(Collectors.toList());
 
         userCardPercentageRepository.saveAll(percentageList);
     }
+
 
     public List<UserCardPercentage> getTyt() {
 
