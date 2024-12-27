@@ -51,9 +51,7 @@ public class DailyTargetService {
 
         Optional<DailyTarget> optionalDailyTarget = dailyTargetRepository.findByUserAndDay(user, today);
 
-        DailyTargetService proxy = applicationContext.getBean(DailyTargetService.class);
-
-        return optionalDailyTarget.orElseGet(proxy::createTarget);
+        return optionalDailyTarget.orElseGet(this::createTarget);
     }
 
 

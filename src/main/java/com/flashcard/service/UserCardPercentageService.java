@@ -11,7 +11,6 @@ import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.UserCardPercentageRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +53,6 @@ public class UserCardPercentageService {
 
     }
 
-    @Cacheable(value = "yksLesson",key = "#yks")
     public List<UserCardPercentage> getAllYks(YKS yks) {
 
         User user = authService.getCurrentUser();
@@ -66,7 +65,7 @@ public class UserCardPercentageService {
             UserCardPercentageService proxy = applicationContext.getBean(UserCardPercentageService.class);
             proxy.save(user);
 
-            return userCardPercentageRepository.findByUser(user);
+            return userCardPercentageRepository.findByUserAndLessonYks(user, yks);
         }
     }
 
@@ -80,7 +79,8 @@ public class UserCardPercentageService {
 
         if (userCardPercentage.getFlashCards() != null && !userCardPercentage.getFlashCards().contains(flashcard.getId())) {
             userCardPercentage.increaseCompletedCard(amount);
-            userCardPercentage.getFlashCards().add(flashcard.getId());
+            Set<Long> flashcards = userCardPercentage.getFlashCards();
+            flashcards.add(flashcard.getId());
 
             userCardPercentageRepository.save(userCardPercentage);
         }
