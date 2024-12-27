@@ -30,7 +30,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             "JOIN Flashcard f ON c.flashcard_id = f.id " +
             "JOIN Topic t ON f.topic_id = t.id " +
             "JOIN Lesson l ON t.lesson_id = l.id " +
-            "WHERE (:branch is null or l.branch = :branch) " +
+            "WHERE (l.branch is null or (:branch is null or l.branch = :branch)) " +
             "ORDER BY RANDOM() LIMIT 100", nativeQuery = true)
     List<Card> findRandomCardsByBranch(@Param("branch") String branch);
 }
