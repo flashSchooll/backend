@@ -42,7 +42,7 @@ public class UserCardPercentageService {
                     .map(card -> card.getFlashcard().getTopic().getLesson())
                     .distinct()
                     .filter(lesson -> lesson.getYks().equals(YKS.TYT))
-                    .collect(Collectors.toList());
+                    .toList();
 
             saveCardPercentage(user, lessonList, lessonCountMap);
         } else if (yks.equals(YKS.AYT)) {
@@ -50,7 +50,7 @@ public class UserCardPercentageService {
                     .map(card -> card.getFlashcard().getTopic().getLesson())
                     .distinct()
                     .filter(lesson -> lesson.getYks().equals(YKS.AYT) && lesson.getBranch().equals(branch))
-                    .collect(Collectors.toList());
+                    .toList();
 
             saveCardPercentage(user, lessonList, lessonCountMap);
         } else {
@@ -68,8 +68,7 @@ public class UserCardPercentageService {
                     percentage.setLesson(lesson);
                     percentage.setTotalCard(cardCount);
                     return percentage;
-                })
-                .collect(Collectors.toList());
+                }).toList();
 
         userCardPercentageRepository.saveAll(percentageList);
     }

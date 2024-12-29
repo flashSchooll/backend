@@ -3,8 +3,8 @@ package com.flashcard.service;
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.repeatflashcard.response.RepeatFlashcardResponse;
 import com.flashcard.model.*;
-import com.flashcard.repository.RepeatFlashcardRepository;
 import com.flashcard.repository.FlashCardRepository;
+import com.flashcard.repository.RepeatFlashcardRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.repository.UserSeenCardRepository;
 import com.flashcard.security.services.AuthService;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service

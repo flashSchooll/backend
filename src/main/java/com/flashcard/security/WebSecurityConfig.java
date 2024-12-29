@@ -77,7 +77,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                                         "/swagger-ui.html"
                                 ).permitAll() // /api/test/** endpoint'lerine erişim izin veriliyor.
                                 .requestMatchers("/favicon.ico.").permitAll()  // /api/test/** endpoint'lerine erişim izin veriliyor.
-                                .requestMatchers("/swagger-ui.html").permitAll()
                                 .anyRequest().authenticated()  // Diğer tüm endpoint'ler kimlik doğrulaması gerektiriyor.
                 );
 
@@ -101,13 +100,13 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         };
     }
 
-    @Bean
+ /*   @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(
                 "/swagger-ui/**", "/v3/api-docs/**"
         );
     }
-
+*/
 
     protected void configure(WebSecurity web)  {
         web.ignoring().requestMatchers(
@@ -118,7 +117,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 "/webjars/**");
     }
 
-    @Bean
+/*    @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> request.requestMatchers("/v3/api-docs/**",
                         "/swagger-ui/**",
@@ -126,5 +125,5 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated());
         return http.build();
     }
-
+*/
 }

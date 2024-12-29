@@ -29,8 +29,8 @@ public class SwaggerConfig {
                         )
                 )
                 .info(new Info()
-                        .title("Case Management Service")
-                        .description("Claim Event Information")
+                        .title("Flashcard Api Service")
+                        .description("Flashcard api documentation")
                         .version("1.0")
                 );
     }

@@ -2,7 +2,6 @@ package com.flashcard.controller.lesson.user;
 
 import com.flashcard.controller.lesson.user.response.TYTLessonCardSeenCountResponse;
 import com.flashcard.model.UserCardPercentage;
-import com.flashcard.model.enums.YKS;
 import com.flashcard.service.UserCardPercentageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -5,13 +5,14 @@ import java.util.UUID;
 
 public class GetRandomPass {
 
+    private static final Random random = new Random();
+
     public static long getRandomNum() {
 
-        Random r = new Random();
         long low = 0;
         long high = 99999;
 
-        return r.nextLong(high - low) + low;
+        return random.nextLong(high - low) + low;
     }
 
     public static String getRandomString() {
