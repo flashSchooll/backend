@@ -8,14 +8,14 @@ import java.time.Duration;
 
 @Setter
 @Getter
-public class UserCardSeenResponse {
+public class UserSeenCardResponse {
 
     private final String frontFace;
     private final String backFace;
     private final Boolean stateOfKnowledge;
     private final Duration duration;
 
-    public UserCardSeenResponse(UserSeenCard seenCard) {
+    public UserSeenCardResponse(UserSeenCard seenCard) {
         this.frontFace = seenCard.getCard().getFrontFace();
         this.backFace = seenCard.getCard().getBackFace();
         this.stateOfKnowledge = seenCard.getStateOfKnowledge();

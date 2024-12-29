@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name = "MyCard")
-@Table(name = "my_card")
+@Table(name = "my_card",
+        indexes = {
+                @Index(name = "idx_my_card_user_card", columnList = "user,card"),
+                @Index(name = "idx_my_card_user", columnList = "user")
+        })
 @Getter
 @Setter
 @AllArgsConstructor

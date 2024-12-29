@@ -1,7 +1,7 @@
 package com.flashcard.controller.usercardseen;
 
 import com.flashcard.controller.usercardseen.request.UserSeenCardSaveRequest;
-import com.flashcard.controller.usercardseen.response.UserCardSeenResponse;
+import com.flashcard.controller.usercardseen.response.UserSeenCardResponse;
 import com.flashcard.model.UserSeenCard;
 import com.flashcard.service.UserSeenCardService;
 import jakarta.validation.Valid;
@@ -14,52 +14,52 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/user-card-seen")
+@RequestMapping("/api/user-seen-card")
 @RequiredArgsConstructor
-public class UserCardSeenController {
+public class UserSeenCardController {
 
     private final UserSeenCardService userCardSeenService;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<List<UserCardSeenResponse>> save(@RequestBody @Valid UserSeenCardSaveRequest userCardSeenSaveRequest) {
+    public ResponseEntity<List<UserSeenCardResponse>> save(@RequestBody @Valid UserSeenCardSaveRequest userCardSeenSaveRequest) {
 
         List<UserSeenCard> userSeenCard = userCardSeenService.save(userCardSeenSaveRequest);
 
-        List<UserCardSeenResponse> response = userSeenCard.stream().map(UserCardSeenResponse::new).toList();
+        List<UserSeenCardResponse> response = userSeenCard.stream().map(UserSeenCardResponse::new).toList();
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<List<UserCardSeenResponse>> get(@PathVariable Long flashcardId) {
+    public ResponseEntity<List<UserSeenCardResponse>> get(@PathVariable Long flashcardId) {
 
         List<UserSeenCard> response = userCardSeenService.getAllSeenCardsByFlashcard(flashcardId);
 
-        List<UserCardSeenResponse> responseList = response.stream().map(UserCardSeenResponse::new).toList();
+        List<UserSeenCardResponse> responseList = response.stream().map(UserSeenCardResponse::new).toList();
 
         return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/unknown/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<List<UserCardSeenResponse>> getUnknown(@PathVariable Long flashcardId) {
+    public ResponseEntity<List<UserSeenCardResponse>> getUnknown(@PathVariable Long flashcardId) {
 
         List<UserSeenCard> response = userCardSeenService.getUnknownSeenCardsByFlashcard(flashcardId);
 
-        List<UserCardSeenResponse> responseList = response.stream().map(UserCardSeenResponse::new).toList();
+        List<UserSeenCardResponse> responseList = response.stream().map(UserSeenCardResponse::new).toList();
 
         return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/known/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<List<UserCardSeenResponse>> getKnown(@PathVariable Long flashcardId) {
+    public ResponseEntity<List<UserSeenCardResponse>> getKnown(@PathVariable Long flashcardId) {
 
         List<UserSeenCard> response = userCardSeenService.getKnownSeenCardsByFlashcard(flashcardId);
 
-        List<UserCardSeenResponse> responseList = response.stream().map(UserCardSeenResponse::new).toList();
+        List<UserSeenCardResponse> responseList = response.stream().map(UserSeenCardResponse::new).toList();
 
         return ResponseEntity.ok(responseList);
     }

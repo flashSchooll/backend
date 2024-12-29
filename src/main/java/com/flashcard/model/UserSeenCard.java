@@ -11,7 +11,11 @@ import lombok.Setter;
 import java.time.Duration;
 
 @Entity(name = "UserSeenCard")
-@Table(name = "user_seen_card")
+@Table(name = "user_seen_card",
+        indexes = {
+                @Index(name = "idx_user_seen_card_user", columnList = "user"),
+                @Index(name = "idx_user_seen_card_user_card", columnList = "user,card")
+        })
 @Getter
 @Setter
 @AllArgsConstructor

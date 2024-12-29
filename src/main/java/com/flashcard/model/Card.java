@@ -11,7 +11,10 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity(name = "Card")
-@Table(name = "card")
+@Table(name = "card",
+        indexes = {
+                @Index(name = "idx_card_flashcard", columnList = "flashcard")
+        })
 @Getter
 @Setter
 @AllArgsConstructor

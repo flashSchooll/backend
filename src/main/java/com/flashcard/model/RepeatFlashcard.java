@@ -11,12 +11,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(name = "RepeatFlashcard")
-@Table(name = "repeat_flashcard")
+@Table(name = "repeat_flashcard",
+        indexes = {
+                @Index(name = "idx_repeat_flashcard_user", columnList = "user"),
+                @Index(name = "idx_repeat_flashcard_topic", columnList = "topic")
+        })
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RepeatFlashcard {// tekrar karlarım bilgisi tutar
+public class RepeatFlashcard {// tekrar kartlarım bilgisi tutar
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

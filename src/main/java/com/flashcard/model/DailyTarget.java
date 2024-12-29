@@ -13,7 +13,12 @@ import java.time.LocalDate;
 @Getter
 @RequiredArgsConstructor
 @Entity(name = "DailyTarget")
-@Table(name = "daily_target")
+@Table(name = "daily_target",
+        indexes = {
+                @Index(name = "idx_daily_target_user", columnList = "user"),
+                @Index(name = "idx_daily_target_day", columnList = "day"),
+                @Index(name = "idx_daily_target_user_day", columnList = "user,day")
+        })
 public class DailyTarget {// günlük hedef bilgisini tutar
 
     @Id

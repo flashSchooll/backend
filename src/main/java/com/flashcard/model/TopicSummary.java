@@ -10,7 +10,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name = "TopicSummary")
-@Table(name = "topic_summary")
+@Table(name = "topic_summary",
+        indexes = {
+                @Index(name = "idx_topic_topic", columnList = "topic"),
+                @Index(name = "idx_topic_summary", columnList = "summary")
+        })
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,6 +30,6 @@ public class TopicSummary {// konu özetleri bilgisini tutar
     private Topic topic;
 
     @NotBlank
-    @Size(min = 0,max = 1024)
+    @Size(min = 0, max = 1024)
     private String summary;
 }

@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name = "Flashcard")
-@Table(name = "flashcard")
+@Table(name = "flashcard",
+        indexes = {
+                @Index(name = "idx_flashcard_cardName", columnList = "cardName"),
+                @Index(name = "idx_flashcard_topic", columnList = "topic")
+        })
 @Getter
 @Setter
 @AllArgsConstructor

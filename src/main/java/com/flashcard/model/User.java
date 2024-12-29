@@ -21,6 +21,9 @@ import java.util.Set;
 @Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
+        },
+        indexes = {
+                @Index(name = "idx_users_email", columnList = "email")
         })
 public class User {// kullanıcı bilgisini tutar
 

@@ -8,7 +8,10 @@ import lombok.*;
 import java.time.Month;
 
 @Entity(name = "MonthDailyTarget")
-@Table(name = "month_daily_target")
+@Table(name = "month_daily_target",
+        indexes = {
+                @Index(name = "idx_month_daily_target_user_month", columnList = "user,month")
+        })
 @Getter
 @Setter
 @AllArgsConstructor

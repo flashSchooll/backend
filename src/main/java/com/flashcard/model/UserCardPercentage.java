@@ -13,7 +13,12 @@ import java.util.Set;
 @Getter
 @RequiredArgsConstructor
 @Entity(name = "UserCardPercentage")
-@Table(name = "user_card_percentage")
+@Table(name = "user_card_percentage",
+        indexes = {
+                @Index(name = "idx_user_card_percentage_user", columnList = "user"),
+                @Index(name = "idx_user_card_percentage_lesson", columnList = "lesson"),
+                @Index(name = "idx_user_card_percentage_user_lesson", columnList = "user,lesson")
+        })
 public class UserCardPercentage {// kullanıcı kart tamamlama yüzdesini tutar
 
     @Id

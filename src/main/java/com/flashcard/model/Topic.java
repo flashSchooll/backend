@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name = "Topic")
-@Table(name = "topic")
+@Table(name = "topic",
+        indexes = {
+                @Index(name = "idx_topic_lesson", columnList = "lesson"),
+                @Index(name = "idx_topic_subject", columnList = "subject")
+        })
 @Getter
 @Setter
 @AllArgsConstructor
