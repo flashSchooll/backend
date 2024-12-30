@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 public class RepeatFlashcardResponse {
 
+    private final Long id;
     private final String topic;
     private final String lesson;
     private final Long topicId;
@@ -19,7 +20,8 @@ public class RepeatFlashcardResponse {
     private final LocalDateTime repeatTime;
     private final byte[] icon;
 
-    public RepeatFlashcardResponse(RepeatFlashcard repeatFlashcard,List<Long> flashcardIds) {
+    public RepeatFlashcardResponse(RepeatFlashcard repeatFlashcard, List<Long> flashcardIds) {
+        this.id = repeatFlashcard.getId();
         this.topic = repeatFlashcard.getTopic().getSubject();
         this.lesson = repeatFlashcard.getTopic().getLesson().getYksLesson().label;
         this.topicId = repeatFlashcard.getTopic().getId();

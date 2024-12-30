@@ -15,7 +15,7 @@ public class UserSeenCardSaveRequest {
     private Long flashcardId;
 
     @Valid
-    private List<UserCardSeenRequest> userCardSeenRequestList;
+    private List<UserSeenCardRequest> userCardSeenRequestList;
 
     @NotNull
     private Long minute;

@@ -1,7 +1,7 @@
 package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
-import com.flashcard.controller.usercardseen.request.UserCardSeenRequest;
+import com.flashcard.controller.usercardseen.request.UserSeenCardRequest;
 import com.flashcard.controller.usercardseen.request.UserSeenCardSaveRequest;
 import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.*;
@@ -58,7 +58,7 @@ public class UserSeenCardService {
 
             UserSeenCard userSeenCard;
 
-            for (UserCardSeenRequest request : userCardSeenSaveRequest.getUserCardSeenRequestList()) {
+            for (UserSeenCardRequest request : userCardSeenSaveRequest.getUserCardSeenRequestList()) {
                 Card card = cardRepository.findById(request.getCardId()).orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
                 userSeenCard = new UserSeenCard();
