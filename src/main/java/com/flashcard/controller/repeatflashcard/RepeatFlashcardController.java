@@ -20,7 +20,6 @@ import java.util.List;
 public class RepeatFlashcardController {
 
     private final RepeatFlashcardService repeatFlashcardService;
-    private final UserSeenCardRepository userSeenCardRepository;
 
     @PostMapping("/flashcard")
     @PreAuthorize("hasRole('USER')")

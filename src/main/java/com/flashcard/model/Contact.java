@@ -28,7 +28,7 @@ public class Contact {
     @NotBlank
     private String topic;
 
-    @NotBlank
+    @NotNull
     private Boolean seen = false;
 
     public void updateContact() {
