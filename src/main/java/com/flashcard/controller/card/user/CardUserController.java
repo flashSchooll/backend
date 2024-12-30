@@ -35,6 +35,17 @@ public class CardUserController {
         return ResponseEntity.ok(cardResponses);
     }
 
+    @GetMapping("/{cardId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<CardResponse> get(@PathVariable Long cardId) {
+
+        Card response = cardService.getCard(cardId);
+
+        CardResponse cardResponses = new CardResponse(response);
+
+        return ResponseEntity.ok(cardResponses);
+    }
+
     @GetMapping("/explore")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> explore() {

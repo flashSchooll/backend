@@ -249,4 +249,10 @@ public class CardService {
                 .toList();
     }
 
+    public Card getCard(Long cardId) {
+        Objects.requireNonNull(cardId);
+
+        return cardRepository.findById(cardId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
+    }
 }
