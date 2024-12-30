@@ -10,6 +10,8 @@ import com.flashcard.repository.TopicRepository;
 import com.flashcard.repository.TopicSummaryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +38,7 @@ public class TopicSummaryService {
         summary.setTopic(topic);
         summary.setSummary(request.getSummary());
 
-        return   topicSummaryRepository.save(summary);
+        return topicSummaryRepository.save(summary);
     }
 
     @Transactional
@@ -49,7 +51,7 @@ public class TopicSummaryService {
 
         summary.setSummary(request.getSummary());
 
-      return  topicSummaryRepository.save(summary);
+        return topicSummaryRepository.save(summary);
     }
 
     @Transactional
@@ -59,10 +61,10 @@ public class TopicSummaryService {
         TopicSummary summary = topicSummaryRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_SUMMARY_NOT_FOUND));
 
-       topicSummaryRepository.delete(summary);
+        topicSummaryRepository.delete(summary);
     }
 
-    @Cacheable(value = "topicSummary",key = "#summaryId")
+    @Cacheable(value = "topicSummary", key = "#summaryId")
     public TopicSummary get(Long summaryId) {
         Objects.requireNonNull(summaryId);
 
@@ -70,7 +72,7 @@ public class TopicSummaryService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_SUMMARY_NOT_FOUND));
     }
 
-    @Cacheable(value = "topicSummaries",key = "#topicId")
+    @Cacheable(value = "topicSummaries", key = "#topicId")
     public List<TopicSummaryResponse> getAllByTopic(Long topicId) {
         Objects.requireNonNull(topicId);
 
@@ -80,5 +82,21 @@ public class TopicSummaryService {
         List<TopicSummary> summaries = topicSummaryRepository.findByTopic(topic);
 
         return summaries.stream().map(TopicSummaryResponse::new).toList();
+    }
+
+    @Cacheable(value = "topicSummaries", key = "#topicId")
+    public Page<TopicSummaryResponse> getAllByTopic(Pageable pageable,Long topicId) {
+        Objects.requireNonNull(topicId);
+
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+
+        Page<TopicSummary> summaries = topicSummaryRepository.findByTopic(topic,pageable);
+
+        return summaries.map(TopicSummaryResponse::new);
+    }
+
+    public Page<TopicSummaryResponse> getAll(Pageable pageable) {
+        return topicSummaryRepository.findAll(pageable).map(TopicSummaryResponse::new);
     }
 }

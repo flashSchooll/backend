@@ -1,5 +1,6 @@
 package com.flashcard.controller.topicsummary.admin;
 
+import com.flashcard.controller.flashcard.admin.response.FlashcardResponse;
 import com.flashcard.controller.topicsummary.request.TopicSummarySaveRequest;
 import com.flashcard.controller.topicsummary.request.TopicSummaryUpdateRequest;
 import com.flashcard.controller.topicsummary.response.TopicSummaryResponse;
@@ -7,6 +8,10 @@ import com.flashcard.model.TopicSummary;
 import com.flashcard.service.TopicSummaryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -59,11 +64,17 @@ public class TopicSummaryAdminController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/get-all/{topicId}")
+    @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<TopicSummaryResponse>> getAll(@PathVariable Long topicId) {
+    public ResponseEntity<Page<TopicSummaryResponse>> getAll(@RequestParam(required = false) Long topicId,
+                                                             @PageableDefault(sort = "summary", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<TopicSummaryResponse> response;
 
-        List<TopicSummaryResponse> response = topicSummaryService.getAllByTopic(topicId);
+        if (topicId != null) {
+            response = topicSummaryService.getAllByTopic(pageable, topicId);
+        } else {
+            response = topicSummaryService.getAll(pageable);
+        }
 
         return ResponseEntity.ok(response);
     }
