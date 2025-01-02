@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13
+    container_name: flashcard-db
+    environment:
+      POSTGRES_DB: StudyHive
+      POSTGRES_USER: StudyHive
+      POSTGRES_PASSWORD: StudyHive
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flashcard-network
+
+  app:
+    build: .
+    container_name: flashcard-app
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/StudyHive
+      SPRING_DATASOURCE_USERNAME: StudyHive
+      SPRING_DATASOURCE_PASSWORD: StudyHive
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - flashcard-network
+
+networks:
+  flashcard-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
