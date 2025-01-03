@@ -1,9 +1,7 @@
 package com.flashcard.controller.authcontroller;
 
 import com.flashcard.constants.Constants;
-import com.flashcard.controller.authcontroller.request.LoginRequest;
-import com.flashcard.controller.authcontroller.request.SignupRequest;
-import com.flashcard.controller.authcontroller.request.UpdatePasswordRequest;
+import com.flashcard.controller.authcontroller.request.*;
 import com.flashcard.controller.authcontroller.response.JwtResponse;
 import com.flashcard.payload.response.MessageResponse;
 import com.flashcard.security.services.AuthService;
@@ -46,5 +44,34 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse(Constants.PASSWORD_SUCCESSFULLY_UPDATED));
     }
+
+    @PutMapping("/forgot-password")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Object> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+
+        authService.forgotPassword(forgotPasswordRequest);
+
+        return ResponseEntity.ok("Mail başarıyla gönderildi");
+    }
+
+    @PutMapping("/reset-password")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Boolean> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+
+        Boolean reset = authService.resetPassword(resetPasswordRequest);
+
+        return ResponseEntity.ok(reset);
+    }
+
+    @PutMapping("/new-password")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Object> newPassword(@Valid @RequestBody NewPasswordRequest newPasswordRequest) {
+
+         authService.newPassword(newPasswordRequest);
+
+        return ResponseEntity.ok("Şifre başarıyla oluşturuldu");
+    }
+
+
 
 }

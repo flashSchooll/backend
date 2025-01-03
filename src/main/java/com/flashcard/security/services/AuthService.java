@@ -1,20 +1,24 @@
 package com.flashcard.security.services;
 
 import com.flashcard.constants.Constants;
-import com.flashcard.controller.authcontroller.request.LoginRequest;
-import com.flashcard.controller.authcontroller.request.SignupRequest;
-import com.flashcard.controller.authcontroller.request.UpdatePasswordRequest;
+import com.flashcard.controller.authcontroller.request.*;
 import com.flashcard.controller.authcontroller.response.JwtResponse;
 import com.flashcard.exception.BadRequestException;
 import com.flashcard.exception.ResourceNotFoundException;
+import com.flashcard.model.PasswordResetCode;
 import com.flashcard.model.Role;
 import com.flashcard.model.User;
 import com.flashcard.model.enums.ERole;
+import com.flashcard.repository.EmailSender;
+import com.flashcard.repository.PasswordResetRepository;
 import com.flashcard.repository.RoleRepository;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.jwt.JwtUtils;
+import com.flashcard.service.EmailService;
+import com.flashcard.service.PasswordResetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,10 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +40,10 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordResetService passwordResetService;
+    private final EmailSender emailSender;
+    private final EmailService emailService;
+    private final PasswordResetRepository passwordResetRepository;
 
     @Transactional
     public void register(@Valid SignupRequest signUpRequest, MultipartFile file) {
@@ -160,5 +165,69 @@ public class AuthService {
         }
 
         return formattedName.toString().trim();
+    }
+
+    public void forgotPassword(@Valid ForgotPasswordRequest forgotPasswordRequest) {
+        User user = userRepository.findByEmail(forgotPasswordRequest.getEmail()).orElseThrow(() ->
+                new ResourceNotFoundException(Constants.USER_NOT_FOUND));
+
+        String code = codeGenerate();
+        PasswordResetCode passwordResetToken = new PasswordResetCode(code, LocalDateTime.now(), LocalDateTime.now().plusDays(1), user);
+        passwordResetService.savePasswordResetToken(passwordResetToken);
+        userRepository.save(user);
+        emailSender.send(
+                user.getEmail(),
+                emailService.buildForgotPasswordEmail(user.getUserName(), forgotPasswordRequest, code));
+
+    }
+
+
+    public static String codeGenerate() {
+        Random random = new Random();
+        StringBuilder kod = new StringBuilder();
+
+        for (int i = 0; i < 7; i++) {
+            // 0-9 arasında rastgele bir rakam seç
+            int rakam = random.nextInt(10);
+            kod.append(rakam);
+        }
+
+        return kod.toString();
+    }
+
+    @Transactional
+    public Boolean resetPassword(@Valid ResetPasswordRequest resetPasswordRequest) {
+        User user = userRepository.findByEmail(resetPasswordRequest.getEmail()).orElseThrow(() ->
+                new ResourceNotFoundException(Constants.USER_NOT_FOUND));
+
+        Optional<PasswordResetCode> resetCode = passwordResetRepository.findByUserAndCode(user, resetPasswordRequest.getCode());
+
+        if (resetCode.isPresent()){
+           LocalDateTime expiresAt=resetCode.get().getExpiresAt();
+
+           if (LocalDateTime.now().isAfter(expiresAt)){
+               throw new BadRequestException("Kodun süresi doldu lütfen yeni kod alınız");
+           }
+            user.setPassword(null);
+
+            userRepository.save(user);
+
+            return  true;
+        }
+
+        return false;
+    }
+
+    @Transactional
+    public void newPassword(@Valid NewPasswordRequest newPasswordRequest) {
+        if (!newPasswordRequest.getPassword().equals(newPasswordRequest.getPasswordAgain())) {
+            throw new IllegalArgumentException("Şifreler birbiriyle uyuşmuyor");
+        }
+        User user = userRepository.findByEmail(newPasswordRequest.getEmail()).orElseThrow(() ->
+                new ResourceNotFoundException(Constants.USER_NOT_FOUND));
+
+        user.setPassword(passwordEncoder.encode(newPasswordRequest.getPassword()));
+
+        userRepository.save(user);
     }
 }

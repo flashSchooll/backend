@@ -44,7 +44,6 @@ public class User {// kullanıcı bilgisini tutar
     @Email
     private String email;
 
-    @NotBlank
     private String password;
 
     @NotNull
