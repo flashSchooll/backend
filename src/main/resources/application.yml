@@ -1,5 +1,9 @@
 server:
   port: 8081
+  error:
+    include-binding-errors: always
+    include-message: always
+    include-stacktrace: always
 
 spring:
   datasource:
@@ -23,11 +27,37 @@ spring:
     jcache:
       config:
         classpath: ehcache.xml
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: flashschool86@gmail.com
+    password: iiatthpdzjbkdzpd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 # App Properties
-flashSchool:
-  app:
-    jwtSecret: 5Xz3Pb8+fttP9V1phnx5hOqWzHj2fFg14jSt+zBQquOe2c0qGZ7m+NqzNH5sDhq1zqD1+8Am00uP7XujMxw5yDsg8Rh3yPppT2yAl4h0eEOB2LZZnLQDb3ZPz3Jt5g==
-    jwtExpirationMs: 86400000
+management: #actuator
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  info:
+    env:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled:  true
+  flashSchool:
+    app:
+      jwtSecret: 5Xz3Pb8+fttP9V1phnx5hOqWzHj2fFg14jSt+zBQquOe2c0qGZ7m+NqzNH5sDhq1zqD1+8Am00uP7XujMxw5yDsg8Rh3yPppT2yAl4h0eEOB2LZZnLQDb3ZPz3Jt5g==
+      jwtExpirationMs: 86400000
+      mailAddress: flashschool86@gmail.com
+      backendLink: https://ecommerce-backend-v2.herokuapp.com/
 
 logging:
   level:
@@ -35,3 +65,9 @@ logging:
       springframework:
         security: DEBUG
         web: DEBUG
+
+info:
+  application:
+    name: 'StudyHive Backend App'
+    description: 'This is StudyHive Flashcard Backend Project'
+    version: '@project.version@'
