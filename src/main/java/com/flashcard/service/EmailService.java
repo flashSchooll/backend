@@ -13,7 +13,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 
-
 @Service
 @RequiredArgsConstructor
 public class EmailService implements EmailSender {
@@ -28,22 +27,21 @@ public class EmailService implements EmailSender {
     @Override
     public void send(String to, String email) {
         try {
-            MimeMessage mimeMessage =  mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,"UTF-8");
-            helper.setText(email,true);
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
+            helper.setText(email, true);
             helper.setTo(to);
             helper.setSubject("Welcome to the StudyHive");
             helper.setFrom(mailAddress);
             mailSender.send(mimeMessage);
-        }catch (MessagingException e){
-            logger.error("Mail gönderiliken hata oluştu",e);
+        } catch (MessagingException e) {
+            logger.error("Mail gönderiliken hata oluştu", e);
             throw new IllegalStateException("Mail gönderilirken hata oluştu");
         }
     }
 
 
-
-    public String buildForgotPasswordEmail(String name, ForgotPasswordRequest forgotPasswordRequest,String code) {
+    public String buildForgotPasswordEmail(String name, String code) {
         return "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
                 "  <head>\n" +
@@ -528,7 +526,7 @@ public class EmailService implements EmailSender {
                 "                  <tr>\n" +
                 "                    <td class=\"content-cell\">\n" +
                 "                      <div class=\"f-fallback\">\n" +
-                "                        <h1>Hi "+ name +",</h1>\n" +
+                "                        <h1>Hi " + name + ",</h1>\n" +
                 "                        <p>\n" +
                 "                          You recently requested to reset your password for your\n" +
                 "                          StudyHive account. Use this code to reset\n" +
@@ -564,7 +562,7 @@ public class EmailService implements EmailSender {
                 "                                      class=\"f-fallback button button--green\"\n" +
                 "                                      target=\"_blank\"\n" +
                 "                                      style=\"color: white;\"\n" +
-                "                                      >"+ code +"</a\n" +
+                "                                      >" + code + "</a\n" +
                 "                                    >\n" +
                 "                                  </td>\n" +
                 "                                </tr>\n" +
@@ -572,14 +570,6 @@ public class EmailService implements EmailSender {
                 "                            </td>\n" +
                 "                          </tr>\n" +
                 "                        </table>\n" +
-                "                        <p>\n" +
-                "                          For security, this request was received from a\n" +
-                "                          <a href=\"#\">"+ forgotPasswordRequest.getOperatingSystem() +"</a> device using\n" +
-                "                          <a href=\"#\">"+ forgotPasswordRequest.getBrowser() +"</a>. If you did not request a\n" +
-                "                          password reset, please ignore this email or\n" +
-                "                          <a href=\"mailto:aslandubertas@gmail.com\">contact support</a> if you\n" +
-                "                          have questions.\n" +
-                "                        </p>\n" +
                 "                        <p>Thanks, <br />The StudyHive Team</p>\n" +
                 "                        <!-- Sub copy -->\n" +
                 "                        <table class=\"body-sub\" role=\"presentation\">\n" +
@@ -622,11 +612,6 @@ public class EmailService implements EmailSender {
                 "  </body>\n" +
                 "</html>\n";
     }
-
-
-
-
-
 
 
 }

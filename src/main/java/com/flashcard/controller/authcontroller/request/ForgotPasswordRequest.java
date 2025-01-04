@@ -14,6 +14,4 @@ public class ForgotPasswordRequest {
 
     @Email
     private String email;
-    private String operatingSystem;//todo açıklamayı kontrol et
-    private String browser;
 }

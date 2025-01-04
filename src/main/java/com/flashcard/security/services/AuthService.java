@@ -178,7 +178,7 @@ public class AuthService {
         userRepository.save(user);
         emailSender.send(
                 user.getEmail(),
-                emailService.buildForgotPasswordEmail(user.getUserName(), forgotPasswordRequest, code));
+                emailService.buildForgotPasswordEmail(user.getUserName(), code));
 
     }
 
@@ -203,17 +203,17 @@ public class AuthService {
 
         Optional<PasswordResetCode> resetCode = passwordResetRepository.findByUserAndCode(user, resetPasswordRequest.getCode());
 
-        if (resetCode.isPresent()){
-           LocalDateTime expiresAt=resetCode.get().getExpiresAt();
+        if (resetCode.isPresent()) {
+            LocalDateTime expiresAt = resetCode.get().getExpiresAt();
 
-           if (LocalDateTime.now().isAfter(expiresAt)){
-               throw new BadRequestException("Kodun süresi doldu lütfen yeni kod alınız");
-           }
+            if (LocalDateTime.now().isAfter(expiresAt)) {
+                throw new BadRequestException("Kodun süresi doldu lütfen yeni kod alınız");
+            }
             user.setPassword(null);
 
             userRepository.save(user);
 
-            return  true;
+            return true;
         }
 
         return false;

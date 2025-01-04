@@ -17,7 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -92,45 +96,54 @@ public class UserService {
 
         // Resmi yükle
         BufferedImage inputImage = ImageIO.read(file.getInputStream());
+        if (inputImage == null) {
+            throw new IllegalArgumentException("Invalid image file");
+        }
 
-        // Resmi yeniden boyutlandır (isteğe bağlı, örneğin yarıya indiriyoruz)
+        // Resmi yeniden boyutlandır
         int width = inputImage.getWidth() / 2;
         int height = inputImage.getHeight() / 2;
-        BufferedImage outputImage = new BufferedImage(width, height, inputImage.getType());
+        BufferedImage outputImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = outputImage.createGraphics();
         g2d.drawImage(inputImage, 0, 0, width, height, null);
         g2d.dispose();
 
-        // JPEG formatında kaliteyi azaltarak kaydetmeye çalış
+        // Sıkıştır ve kaydet
+        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+        if (!writers.hasNext()) {
+            throw new UnsupportedOperationException("JPEG writer not available");
+        }
+        ImageWriter writer = writers.next();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
+        writer.setOutput(ios);
 
-        // Kaliteyi %70 yapıyoruz, gerekirse bu değeri değiştirebilirsiniz
-        javax.imageio.ImageWriteParam param = new javax.imageio.ImageWriteParam(null);
-        param.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
-        param.setCompressionQuality(0.7f);  // Kaliteyi %70'e ayarlıyoruz
+        ImageWriteParam param = writer.getDefaultWriteParam();
+        if (param.canWriteCompressed()) {
+            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            param.setCompressionQuality(0.7f); // Başlangıç kalitesi
+        }
 
-        // Resmi byte array olarak yaz
-        ImageIO.write(outputImage, "jpg", baos);
-        baos.flush();
+        writer.write(null, new IIOImage(outputImage, null, null), param);
+        writer.dispose();
+        ios.close();
         byte[] imageData = baos.toByteArray();
-        baos.close();
 
-        // Dosya boyutunu kontrol et (1.5 MB = 1.5 * 1024 * 1024 byte)
+        // Dosya boyutunu kontrol et ve kaliteyi azalt
         while (imageData.length > 1.5 * 1024 * 1024) {
-            // Kaliteyi biraz daha düşür (örneğin %50'ye)
-            param.setCompressionQuality(0.5f);
-
-            baos = new ByteArrayOutputStream();
-            ImageIO.write(outputImage, "jpg", baos);
-            baos.flush();
+            baos.reset();
+            param.setCompressionQuality(param.getCompressionQuality() - 0.1f);
+            if (param.getCompressionQuality() <= 0.1f) {
+                throw new IOException("Cannot reduce image size below 1.5 MB");
+            }
+            writer.write(null, new IIOImage(outputImage, null, null), param);
             imageData = baos.toByteArray();
-            baos.close();
         }
 
         // Kullanıcıya fotoğrafı kaydet
         user.setProfilePhoto(imageData);
         userRepository.save(user);
-    }
+}
 
     public byte[] getImage() {
 
