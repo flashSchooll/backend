@@ -18,7 +18,6 @@ import com.flashcard.service.EmailService;
 import com.flashcard.service.PasswordResetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,6 +43,8 @@ public class AuthService {
     private final EmailSender emailSender;
     private final EmailService emailService;
     private final PasswordResetRepository passwordResetRepository;
+
+    private static final Random random = new Random();
 
     @Transactional
     public void register(@Valid SignupRequest signUpRequest, MultipartFile file) {
@@ -183,7 +184,7 @@ public class AuthService {
 
 
     public static String codeGenerate() {
-        Random random = new Random();
+
         StringBuilder kod = new StringBuilder();
 
         for (int i = 0; i < 7; i++) {

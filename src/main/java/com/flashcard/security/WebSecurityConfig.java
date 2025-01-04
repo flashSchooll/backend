@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -100,13 +99,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         };
     }
 
- /*   @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers(
-                "/swagger-ui/**", "/v3/api-docs/**"
-        );
-    }
-*/
 
     protected void configure(WebSecurity web)  {
         web.ignoring().requestMatchers(
@@ -117,13 +109,4 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 "/webjars/**");
     }
 
-/*    @Bean
-    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request.requestMatchers("/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger-ui.html").permitAll()
-                .anyRequest().authenticated());
-        return http.build();
-    }
-*/
 }

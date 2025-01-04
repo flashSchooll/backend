@@ -4,8 +4,8 @@ import com.flashcard.constants.Constants;
 import com.flashcard.controller.statistic.response.UserRosetteStatistic;
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.exception.BadRequestException;
-import com.flashcard.model.dto.UserDTO;
 import com.flashcard.model.User;
+import com.flashcard.model.dto.UserDTO;
 import com.flashcard.model.enums.Branch;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
@@ -18,15 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.FileImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor

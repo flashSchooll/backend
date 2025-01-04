@@ -1,6 +1,5 @@
 package com.flashcard.controller.topicsummary.admin;
 
-import com.flashcard.controller.flashcard.admin.response.FlashcardResponse;
 import com.flashcard.controller.topicsummary.request.TopicSummarySaveRequest;
 import com.flashcard.controller.topicsummary.request.TopicSummaryUpdateRequest;
 import com.flashcard.controller.topicsummary.response.TopicSummaryResponse;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
