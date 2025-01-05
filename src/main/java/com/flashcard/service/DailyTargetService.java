@@ -7,10 +7,8 @@ import com.flashcard.repository.DailyTargetRepository;
 import com.flashcard.repository.MonthDailyTargetRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +25,6 @@ public class DailyTargetService {
     private final DailyTargetRepository dailyTargetRepository;
     private final AuthService authService;
     private final MonthDailyTargetRepository monthDailyTargetRepository;
-    private final ApplicationContext applicationContext;
-    private final JdbcTemplate jdbcTemplate;
 
     @Transactional
     public DailyTarget createTarget() {
@@ -43,7 +39,6 @@ public class DailyTargetService {
         return dailyTargetRepository.save(dailyTarget);
     }
 
-
     public DailyTarget getTarget() {
         LocalDate today = LocalDate.now();
 
@@ -53,7 +48,6 @@ public class DailyTargetService {
 
         return optionalDailyTarget.orElseGet(this::createTarget);
     }
-
 
     public Page<DailyTarget> getAllAdmin(String search, Pageable pageable) {
 
@@ -77,7 +71,6 @@ public class DailyTargetService {
 
         return monthDailyTargetRepository.findByUser(user);
     }
-
 
     public List<DailyTarget> getWeeklyTargets() {
 

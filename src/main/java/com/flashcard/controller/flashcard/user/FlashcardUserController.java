@@ -4,7 +4,6 @@ import com.flashcard.controller.flashcard.user.response.FlashcardSearchResponse;
 import com.flashcard.controller.flashcard.user.response.FlashcardUserResponse;
 import com.flashcard.model.Flashcard;
 import com.flashcard.service.FlashCardService;
-import com.flashcard.service.UserSeenCardService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,6 @@ import java.util.List;
 public class FlashcardUserController {
 
     private final FlashCardService flashCardService;
-    private final UserSeenCardService userSeenCardService;
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
@@ -41,6 +39,5 @@ public class FlashcardUserController {
 
         return ResponseEntity.ok(response);
     }
-
 
 }

@@ -1,6 +1,5 @@
 package com.flashcard.controller.flashcard.admin;
 
-
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.flashcard.admin.request.FlashcardSaveRequest;
 import com.flashcard.controller.flashcard.admin.request.FlashcardUpdateRequest;
@@ -16,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -48,7 +45,6 @@ public class FlashCardAdminController {
 
         return ResponseEntity.ok(flashcardResponse);
     }
-
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")

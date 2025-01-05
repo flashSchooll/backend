@@ -11,9 +11,7 @@ import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.CardFace;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.model.enums.YKSLesson;
-import com.flashcard.repository.CardRepository;
-import com.flashcard.repository.FlashCardRepository;
-import com.flashcard.repository.UserSeenCardRepository;
+import com.flashcard.repository.*;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -37,6 +35,8 @@ public class CardService {
     private final ApplicationContext applicationContext;
     private final UserSeenCardRepository userSeenCardRepository;
     private final AuthService authService;
+    private final RepeatFlashcardRepository repeatFlashcardRepository;
+    private final MyCardsRepository myCardsRepository;
 
     @Transactional
     public Card save(CardSaveRequest tytCardSaveRequest) throws BadRequestException {
@@ -93,7 +93,6 @@ public class CardService {
             throw new BadRequestException("Error processing image file: " + e.getMessage());
         }
     }
-
 
     @Transactional
     public Card update(CardUpdateRequest cardUpdateRequest) throws IOException {
@@ -168,22 +167,31 @@ public class CardService {
         return cardRepository.findByFlashcard(flashcard);
     }
 
-
     public List<Card> exploreForMe() {
 
-        long cardCount = cardRepository.count();
+        User user = authService.getCurrentUser();
+        // RepeatFlashcard ve UserSeenCard tablolarından kartları al
+        List<Card> repeatFlashcards = myCardsRepository.findByUser(user).stream().map(MyCard::getCard).toList();
 
-        Set<Long> uniqueNumbers = new HashSet<>();
+     /*   List<Card> userSeenCards = userSeenCardRepository.findByUser(user).stream()//todo duruma göre burası kullanılabilir
+                .map(UserSeenCard::getCard)
+                .toList();*/
 
-        // Set'in boyutu istenilen sayıya ulaşana kadar rastgele sayılar ekle
-        while (uniqueNumbers.size() < 100) {
-            int randomNumber = random.nextInt((int) cardCount) + 1;  // 1 ile n arasında rastgele sayı
-            uniqueNumbers.add((long) randomNumber);
-        }
+        List<Flashcard> flashcards = repeatFlashcardRepository.findByUser(user).stream()
+                .map(RepeatFlashcard::getFlashcards) // Her RepeatFlashcard nesnesinin flashcards listesini alıyoruz
+                .flatMap(List::stream) // Liste içindeki tüm Flashcard'ları tek bir akışa düzleştiriyoruz
+                .toList(); // Akışı bir listeye topluyoruz
 
-        List<Long> idList = uniqueNumbers.stream().toList();
+        List<Card> cardList = cardRepository.findByFlashcardIn(flashcards);
 
-        return cardRepository.findAllById(idList);
+        // İki listeyi birleştir
+        List<Card> combinedCards = new ArrayList<>();
+        combinedCards.addAll(repeatFlashcards);
+        combinedCards.addAll(cardList);
+
+        // Rastgele 100 kart seç
+        Collections.shuffle(combinedCards);
+        return combinedCards.stream().limit(100).toList();
     }
 
     public List<Card> explore() {
@@ -229,23 +237,22 @@ public class CardService {
                         || card.getCard().getFlashcard().getTopic().getLesson().getBranch().equals(branch))
                 .collect(Collectors.groupingBy(
                         card -> card.getCard().getFlashcard().getTopic().getLesson().getYksLesson(),
-                        Collectors.counting())
-                );
+                        Collectors.counting()));
 
         List<Card> cardList = cardRepository.findAll();
 
-        Map<YKSLesson, Long> cardGroup = cardList.stream().filter(card -> card.getFlashcard().getTopic().getLesson().getBranch() == null
+        Map<YKSLesson, Long> cardGroup = cardList.stream()
+                .filter(card -> card.getFlashcard().getTopic().getLesson().getBranch() == null
                         || card.getFlashcard().getTopic().getLesson().getBranch().equals(branch))
                 .collect(Collectors.groupingBy(
                         card -> card.getFlashcard().getTopic().getLesson().getYksLesson(),
-                        Collectors.counting())
-                );
-
+                        Collectors.counting()));
 
         return cardGroup.keySet().stream()
                 .map(aLong -> new UserStatisticLessonResponse(aLong.label,
                         seenCardGroup.get(aLong) == null ? 0 : seenCardGroup.get(aLong),
-                        (seenCardGroup.get(aLong) != null ? ((double) seenCardGroup.get(aLong) / cardGroup.get(aLong)) : 0)))
+                        (seenCardGroup.get(aLong) != null ? ((double) seenCardGroup.get(aLong) / cardGroup.get(aLong))
+                                : 0)))
                 .toList();
     }
 
