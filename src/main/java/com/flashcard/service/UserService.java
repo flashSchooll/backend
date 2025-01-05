@@ -179,6 +179,7 @@ public class UserService {
             UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
                     .userName(u.getUserName())
                     .userSurname(u.getUserSurname())
+                    .profilePhoto(u.getProfilePhoto())
                     .id(u.getId())
                     .star(u.getStar())
                     .rosette(u.getRosette())
