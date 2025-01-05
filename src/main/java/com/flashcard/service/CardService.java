@@ -173,9 +173,6 @@ public class CardService {
         // RepeatFlashcard ve UserSeenCard tablolarından kartları al
         List<Card> repeatFlashcards = myCardsRepository.findByUser(user).stream().map(MyCard::getCard).toList();
 
-     /*   List<Card> userSeenCards = userSeenCardRepository.findByUser(user).stream()//todo duruma göre burası kullanılabilir
-                .map(UserSeenCard::getCard)
-                .toList();*/
 
         List<Flashcard> flashcards = repeatFlashcardRepository.findByUser(user).stream()
                 .map(RepeatFlashcard::getFlashcards) // Her RepeatFlashcard nesnesinin flashcards listesini alıyoruz
@@ -189,9 +186,20 @@ public class CardService {
         combinedCards.addAll(repeatFlashcards);
         combinedCards.addAll(cardList);
 
-        // Rastgele 100 kart seç
-        Collections.shuffle(combinedCards);
-        return combinedCards.stream().limit(100).toList();
+        if (!combinedCards.isEmpty()) {
+            // Rastgele 100 kart seç
+            Collections.shuffle(combinedCards);
+            return combinedCards.stream().limit(100).toList();
+        } else {
+            List<Card> userSeenCards = new ArrayList<>(userSeenCardRepository.findByUser(user).stream()
+                    .map(UserSeenCard::getCard)
+                    .toList());
+
+            Collections.shuffle(userSeenCards);
+
+            return userSeenCards.stream().limit(100).toList();
+        }
+
     }
 
     public List<Card> explore() {

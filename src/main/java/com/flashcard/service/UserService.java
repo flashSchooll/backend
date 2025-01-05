@@ -167,9 +167,9 @@ public class UserService {
         List<User> users = userRepository.findAll()
                 .stream()
                 .sorted(
-                        Comparator.comparing(User::getRosette)
+                        Comparator.comparing(User::getStar)
                                 .reversed()
-                                .thenComparing(Comparator.comparing(User::getStar).reversed())
+                                .thenComparing(Comparator.comparing(User::getRosette).reversed())
                 )
                 .toList();
 
