@@ -1,6 +1,5 @@
 package com.flashcard.service;
 
-import com.flashcard.controller.authcontroller.request.ForgotPasswordRequest;
 import com.flashcard.repository.EmailSender;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +38,9 @@ public class EmailService implements EmailSender {
         }
     }
 
-
     public String buildForgotPasswordEmail(String name, String code) {
-        return "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
+        return "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+                +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
                 "  <head>\n" +
                 "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n" +
@@ -503,7 +501,8 @@ public class EmailService implements EmailSender {
                 "          >\n" +
                 "            <tr>\n" +
                 "              <td class=\"email-masthead\">\n" +
-                "                <img src=\"https://gamingpromarket.com/img/logo.png\" alt=\"\" style=\"height: 10vh;\">\n" +//todo buraya studyhive logosu eklenecek
+                "                <img src=\"https://gamingpromarket.com/img/logo.png\" alt=\"\" style=\"height: 10vh;\">\n"
+                + // todo buraya studyhive logosu eklenecek
                 "              </td>\n" +
                 "            </tr>\n" +
                 "            <!-- Email Body -->\n" +
@@ -612,6 +611,5 @@ public class EmailService implements EmailSender {
                 "  </body>\n" +
                 "</html>\n";
     }
-
 
 }

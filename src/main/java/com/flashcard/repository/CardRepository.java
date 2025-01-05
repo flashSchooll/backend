@@ -33,4 +33,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             "WHERE (l.branch is null or (:branch is null or l.branch = :branch)) " +
             "ORDER BY RANDOM() LIMIT 100", nativeQuery = true)
     List<Card> findRandomCardsByBranch(@Param("branch") String branch);
+
+    List<Card> findByFlashcardIn(List<Flashcard> flashcards);
 }

@@ -17,6 +17,8 @@ public interface MyCardsRepository extends JpaRepository<MyCard, Long> {
             "and (:difficultyLevel is null or m.difficultyLevel = :difficultyLevel)")
     List<MyCard> findByUser(User user, DifficultyLevel difficultyLevel);
 
+    List<MyCard> findByUser(User user);
+
     Optional<MyCard> findByUserAndCard(User user, Card card);
 
     List<MyCard> findByUserAndCardFlashcard(User user, Flashcard flashcard);

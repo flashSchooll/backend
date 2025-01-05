@@ -11,7 +11,6 @@ import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.UserCardPercentageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.atn.SemanticContext;
 import org.apache.coyote.BadRequestException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -43,7 +42,6 @@ public class FlashcardExcelImporter {
     private static List<XSSFPictureData> pictures;
     private final UserCardPercentageService userCardPercentageService;
 
-
     @Transactional
     public void saveExcel(Long lessonId, MultipartFile file) throws IOException {
 
@@ -69,13 +67,13 @@ public class FlashcardExcelImporter {
                 topic.setSubject(subject);
             }
 
-
             topic = tytTopicRepository.save(topic);
 
             Map<String, List<ExcelCardDTO>> groupedByFlashcard = dtoList.stream()
                     .collect(Collectors.groupingBy(ExcelCardDTO::getFlashcardName));
 
-            for (Map.Entry<String, List<ExcelCardDTO>> entryFlash : groupedByFlashcard.entrySet()) {// flashcarda göre grupladık
+            for (Map.Entry<String, List<ExcelCardDTO>> entryFlash : groupedByFlashcard.entrySet()) {// flashcarda göre
+                                                                                                    // grupladık
                 String flashCardName = entryFlash.getKey();
 
                 Flashcard flashcard = new Flashcard();
@@ -149,17 +147,17 @@ public class FlashcardExcelImporter {
                         }
                         switch (cell.getColumnIndex()) {
                             case 0 -> // tc sütunu
-                                    cardDTO.setSubject(getStringCell(cell, "konu"));
+                                cardDTO.setSubject(getStringCell(cell, "konu"));
                             case 1 -> // isim sütunu
-                                    cardDTO.setFlashcardName(getStringCell(cell, "flashcard"));
+                                cardDTO.setFlashcardName(getStringCell(cell, "flashcard"));
                             case 2 -> // soyisim sütunu
-                                    cardDTO.setFrontFace(getStringCell(cell, "ön yüz"));
+                                cardDTO.setFrontFace(getStringCell(cell, "ön yüz"));
                             case 3 -> // E-posta sütunu
-                                    cardDTO.setBackFace(getStringCell(cell, "arka yüz"));
+                                cardDTO.setBackFace(getStringCell(cell, "arka yüz"));
                             case 4 -> // gsm sütunu
-                                    cardDTO.setFrontImage(getImageFromCell(cell, "ön resim", workbook));
+                                cardDTO.setFrontImage(getImageFromCell(cell, "ön resim", workbook));
                             case 5 -> // doğum tarihi sütunu
-                                    cardDTO.setBackImage(getImageFromCell(cell, "ön resim", workbook));
+                                cardDTO.setBackImage(getImageFromCell(cell, "ön resim", workbook));
 
                         }
                     }
@@ -169,7 +167,6 @@ public class FlashcardExcelImporter {
                         break;
                     }
 
-
                 } catch (InvalidCellException e) {
                     log.debug("Hata oluştu. Satır: " + (row.getRowNum() + 1) + ", Hata: " + e.getMessage(), e);
                     throw new BusinessException(row.getRowNum() + 1 + " Satırda okunamadı " + e.getMessage());
@@ -178,7 +175,6 @@ public class FlashcardExcelImporter {
         }
         return excelCardDTOS;
     }
-
 
     public static byte[] getImageFromCell(Cell cell, String columnName, XSSFWorkbook workbook) {
         // Eğer hücre boşsa veya içerik yoksa, null döndür.
