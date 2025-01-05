@@ -78,7 +78,7 @@ public class FlashCardAdminController {
     @PostMapping("/import-excel")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> importExcel(@RequestBody MultipartFile file,
-                                              @RequestParam Long lessonId) throws IOException {
+                                              @RequestParam Long lessonId) throws Exception {
 
         flashCardService.importExcel(lessonId, file);
 

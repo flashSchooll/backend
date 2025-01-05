@@ -7,6 +7,7 @@ import com.flashcard.model.enums.YKS;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.UserCardPercentageRepository;
+import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
@@ -25,6 +26,7 @@ public class UserCardPercentageService {
     private final CardRepository cardRepository;
     private final AuthService authService;
     private final ApplicationContext applicationContext;
+    private final UserRepository userRepository;
 
     @Transactional
     public void save(User user, YKS yks, Branch branch) {
@@ -147,5 +149,33 @@ public class UserCardPercentageService {
                 .stream()
                 .filter(percentage -> ((double) percentage.getCompletedCard() / percentage.getTotalCard()) >= 50)
                 .count();
+    }
+
+    @Transactional
+    public void saveForLesson(Long lessonId) {
+        Objects.requireNonNull(lessonId);
+
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
+
+        long countCard = cardRepository.countByFlashcardTopicLesson(lesson);
+
+        List<User> users = userRepository.findAll();
+
+        List<UserCardPercentage> percentages = new ArrayList<>();
+
+        UserCardPercentage cardPercentage;
+
+        for (User u : users) {
+            cardPercentage = new UserCardPercentage();
+            cardPercentage.setUser(u);
+            cardPercentage.setCompletedCard(0);
+            cardPercentage.setLesson(lesson);
+            cardPercentage.setTotalCard((int) countCard);
+
+            percentages.add(cardPercentage);
+        }
+
+        userCardPercentageRepository.saveAll(percentages);
     }
 }

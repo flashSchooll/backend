@@ -14,6 +14,7 @@ import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.excel.FlashcardExcelImporter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FlashCardService {
 
     private final FlashCardRepository flashCardRepository;
@@ -36,6 +38,7 @@ public class FlashCardService {
     private final CardRepository cardRepository;
     private final FlashcardExcelImporter flashcardExcelImporter;
     private final UserSeenCardService userSeenCardService;
+    private final UserCardPercentageService userCardPercentageService;
 
     @Transactional
     public Flashcard save(FlashcardSaveRequest flashcardSaveRequest) {
@@ -87,13 +90,13 @@ public class FlashCardService {
         flashCardRepository.delete(flashcard);
     }
 
-    public Page<Flashcard> getAll(Long topicId,Pageable pageable) {
+    public Page<Flashcard> getAll(Long topicId, Pageable pageable) {
         Objects.requireNonNull(topicId);
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        return flashCardRepository.findByTopic(topic,pageable);
+        return flashCardRepository.findByTopic(topic, pageable);
     }
 
     public Page<Flashcard> getAll(Pageable pageable) {
@@ -138,9 +141,16 @@ public class FlashCardService {
         return flashCardRepository.search(search);
     }
 
-    public void importExcel(Long lessonId, MultipartFile file) throws IOException {
+    @Transactional
+    public void importExcel(Long lessonId, MultipartFile file) throws Exception {
 
-        flashcardExcelImporter.saveExcel(lessonId, file);
+        try {
+            flashcardExcelImporter.saveExcel(lessonId, file);
 
+            userCardPercentageService.saveForLesson(lessonId);
+        } catch (IOException e) {
+            log.error("Ders eklenirken hata oldu : {}",lessonId);
+            throw new Exception(e);
+        }
     }
 }
