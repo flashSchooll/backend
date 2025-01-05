@@ -168,8 +168,8 @@ public class CardService {
         return cardRepository.findByFlashcard(flashcard);
     }
 
-    @Cacheable(value = "explore")
-    public List<Card> explore() {
+
+    public List<Card> exploreForMe() {
 
         long cardCount = cardRepository.count();
 
@@ -186,7 +186,7 @@ public class CardService {
         return cardRepository.findAllById(idList);
     }
 
-    public List<Card> exploreForMe() {
+    public List<Card> explore() {
 
         User user = authService.getCurrentUser();
 

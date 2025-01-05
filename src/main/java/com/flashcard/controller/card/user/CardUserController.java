@@ -46,11 +46,11 @@ public class CardUserController {
         return ResponseEntity.ok(cardResponses);
     }
 
-    @GetMapping("/explore")
+    @GetMapping("/explore/me")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> explore() {
 
-        List<Card> response = cardService.explore();
+        List<Card> response = cardService.exploreForMe();
 
         List<CardResponse> cardResponses = response.stream()
                 .map(CardResponse::new)
@@ -62,11 +62,11 @@ public class CardUserController {
         return ResponseEntity.ok(cardResponses);
     }
 
-    @GetMapping("/explore/me")
+    @GetMapping("/explore")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> exploreForMe() {
 
-        List<Card> response = cardService.exploreForMe();
+        List<Card> response = cardService.explore();
 
         List<CardResponse> tytCardResponses = response.stream().map(CardResponse::new).toList();
 

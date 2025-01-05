@@ -24,7 +24,6 @@ public class CacheConfig {
         caches.add(new ConcurrentMapCache("yksLesson"));
         caches.add(new ConcurrentMapCache("lessonTopic"));
         caches.add(new ConcurrentMapCache("flashcardCard"));
-        caches.add(new ConcurrentMapCache("explore"));
         caches.add(new ConcurrentMapCache("topicSummary"));
         caches.add(new ConcurrentMapCache("topicSummaries"));
         caches.add(new ConcurrentMapCache("users"));
