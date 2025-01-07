@@ -18,6 +18,9 @@ import java.time.LocalDate;
                 @Index(name = "idx_daily_target_user", columnList = "user"),
                 @Index(name = "idx_daily_target_day", columnList = "day"),
                 @Index(name = "idx_daily_target_user_day", columnList = "user,day")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "daily_target_user_day", columnNames = {"user", "day"})
         })
 public class DailyTarget {// günlük hedef bilgisini tutar
 

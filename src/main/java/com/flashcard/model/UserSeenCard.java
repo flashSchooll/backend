@@ -15,6 +15,9 @@ import java.time.Duration;
         indexes = {
                 @Index(name = "idx_user_seen_card_user", columnList = "user"),
                 @Index(name = "idx_user_seen_card_user_card", columnList = "user,card")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "user_seen_card_user_card", columnNames = {"user", "card"})
         })
 @Getter
 @Setter

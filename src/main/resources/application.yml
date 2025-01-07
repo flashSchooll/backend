@@ -65,7 +65,10 @@ logging:
       springframework:
         security: DEBUG
         web: DEBUG
-
+      hibernate:
+        SQL: debug
+        tool:
+          hbm2ddl: debug
 info:
   application:
     name: 'StudyHive Backend App'

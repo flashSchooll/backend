@@ -11,6 +11,9 @@ import java.time.Month;
 @Table(name = "month_daily_target",
         indexes = {
                 @Index(name = "idx_month_daily_target_user_month", columnList = "user,month")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "month_daily_target_user_month", columnNames = {"user", "month"})
         })
 @Getter
 @Setter

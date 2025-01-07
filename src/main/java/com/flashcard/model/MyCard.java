@@ -13,6 +13,9 @@ import lombok.Setter;
         indexes = {
                 @Index(name = "idx_my_card_user_card", columnList = "user,card"),
                 @Index(name = "idx_my_card_user", columnList = "user")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "mycard_user_card", columnNames = {"user", "card"})
         })
 @Getter
 @Setter

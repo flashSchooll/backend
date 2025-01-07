@@ -18,6 +18,9 @@ import java.util.Set;
                 @Index(name = "idx_user_card_percentage_user", columnList = "user"),
                 @Index(name = "idx_user_card_percentage_lesson", columnList = "lesson"),
                 @Index(name = "idx_user_card_percentage_user_lesson", columnList = "user,lesson")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "user_card_user_lesson", columnNames = {"user", "lesson"})
         })
 public class UserCardPercentage {// kullanıcı kart tamamlama yüzdesini tutar
 
