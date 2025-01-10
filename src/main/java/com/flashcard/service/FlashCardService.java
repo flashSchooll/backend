@@ -22,11 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -110,13 +106,23 @@ public class FlashCardService {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        List<Card> tytCards = cardRepository.findByTopic(topic);
+      /*  List<Card> tytCards = cardRepository.findByTopic(topic);// fixme performansı çok kötü olduğu için düzeltildi
 
         Map<Flashcard, Long> cardCount = tytCards.stream()
                 .collect(Collectors.groupingBy(
                         Card::getFlashcard,
                         Collectors.counting()
-                ));
+                ));*/
+
+        List<Flashcard> flashcardList=flashCardRepository.findByTopic(topic);
+
+        Map<Flashcard,Long> flashcardLongMap=new HashMap<>();
+
+        for (Flashcard f:flashcardList){
+            long count=cardRepository.countByFlashcard(f);
+            flashcardLongMap.put(f,count);
+        }
+
 
         List<UserSeenCard> seenCards = userSeenCardService.getAllSeenCardsByTopic(topicId);
 
@@ -131,7 +137,7 @@ public class FlashCardService {
                 .map(flashcard ->
                         new FlashcardUserResponse(
                                 flashcard,
-                                Math.toIntExact(cardCount.get(flashcard)),
+                                Math.toIntExact(flashcardLongMap.get(flashcard)),
                                 flashcards.contains(flashcard.getId())))
                 .toList();
     }

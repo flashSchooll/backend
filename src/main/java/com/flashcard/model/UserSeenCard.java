@@ -19,6 +19,12 @@ import java.time.Duration;
         uniqueConstraints = {
                 @UniqueConstraint(name = "user_seen_card_user_card", columnNames = {"user", "card"})
         })
+/*@NamedEntityGraph(
+        name = "user_seen_card-graph",
+        attributeNodes = {
+                @NamedAttributeNode("imageData")//todo buraya bakılacak
+        }
+)*/
 @Getter
 @Setter
 @AllArgsConstructor

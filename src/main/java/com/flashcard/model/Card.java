@@ -17,6 +17,12 @@ import java.util.List;
         })
 @Getter
 @Setter
+@NamedEntityGraph(
+        name = "card-graph",
+        attributeNodes = {
+                @NamedAttributeNode("imageData")
+        }
+)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Card {// kart bilgisini tutar

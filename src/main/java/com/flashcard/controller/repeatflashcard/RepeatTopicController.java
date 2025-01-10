@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/repeat-topic")
 @RequiredArgsConstructor
-public class RepeatFlashcardController {
+public class RepeatTopicController {
 
     private final RepeatFlashcardService repeatFlashcardService;
 

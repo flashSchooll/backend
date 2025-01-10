@@ -7,13 +7,15 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/StudyHive
-    username: StudyHive
-    password: StudyHive
+    url: jdbc:postgresql://aws-0-eu-central-1.pooler.supabase.com:5432/postgres
+    username: postgres.wauruqdnimihwjwcmijg
+    password: woDloynssshhIIfv
     driver-class-name: org.postgresql.Driver
   jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      dialect: org.hibernate.dialect.PostgreSQLDialect
       ddl-auto: update
   servlet:
     multipart:
@@ -38,6 +40,8 @@ spring:
           auth: true
           starttls:
             enable: true
+  jackson:
+    time-zone: Asia/Istanbul
 # App Properties
 management: #actuator
   endpoints:
@@ -57,7 +61,6 @@ management: #actuator
       jwtSecret: 5Xz3Pb8+fttP9V1phnx5hOqWzHj2fFg14jSt+zBQquOe2c0qGZ7m+NqzNH5sDhq1zqD1+8Am00uP7XujMxw5yDsg8Rh3yPppT2yAl4h0eEOB2LZZnLQDb3ZPz3Jt5g==
       jwtExpirationMs: 86400000
       mailAddress: flashschool86@gmail.com
-      backendLink: https://ecommerce-backend-v2.herokuapp.com/
 
 logging:
   level:

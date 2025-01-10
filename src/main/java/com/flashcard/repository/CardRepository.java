@@ -2,6 +2,7 @@ package com.flashcard.repository;
 
 import com.flashcard.model.*;
 import com.flashcard.model.enums.YKS;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +11,13 @@ import java.util.List;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
 
+
     List<Card> findByFlashcard(Flashcard flashcard);
+
+    @Query("select c from Card c where c.flashcard = :flashcard")
+    @EntityGraph("card-graph")
+    List<Card> findCardsWithFlashcard(Flashcard flashcard);
+
 
     int countByFlashcard(Flashcard flashcard);
 
@@ -35,4 +42,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findRandomCardsByBranch(@Param("branch") String branch);
 
     List<Card> findByFlashcardIn(List<Flashcard> flashcards);
+
+    Long countByFlashcardTopic(Topic topic);
 }

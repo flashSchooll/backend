@@ -34,7 +34,7 @@ public class LessonService {
 
         Lesson lesson = new Lesson();
         lesson.setYksLesson(yksLesson);
-        lesson.setBranch(branch);
+        lesson.setBranch(yks.equals(YKS.TYT) ? null : branch);
         lesson.setYks(yks);
         lesson.setIcon(icon.getBytes());
 

@@ -15,7 +15,6 @@ import com.flashcard.repository.*;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -138,14 +137,14 @@ public class CardService {
         cardRepository.delete(tytCard);
     }
 
-    @Cacheable(value = "flashcardCard", key = "#flashcardId")
+
     public List<Card> getAll(Long flashcardId) {
         Objects.requireNonNull(flashcardId);
 
         Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
-        return cardRepository.findByFlashcard(flashcard);
+        return cardRepository.findCardsWithFlashcard(flashcard);
     }
 
     @Transactional

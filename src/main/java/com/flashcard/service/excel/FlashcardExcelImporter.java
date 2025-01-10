@@ -38,7 +38,7 @@ public class FlashcardExcelImporter {
     private final LessonRepository tytLessonRepository;
     private final TopicRepository tytTopicRepository;
     private final FlashCardRepository flashCardRepository;
-    private final CardRepository tytCardRepository;
+    private final CardRepository cardRepository;
     private static List<XSSFPictureData> pictures;
     private final UserCardPercentageService userCardPercentageService;
 
@@ -82,7 +82,7 @@ public class FlashcardExcelImporter {
 
                 flashcard = flashCardRepository.save(flashcard);
 
-                List<Card> cards = new ArrayList<>();
+                Set<Card> cards = new HashSet<>();
                 Card card;
                 ImageData imageDataFront;
                 ImageData imageDataBack;
@@ -116,7 +116,7 @@ public class FlashcardExcelImporter {
                     throw new BadRequestException("Bir flashcard taki kart sayısı 4 ten az olamaz");
                 }
 
-                tytCardRepository.saveAll(cards);
+                cardRepository.saveAll(cards);
 
             }
         }
@@ -130,7 +130,7 @@ public class FlashcardExcelImporter {
 
         workbook = new XSSFWorkbook(inputStream);
 
-        List<ExcelCardDTO> excelCardDTOS = new ArrayList<>();
+        Set<ExcelCardDTO> excelCardDTOS = new HashSet<>();
         ExcelCardDTO cardDTO;
         int numberOfSheets = workbook.getNumberOfSheets();
         for (int i = 0; i < numberOfSheets; i++) {
@@ -173,7 +173,7 @@ public class FlashcardExcelImporter {
                 }
             }
         }
-        return excelCardDTOS;
+        return excelCardDTOS.stream().toList();
     }
 
     public static byte[] getImageFromCell(Cell cell, String columnName, XSSFWorkbook workbook) {
