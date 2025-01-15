@@ -23,7 +23,7 @@ public class QuizUserController {
     private final QuizService quizService;
 
     @GetMapping("/get-all/{topicId}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getAll(@PathVariable Long topicId) {
 
         List<Quiz> quizList = quizService.getByTopic(topicId);
@@ -34,7 +34,7 @@ public class QuizUserController {
     }
 
     @GetMapping("/get-all")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getByName(@RequestParam String name) {
 
         List<Quiz> quizList = quizService.getByName(name);
@@ -45,7 +45,7 @@ public class QuizUserController {
     }
 
     @GetMapping("/quiz-count/{topicId}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getQuizCount(@PathVariable Long topicId) {
 
         List<QuizCount> quizList = quizService.countByTopic(topicId);
@@ -54,7 +54,7 @@ public class QuizUserController {
     }
 
     @PostMapping("/save-answer")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> saveQuizAnswer(@RequestBody UserQuizAnswerRequestList userQuizAnswerRequest) {
 
         quizService.saveAnswer(userQuizAnswerRequest);
@@ -63,7 +63,7 @@ public class QuizUserController {
     }
 
     @GetMapping("/get-answers")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getQuizAnswer(@RequestParam String name) {
 
         List<UserQuizAnswer> answerList = quizService.getAnswers(name);
