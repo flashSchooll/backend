@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.flashcard</groupId>
-    <artifactId>FK</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>api</artifactId>
+    <version>0.0.1-v1</version>
     <name>FK</name>
     <description>Flashcard Backend</description>
     <packaging>jar</packaging>

@@ -22,7 +22,7 @@ public class JwtUtils {
     private String jwtSecret;
 
     @Value("${management.flashSchool.app.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    private long jwtExpirationMs;
 
     public String generateJwtToken(Authentication authentication) {
 

@@ -74,7 +74,9 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**",
                                         "/swagger-ui.html"
-                                ).hasRole("ADMIN") // /api/test/** endpoint'lerine erişim izin veriliyor.
+                                )
+                                //.hasRole("ADMIN")
+                                .hasAnyRole() // /api/test/** endpoint'lerine erişim izin veriliyor.
                                 .requestMatchers("/favicon.ico.").permitAll()  // /api/test/** endpoint'lerine erişim izin veriliyor.
                                 .anyRequest().authenticated()  // Diğer tüm endpoint'ler kimlik doğrulaması gerektiriyor.
                 );

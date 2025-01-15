@@ -21,8 +21,7 @@ public class SignupRequest {
 
     @NotBlank
     @Size(min = 8, max = 40)
-    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$",
-            message = "Lütfen Geçerli bir şifre giriniz")
+  //  @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$",message = "Lütfen Geçerli bir şifre giriniz")
     private String password;
 
     @NotBlank
