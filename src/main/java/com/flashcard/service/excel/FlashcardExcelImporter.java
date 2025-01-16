@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
 public class FlashcardExcelImporter {
     private static final Logger logger = LoggerFactory.getLogger(FlashcardExcelImporter.class);
 
-    private final LessonRepository tytLessonRepository;
-    private final TopicRepository tytTopicRepository;
+    private final LessonRepository lessonRepository;
+    private final TopicRepository topicRepository;
     private final FlashCardRepository flashCardRepository;
     private final CardRepository cardRepository;
     private static List<XSSFPictureData> pictures;
@@ -47,7 +47,7 @@ public class FlashcardExcelImporter {
 
         List<ExcelCardDTO> dtoList = getExcelDataFomExcel(file);
 
-        Lesson lesson = tytLessonRepository.findById(lessonId)
+        Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
         Map<String, List<ExcelCardDTO>> groupedBySubject = dtoList.stream()
@@ -56,7 +56,7 @@ public class FlashcardExcelImporter {
         for (Map.Entry<String, List<ExcelCardDTO>> entry : groupedBySubject.entrySet()) {// konulara göre grupladık
             String subject = entry.getKey();
 
-            Optional<Topic> optionalTYTTopic = tytTopicRepository.findBySubjectAndLesson(subject, lesson);
+            Optional<Topic> optionalTYTTopic = topicRepository.findBySubjectAndLesson(subject, lesson);
 
             Topic topic;
             if (optionalTYTTopic.isPresent()) {
@@ -65,22 +65,29 @@ public class FlashcardExcelImporter {
                 topic = new Topic();
                 topic.setLesson(lesson);
                 topic.setSubject(subject);
+                topic = topicRepository.save(topic);
             }
 
-            topic = tytTopicRepository.save(topic);
 
-            Map<String, List<ExcelCardDTO>> groupedByFlashcard = dtoList.stream()
+            Map<String, List<ExcelCardDTO>> groupedByFlashcard = groupedBySubject.get(topic.getSubject()).stream()
                     .collect(Collectors.groupingBy(ExcelCardDTO::getFlashcardName));
 
             for (Map.Entry<String, List<ExcelCardDTO>> entryFlash : groupedByFlashcard.entrySet()) {// flashcarda göre
-                                                                                                    // grupladık
+                // grupladık
                 String flashCardName = entryFlash.getKey();
 
-                Flashcard flashcard = new Flashcard();
-                flashcard.setCardName(flashCardName);
-                flashcard.setTopic(topic);
 
-                flashcard = flashCardRepository.save(flashcard);
+                Optional<Flashcard> optionalFlashcard = flashCardRepository.findByCardNameAndTopic(flashCardName, topic);
+                Flashcard flashcard;
+                if (optionalFlashcard.isEmpty()) {
+                    flashcard = new Flashcard();
+                    flashcard.setCardName(flashCardName);
+                    flashcard.setTopic(topic);
+
+                    flashcard = flashCardRepository.save(flashcard);
+                } else {
+                    flashcard = optionalFlashcard.get();
+                }
 
                 Set<Card> cards = new HashSet<>();
                 Card card;
@@ -146,18 +153,18 @@ public class FlashcardExcelImporter {
                             continue;
                         }
                         switch (cell.getColumnIndex()) {
-                            case 0 -> // tc sütunu
-                                cardDTO.setSubject(getStringCell(cell, "konu"));
-                            case 1 -> // isim sütunu
-                                cardDTO.setFlashcardName(getStringCell(cell, "flashcard"));
-                            case 2 -> // soyisim sütunu
-                                cardDTO.setFrontFace(getStringCell(cell, "ön yüz"));
-                            case 3 -> // E-posta sütunu
-                                cardDTO.setBackFace(getStringCell(cell, "arka yüz"));
-                            case 4 -> // gsm sütunu
-                                cardDTO.setFrontImage(getImageFromCell(cell, "ön resim", workbook));
-                            case 5 -> // doğum tarihi sütunu
-                                cardDTO.setBackImage(getImageFromCell(cell, "ön resim", workbook));
+                            case 0 -> // konu
+                                    cardDTO.setSubject(getStringCell(cell, "konu"));
+                            case 1 -> // flashcard
+                                    cardDTO.setFlashcardName(getStringCell(cell, "flashcard"));
+                            case 2 -> // ön yüz sütunu
+                                    cardDTO.setFrontFace(getStringCell(cell, "ön yüz"));
+                            case 3 -> // arka yüz sütunu
+                                    cardDTO.setBackFace(getStringCell(cell, "arka yüz"));
+                            case 4 -> // ön resim sütunu
+                                    cardDTO.setFrontImage(getImageFromCell(cell, "ön resim", workbook));
+                            case 5 -> // arka resim sütunu
+                                    cardDTO.setBackImage(getImageFromCell(cell, "arka resim", workbook));
 
                         }
                     }

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FlashCardRepository extends JpaRepository<Flashcard, Long> {
 
@@ -23,4 +24,6 @@ public interface FlashCardRepository extends JpaRepository<Flashcard, Long> {
             "where (f.cardName ilike (%:search%) " +
             "or f.topic.subject ilike (%:search%))")
     List<Flashcard> search(@Param("search") String search);
+
+    Optional<Flashcard> findByCardNameAndTopic(String flashCardName, Topic topic);
 }
