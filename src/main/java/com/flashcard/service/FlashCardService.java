@@ -114,13 +114,13 @@ public class FlashCardService {
                         Collectors.counting()
                 ));*/
 
-        List<Flashcard> flashcardList=flashCardRepository.findByTopic(topic);
+        List<Flashcard> flashcardList = flashCardRepository.findByTopic(topic);
 
-        Map<Flashcard,Long> flashcardLongMap=new HashMap<>();
+        Map<Flashcard, Long> flashcardLongMap = new HashMap<>();
 
-        for (Flashcard f:flashcardList){
-            long count=cardRepository.countByFlashcard(f);
-            flashcardLongMap.put(f,count);
+        for (Flashcard f : flashcardList) {
+            long count = cardRepository.countByFlashcard(f);
+            flashcardLongMap.put(f, count);
         }
 
 
@@ -139,7 +139,7 @@ public class FlashCardService {
                                 flashcard,
                                 Math.toIntExact(flashcardLongMap.get(flashcard)),
                                 flashcards.contains(flashcard.getId())))
-                .toList();
+                .toList().stream().sorted().toList();
     }
 
     public List<Flashcard> search(String search) {
@@ -155,7 +155,7 @@ public class FlashCardService {
 
             userCardPercentageService.saveForLesson(lessonId);
         } catch (IOException e) {
-            log.error("Ders eklenirken hata oldu : {}",lessonId);
+            log.error("Ders eklenirken hata oldu : {}", lessonId);
             throw new Exception(e);
         }
     }
