@@ -1,10 +1,11 @@
 package com.flashcard.controller.quiz.response;
 
 import com.flashcard.model.Quiz;
-import com.flashcard.model.enums.QuizOption;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -12,11 +13,12 @@ import lombok.Setter;
 public class QuizResponse {
     private final Long id;
     private final String question;
-    private final String a;
+    private final List<String> optionList;
+    private final String a;//todo kaldırılacak
     private final String b;
     private final String c;
     private final String d;
-    private final QuizOption answer;
+    private final Integer answer;
     private final String name;
     private final String topic;
 
@@ -27,7 +29,8 @@ public class QuizResponse {
         this.b = quiz.getB();
         this.c = quiz.getC();
         this.d = quiz.getD();
-        this.answer = quiz.getAnswer();
+        this.optionList = List.of(quiz.getA(), quiz.getB(), quiz.getC(), quiz.getD());
+        this.answer = quiz.getAnswer().getIndex();
         this.name = quiz.getName();
         this.topic = quiz.getTopic().getSubject();
     }

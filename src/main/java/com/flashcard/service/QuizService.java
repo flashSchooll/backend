@@ -9,9 +9,11 @@ import com.flashcard.model.Quiz;
 import com.flashcard.model.Topic;
 import com.flashcard.model.User;
 import com.flashcard.model.UserQuizAnswer;
+import com.flashcard.model.enums.QuizOption;
 import com.flashcard.repository.QuizRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.repository.UserQuizAnswerRepository;
+import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
 import com.flashcard.service.excel.QuizExcelImporter;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,7 @@ public class QuizService {
     private final TopicRepository topicRepository;
     private final AuthService authService;
     private final UserQuizAnswerRepository userQuizAnswerRepository;
+    private final UserRepository userRepository;
 
 
     @Transactional
@@ -118,21 +121,40 @@ public class QuizService {
         User user = authService.getCurrentUser();
 
         List<Quiz> quizList = quizRepository.findByName(userQuizAnswerRequest.getName());
+        Map<Long, Quiz> quizMap = quizList.stream()
+                .collect(Collectors.toMap(Quiz::getId, quiz -> quiz));
+
+
+        int quizCount = quizRepository.countByName(userQuizAnswerRequest.getName());
+
+        if (userQuizAnswerRequest.getAnswerList().size() != quizCount) {
+            throw new IllegalArgumentException("Quizdeki soru sayısı doğru değil");
+        }
 
         List<UserQuizAnswer> answerList = new ArrayList<>();
 
         UserQuizAnswer answer;
+        int starCount = 0;
 
         for (UserQuizAnswerRequest u : userQuizAnswerRequest.getAnswerList()) {
             answer = new UserQuizAnswer();
             answer.setUser(user);
-            answer.setAnswer(u.getAnswer());
-            answer.setQuiz(quizList.stream().filter(f -> Objects.equals(u.getQuizId(), f.getId())).findFirst().orElseThrow(() -> new NoSuchElementException("quiz bulunamadı")));
+            answer.setAnswer(QuizOption.byIndex(u.getIndex()));
+            answer.setQuiz(quizMap.get(u.getQuizId()));
+
+            if (u.getIndex().equals(quizMap.get(u.getQuizId()).getAnswer().getIndex())) {
+                starCount++;
+            }
 
             answerList.add(answer);
         }
 
         userQuizAnswerRepository.saveAll(answerList);
+
+        user.raiseStar(starCount);
+        user.raiseRosette();
+
+        userRepository.save(user);
 
     }
 

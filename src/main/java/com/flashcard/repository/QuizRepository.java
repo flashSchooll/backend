@@ -10,4 +10,6 @@ public interface QuizRepository extends JpaRepository<Quiz,Long> {
     List<Quiz> findByTopic(Topic topic);
 
     List<Quiz> findByName(String name);
+
+    int countByName(String name);
 }

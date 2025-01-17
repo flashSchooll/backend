@@ -1,6 +1,7 @@
 package com.flashcard.controller.quiz.request;
 
-import com.flashcard.model.enums.QuizOption;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,8 @@ import lombok.Setter;
 public class UserQuizAnswerRequest {
     @NotNull
     private Long quizId;
+    @Max(3)
+    @Min(0)
     @NotNull
-    private QuizOption answer;
+    private Integer index;
 }
