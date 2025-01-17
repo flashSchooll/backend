@@ -47,7 +47,7 @@ public class UserStatisticController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserCardStatisticResponse> getCards() {
         UserCardStatisticResponse response = cardService.getUserStatistic();
-        LOGGER.info("UserCardStatisticResponse: {}", response);
+
         return ResponseEntity.ok(response);
     }
 

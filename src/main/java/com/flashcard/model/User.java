@@ -63,6 +63,9 @@ public class User {// kullanıcı bilgisini tutar
     @Enumerated(EnumType.STRING)
     private Branch branch;
 
+    private Integer target;
+
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

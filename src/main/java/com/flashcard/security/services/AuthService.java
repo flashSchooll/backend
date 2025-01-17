@@ -65,6 +65,7 @@ public class AuthService {
         user.setProfilePhoto(null);
         user.setUserAgreement(signUpRequest.getUserAgreement());
         user.setBranch(signUpRequest.getBranch());
+        user.setTarget(100);
 
         //  Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();

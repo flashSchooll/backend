@@ -143,7 +143,7 @@ public class UserService {
         // Kullanıcıya fotoğrafı kaydet
         user.setProfilePhoto(imageData);
         userRepository.save(user);
-}
+    }
 
     public byte[] getImage() {
 
@@ -199,6 +199,16 @@ public class UserService {
         User user = authService.getCurrentUser();
 
         user.setBranch(branch);
+
+        return userRepository.save(user);
+    }
+
+    public User updateTarget(Integer target) {
+        Objects.requireNonNull(target);
+
+        User user = authService.getCurrentUser();
+
+        user.setTarget(target);
 
         return userRepository.save(user);
     }

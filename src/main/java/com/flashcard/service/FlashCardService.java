@@ -139,7 +139,8 @@ public class FlashCardService {
                                 flashcard,
                                 Math.toIntExact(flashcardLongMap.get(flashcard)),
                                 flashcards.contains(flashcard.getId())))
-                .toList().stream().sorted().toList();
+                .toList();
+                //.stream().sorted(Comparator.comparing(FlashcardUserResponse::getCardName)).toList();
     }
 
     public List<Flashcard> search(String search) {

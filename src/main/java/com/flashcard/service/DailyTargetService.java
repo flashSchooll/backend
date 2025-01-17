@@ -34,7 +34,7 @@ public class DailyTargetService {
         dailyTarget.setUser(user);
         dailyTarget.setMade(0);
         dailyTarget.setDay(LocalDate.now());
-        dailyTarget.setTarget(100);
+        dailyTarget.setTarget(user.getTarget());
 
         return dailyTargetRepository.save(dailyTarget);
     }

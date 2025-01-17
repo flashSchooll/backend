@@ -89,4 +89,14 @@ public class UserController {
 
         return ResponseEntity.ok(userDTO);
     }
+
+    @PutMapping("/update-target")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<UserDTO> updateTarget(@RequestParam Integer target) {
+        User user  = userService.updateTarget(target);
+
+        UserDTO userDTO = new UserDTO(user);
+
+        return ResponseEntity.ok(userDTO);
+    }
 }
