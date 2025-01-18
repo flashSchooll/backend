@@ -203,6 +203,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public User updateTarget(Integer target) {
         Objects.requireNonNull(target);
 
