@@ -11,7 +11,7 @@ public class DailyTargetResponse {
     private final Integer made;
 
     public DailyTargetResponse(DailyTarget dailyTarget) {
-        this.target = dailyTarget.getTarget();
+        this.target = dailyTarget.getUser().getTarget();
         this.made = dailyTarget.getMade();
     }
 }
