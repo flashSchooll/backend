@@ -141,7 +141,7 @@ public class QuizExcelImporter {
 
     private String getStringCell(Cell cell, String columnName) {
         if (cell.toString().isEmpty()) {
-            throw new IllegalArgumentException(String.format("Boş değer olamaz %s", columnName));
+            return null;
         }
         String cellValue = null;
         try {

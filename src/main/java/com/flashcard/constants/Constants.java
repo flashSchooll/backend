@@ -38,6 +38,8 @@ public class Constants {
     public static final String CONTACT_MESSAGE_NOT_FOUND = "Kontakt mesajı bulunamadı";
     public static final String CONTACT_MESSAGE_SUCCESSFULLY_DELETED = "Kontakt mesajı başarıyla silindi";
     public static final String WRONG_PARAMETER = "Yanlış parametre";
+    public static final String QUIZ_NOT_FOUND = "Quiz bulunamadı";
+    public static final String MY_QUIZ_NOT_FOUND = "Kayıtlı quiz bulunamadı";
 
 
     private Constants() {

@@ -30,10 +30,8 @@ public class Quiz {
     @NotBlank
     private String b;
 
-    @NotBlank
     private String c;
 
-    @NotBlank
     private String d;
 
     @NotNull

@@ -1,11 +1,15 @@
 package com.flashcard.controller.quiz.user;
 
+import com.flashcard.controller.quiz.request.QuizSaveRequest;
 import com.flashcard.controller.quiz.request.UserQuizAnswerRequestList;
+import com.flashcard.controller.quiz.response.MyQuizResponse;
 import com.flashcard.controller.quiz.response.QuizCount;
 import com.flashcard.controller.quiz.response.QuizResponse;
 import com.flashcard.controller.quiz.response.UserQuizAnswerResponse;
+import com.flashcard.model.MyQuiz;
 import com.flashcard.model.Quiz;
 import com.flashcard.model.UserQuizAnswer;
+import com.flashcard.service.MyQuizService;
 import com.flashcard.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +25,7 @@ import java.util.List;
 public class QuizUserController {
 
     private final QuizService quizService;
+    private final MyQuizService myQuizService;
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -60,6 +65,36 @@ public class QuizUserController {
         quizService.saveAnswer(userQuizAnswerRequest);
 
         return ResponseEntity.ok("Cevaplar başarıyla kaydedildi");
+    }
+
+
+    @PostMapping("/my-quiz")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Object> saveQuiz(@RequestBody QuizSaveRequest quizSaveRequest) {
+
+        myQuizService.saveMyQuiz(quizSaveRequest);
+
+        return ResponseEntity.ok("Quiz başarıyla kaydedildi");
+    }
+
+    @DeleteMapping("/my-quiz/{myQuizId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Object> deleteQuiz(@PathVariable Long myQuizId) {
+
+        myQuizService.deleteMyQuiz(myQuizId);
+
+        return ResponseEntity.ok("Quiz başarıyla silindi");
+    }
+
+    @GetMapping("/my-quiz/get-all")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Object> getAllMyQuiz() {
+
+        List<MyQuiz> myQuizs = myQuizService.myQuizes();
+
+        List<MyQuizResponse> responses = myQuizs.stream().map(MyQuizResponse::new).toList();
+
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/get-answers")
