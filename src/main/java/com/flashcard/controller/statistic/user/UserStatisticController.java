@@ -3,6 +3,7 @@ package com.flashcard.controller.statistic.user;
 import com.flashcard.controller.dailytarget.response.DailyTargetStatisticResponse;
 import com.flashcard.controller.statistic.response.UserCardStatisticResponse;
 import com.flashcard.controller.statistic.response.UserRosetteStatistic;
+import com.flashcard.controller.statistic.response.UserStatisticAllResponse;
 import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
 import com.flashcard.model.DailyTarget;
 import com.flashcard.service.CardService;
@@ -58,6 +59,23 @@ public class UserStatisticController {
         List<UserStatisticLessonResponse> response = cardService.getUserStatisticByLesson();
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Object> getAll() {
+        List<DailyTarget> dailyTargets = dailyTargetService.getWeeklyTargets();
+
+        List<DailyTargetStatisticResponse> dailyTargetStatisticResponseList = dailyTargets.stream().map(DailyTargetStatisticResponse::new).toList();
+        UserCardStatisticResponse userCardStatisticResponse = cardService.getUserStatistic();
+        List<UserStatisticLessonResponse> userStatisticLessonResponses = cardService.getUserStatisticByLesson();
+
+        UserStatisticAllResponse allResponse = new UserStatisticAllResponse();
+        allResponse.setUserStatisticLessonResponses(userStatisticLessonResponses);
+        allResponse.setDailyTargetStatisticResponse(dailyTargetStatisticResponseList);
+        allResponse.setUserCardStatisticResponse(userCardStatisticResponse);
+
+        return ResponseEntity.ok(allResponse);
     }
 
     @GetMapping("/rosette")
