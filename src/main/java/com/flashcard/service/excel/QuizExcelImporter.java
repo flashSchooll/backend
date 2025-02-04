@@ -6,6 +6,7 @@ import com.flashcard.exception.BusinessException;
 import com.flashcard.model.Quiz;
 import com.flashcard.model.Topic;
 import com.flashcard.model.enums.QuizOption;
+import com.flashcard.model.enums.QuizType;
 import com.flashcard.repository.QuizRepository;
 import com.flashcard.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,7 @@ public class QuizExcelImporter {
             quiz.setD(e.getD());
             quiz.setTopic(topic);
             quiz.setName(e.getName());
+            quiz.setType(e.getType());
 
             quizSet.add(quiz);
 
@@ -103,6 +105,8 @@ public class QuizExcelImporter {
                                     cardDTO.setAnswer(setEnumCell(cell, "şık"));
                             case 6 -> // quiz adı sütunu
                                     cardDTO.setName(getStringCell(cell, "quiz adı"));
+                            case 7 -> // quiz tipi sütunu
+                                    cardDTO.setType(getQuizType(cell, "quiz tipi"));
 
                         }
                     }
@@ -119,6 +123,22 @@ public class QuizExcelImporter {
             }
         }
         return excelCardDTOS.stream().toList();
+    }
+
+    private QuizType getQuizType(Cell cell, String quizType) {
+        if (cell.getCellType().equals(CellType.BLANK)) {
+            throw new IllegalArgumentException("Soru tipi girilmelidir");
+        }
+
+        String cellValue = null;
+
+        try {
+            cellValue = cell.getStringCellValue();
+
+        } catch (Exception e) {
+            throw new InvalidCellException(quizType, String.valueOf(cellValue), e);
+        }
+        return QuizType.by(cellValue);
     }
 
     private QuizOption setEnumCell(Cell cell, String alternative) {

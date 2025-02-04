@@ -1,7 +1,5 @@
 package com.flashcard.model;
 
-import com.flashcard.model.enums.QuizOption;
-import com.flashcard.model.enums.QuizType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,13 +8,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "Quiz")
-@Table(name = "quiz")
+@Entity(name = "FillBlankQuiz")
+@Table(name = "fill_blank_quiz")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Quiz {
+public class FillBlankQuiz {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,27 +25,12 @@ public class Quiz {
     private String question;
 
     @NotBlank
-    private String a;
+    private String answer;
 
     @NotBlank
-    private String b;
-
-    private String c;
-
-    private String d;
-
-    @NotNull
-    @Enumerated(value = EnumType.STRING)
-    private QuizOption answer;
-
-    @NotBlank
-    private String name;
+    private String title;
 
     @NotNull
     @ManyToOne
     private Topic topic;
-
-    @Enumerated(value = EnumType.STRING)
-    @NotNull
-    private QuizType type;
 }

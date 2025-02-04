@@ -1,0 +1,49 @@
+package com.flashcard.service;
+
+import com.flashcard.constants.Constants;
+import com.flashcard.model.Topic;
+import com.flashcard.model.User;
+import com.flashcard.model.UserFillBlankQuiz;
+import com.flashcard.repository.FillBlankQuizRepository;
+import com.flashcard.repository.TopicRepository;
+import com.flashcard.repository.UserFillBlankQuizRepository;
+import com.flashcard.security.services.AuthService;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
+
+@Service
+@RequiredArgsConstructor
+public class UserFillBlankQuizService {
+
+    private final UserFillBlankQuizRepository userFillBlankQuizRepository;
+    private final AuthService authService;
+    private final TopicRepository topicRepository;
+    private final FillBlankQuizRepository fillBlankQuizRepository;
+
+
+    @Transactional
+    public void save(@NotBlank String title, @NotNull Long topicId) {
+
+        User user = authService.getCurrentUser();
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+
+        int count = fillBlankQuizRepository.countByTopicAndTitle(topic, title);
+
+        if (count == 0) {
+            throw new IllegalArgumentException(String.format("Yanlış başlık değeri gönderdiniz %s", title));
+        }
+
+        UserFillBlankQuiz quiz = new UserFillBlankQuiz();
+        quiz.setUser(user);
+        quiz.setTopic(topic);
+        quiz.setTitle(title);
+
+        userFillBlankQuizRepository.save(quiz);
+    }
+}
