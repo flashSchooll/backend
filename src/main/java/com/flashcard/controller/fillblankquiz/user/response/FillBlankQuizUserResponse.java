@@ -9,4 +9,5 @@ public class FillBlankQuizUserResponse {
     private String title;
     private Long count;
     private boolean seen;
+    private long topicId;
 }

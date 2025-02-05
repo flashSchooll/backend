@@ -95,6 +95,7 @@ public class QuizService {
 
     public List<QuizCount> countByTopic(Long topicId) {
         Objects.requireNonNull(topicId);
+        User user=authService.getCurrentUser();
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
@@ -109,7 +110,9 @@ public class QuizService {
         List<QuizCount> quizCounts = new ArrayList<>();
         QuizCount quizCount;
         for (Map.Entry<String, Long> entry : map.entrySet()) {
-            quizCount = new QuizCount(entry.getKey(), entry.getValue(), topicId);
+
+            boolean existQuiz=userQuizAnswerRepository.existsByUserAndQuizName(user,entry.getKey());
+            quizCount = new QuizCount(entry.getKey(), entry.getValue(), topicId,existQuiz);
 
             quizCounts.add(quizCount);
         }

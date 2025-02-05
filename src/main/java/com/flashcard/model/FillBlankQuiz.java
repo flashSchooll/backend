@@ -9,7 +9,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name = "FillBlankQuiz")
-@Table(name = "fill_blank_quiz")
+@Table(name = "fill_blank_quiz",
+        indexes = {
+                @Index(name = "idx_fill_blank_quiz_topic", columnList = "topic_id"),
+                @Index(name = "idx_fill_blank_quiz_title", columnList = "title")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "fill_blank_quiz_topic_title_question", columnNames = {"topic_id", "title","question"})
+        })
 @Getter
 @Setter
 @AllArgsConstructor

@@ -8,4 +8,7 @@ import java.util.List;
 
 public interface UserQuizAnswerRepository extends JpaRepository<UserQuizAnswer,Long> {
     List<UserQuizAnswer> findByUserAndQuizName(User user, String name);
+
+
+    boolean existsByUserAndQuizName(User user, String name);
 }

@@ -91,6 +91,7 @@ public class FillBlankQuizService {
             response.setCount(count);
             response.setTitle(title);
             response.setSeen(seen);
+            response.setTopicId(topicId);
 
             responseList.add(response);
         }

@@ -71,4 +71,16 @@ public class LessonService {
 
         return lessonRepository.save(lesson);
     }
+
+    public Lesson updateIcon(Long id, MultipartFile icon) throws IOException {
+        if (icon.isEmpty()) {
+            throw new IllegalArgumentException("Resim boş olamaz");
+        }
+        Lesson lesson = lessonRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
+
+        lesson.setIcon(icon.getBytes());
+
+        return lessonRepository.save(lesson);
+    }
 }

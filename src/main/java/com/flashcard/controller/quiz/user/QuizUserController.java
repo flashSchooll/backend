@@ -1,14 +1,13 @@
 package com.flashcard.controller.quiz.user;
 
+import com.flashcard.controller.fillblankquiz.user.response.FillBlankQuizUserResponse;
 import com.flashcard.controller.quiz.request.QuizSaveRequest;
 import com.flashcard.controller.quiz.request.UserQuizAnswerRequestList;
-import com.flashcard.controller.quiz.response.MyQuizResponse;
-import com.flashcard.controller.quiz.response.QuizCount;
-import com.flashcard.controller.quiz.response.QuizResponse;
-import com.flashcard.controller.quiz.response.UserQuizAnswerResponse;
+import com.flashcard.controller.quiz.response.*;
 import com.flashcard.model.MyQuiz;
 import com.flashcard.model.Quiz;
 import com.flashcard.model.UserQuizAnswer;
+import com.flashcard.service.FillBlankQuizService;
 import com.flashcard.service.MyQuizService;
 import com.flashcard.service.QuizService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +25,7 @@ public class QuizUserController {
 
     private final QuizService quizService;
     private final MyQuizService myQuizService;
+    private final FillBlankQuizService fillBlankQuizService;
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -33,9 +33,9 @@ public class QuizUserController {
 
         List<Quiz> quizList = quizService.getByTopic(topicId);
 
-        List<QuizResponse> responses = quizList.stream().map(QuizResponse::new).toList();
+        List<QuizResponse> quizResponses = quizList.stream().map(QuizResponse::new).toList();
 
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(quizResponses);
     }
 
     @GetMapping("/get-all")
@@ -55,7 +55,13 @@ public class QuizUserController {
 
         List<QuizCount> quizList = quizService.countByTopic(topicId);
 
-        return ResponseEntity.ok(quizList);
+        List<FillBlankQuizUserResponse> fillBlankQuizUserResponses = fillBlankQuizService.getCountByUser(topicId);
+
+        QuizCountResponse response = new QuizCountResponse();
+        response.setFillBlankQuizUserResponses(fillBlankQuizUserResponses);
+        response.setQuizList(quizList);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/save-answer")

@@ -36,11 +36,11 @@ public class Card {// kart bilgisini tutar
     private Flashcard flashcard;
 
     @Column(columnDefinition = "TEXT")
-    @NotBlank
+    @NotBlank                    // todo boş olabilecek şeklide güncellenecek
     private String frontFace;
 
     @Column(columnDefinition = "TEXT")
-    @NotBlank
+    @NotBlank                   // todo boş olabilecek şeklide güncellenecek
     private String backFace;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

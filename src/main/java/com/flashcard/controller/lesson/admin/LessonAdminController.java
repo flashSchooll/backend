@@ -7,6 +7,7 @@ import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.model.enums.YKSLesson;
 import com.flashcard.service.LessonService;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,6 +49,18 @@ public class LessonAdminController {
                                                  @RequestBody MultipartFile icon) throws IOException {
 
         Lesson lesson = lessonService.update(id, yksLesson, branch, yks, icon);
+
+        LessonResponse response = new LessonResponse(lesson);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update/icon")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<LessonResponse> update(@RequestParam @NotNull Long id,
+                                                 @RequestBody @NotNull MultipartFile icon) throws IOException {
+
+        Lesson lesson = lessonService.updateIcon(id, icon);
 
         LessonResponse response = new LessonResponse(lesson);
 

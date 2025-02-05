@@ -7,6 +7,7 @@ import com.flashcard.model.UserFillBlankQuiz;
 import com.flashcard.repository.FillBlankQuizRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.repository.UserFillBlankQuizRepository;
+import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class UserFillBlankQuizService {
     private final AuthService authService;
     private final TopicRepository topicRepository;
     private final FillBlankQuizRepository fillBlankQuizRepository;
+    private final UserRepository userRepository;
 
 
     @Transactional
@@ -45,5 +47,10 @@ public class UserFillBlankQuizService {
         quiz.setTitle(title);
 
         userFillBlankQuizRepository.save(quiz);
+
+        user.raiseStar(count);
+        user.raiseRosette();
+
+        userRepository.save(user);
     }
 }
