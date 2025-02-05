@@ -5,6 +5,7 @@ import com.flashcard.controller.fillblankquiz.user.response.FillBlankQuizUserRes
 import com.flashcard.model.FillBlankQuiz;
 import com.flashcard.model.Topic;
 import com.flashcard.model.User;
+import com.flashcard.model.enums.QuizType;
 import com.flashcard.repository.FillBlankQuizRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.repository.UserFillBlankQuizRepository;
@@ -92,6 +93,7 @@ public class FillBlankQuizService {
             response.setTitle(title);
             response.setSeen(seen);
             response.setTopicId(topicId);
+            response.setQuizType(QuizType.FILL_BLANK);
 
             responseList.add(response);
         }

@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -57,11 +59,18 @@ public class QuizUserController {
 
         List<FillBlankQuizUserResponse> fillBlankQuizUserResponses = fillBlankQuizService.getCountByUser(topicId);
 
-        QuizCountResponse response = new QuizCountResponse();
-        response.setFillBlankQuizUserResponses(fillBlankQuizUserResponses);
-        response.setQuizList(quizList);
+        List<QuizCountResponse> response = quizList.stream()
+                .map(QuizCountResponse::new)
+                .collect(Collectors.toList());
+        List<QuizCountResponse> response1 = fillBlankQuizUserResponses.stream()
+                .map(QuizCountResponse::new)
+                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(response);
+        List<QuizCountResponse> responses = new ArrayList<>();
+        responses.addAll(response1);
+        responses.addAll(response);
+
+        return ResponseEntity.ok(responses);
     }
 
     @PostMapping("/save-answer")

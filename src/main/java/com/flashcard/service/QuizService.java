@@ -10,6 +10,7 @@ import com.flashcard.model.Topic;
 import com.flashcard.model.User;
 import com.flashcard.model.UserQuizAnswer;
 import com.flashcard.model.enums.QuizOption;
+import com.flashcard.model.enums.QuizType;
 import com.flashcard.repository.QuizRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.repository.UserQuizAnswerRepository;
@@ -95,7 +96,7 @@ public class QuizService {
 
     public List<QuizCount> countByTopic(Long topicId) {
         Objects.requireNonNull(topicId);
-        User user=authService.getCurrentUser();
+        User user = authService.getCurrentUser();
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
@@ -107,12 +108,15 @@ public class QuizService {
                 Collectors.counting()
         ));
 
+        Map<String, List<Quiz>> listMap = quizList.stream().collect(Collectors.groupingBy(Quiz::getName));
+
         List<QuizCount> quizCounts = new ArrayList<>();
         QuizCount quizCount;
         for (Map.Entry<String, Long> entry : map.entrySet()) {
 
-            boolean existQuiz=userQuizAnswerRepository.existsByUserAndQuizName(user,entry.getKey());
-            quizCount = new QuizCount(entry.getKey(), entry.getValue(), topicId,existQuiz);
+            boolean existQuiz = userQuizAnswerRepository.existsByUserAndQuizName(user, entry.getKey());
+            QuizType type = listMap.get(entry.getKey()).get(0).getType();
+            quizCount = new QuizCount(entry.getKey(), entry.getValue(), topicId, existQuiz, type);//type eklenecek
 
             quizCounts.add(quizCount);
         }

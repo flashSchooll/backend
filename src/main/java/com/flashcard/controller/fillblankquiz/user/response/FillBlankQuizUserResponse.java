@@ -1,5 +1,6 @@
 package com.flashcard.controller.fillblankquiz.user.response;
 
+import com.flashcard.model.enums.QuizType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,4 +11,5 @@ public class FillBlankQuizUserResponse {
     private Long count;
     private boolean seen;
     private long topicId;
+    private QuizType quizType;
 }

@@ -1,5 +1,6 @@
 package com.flashcard.model;
 
+import com.flashcard.model.enums.QuizType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +16,7 @@ import lombok.Setter;
                 @Index(name = "idx_fill_blank_quiz_title", columnList = "title")
         },
         uniqueConstraints = {
-                @UniqueConstraint(name = "fill_blank_quiz_topic_title_question", columnNames = {"topic_id", "title","question"})
+                @UniqueConstraint(name = "fill_blank_quiz_topic_title_question", columnNames = {"topic_id", "title", "question"})
         })
 @Getter
 @Setter
@@ -40,4 +41,8 @@ public class FillBlankQuiz {
     @NotNull
     @ManyToOne
     private Topic topic;
+
+    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    private QuizType quizType;
 }

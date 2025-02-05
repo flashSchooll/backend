@@ -4,6 +4,7 @@ import com.flashcard.constants.Constants;
 import com.flashcard.exception.BusinessException;
 import com.flashcard.model.FillBlankQuiz;
 import com.flashcard.model.Topic;
+import com.flashcard.model.enums.QuizType;
 import com.flashcard.repository.FillBlankQuizRepository;
 import com.flashcard.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,7 @@ public class FillBlankQuizExcelImporter {
             fillBlankQuiz.setTitle(fillBlankQuizDTO.getTitle());
             fillBlankQuiz.setQuestion(fillBlankQuizDTO.getQuestion());
             fillBlankQuiz.setAnswer(fillBlankQuizDTO.getAnswer());
+            fillBlankQuiz.setQuizType(QuizType.FILL_BLANK);
 
             fillBlankQuizList.add(fillBlankQuiz);
         }
