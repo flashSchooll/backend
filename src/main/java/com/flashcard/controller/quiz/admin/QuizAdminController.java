@@ -38,7 +38,7 @@ public class QuizAdminController {
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> getAll(@PathVariable Long topicId) throws Exception {
+    public ResponseEntity<Object> getAll(@PathVariable Long topicId) {
 
         List<Quiz> quizList = quizService.getByTopic(topicId);
 
@@ -49,7 +49,7 @@ public class QuizAdminController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> getByName(@RequestParam String name) throws Exception {
+    public ResponseEntity<Object> getByName(@RequestParam String name) {
 
         List<Quiz> quizList = quizService.getByName(name);
 
@@ -60,7 +60,7 @@ public class QuizAdminController {
 
     @GetMapping("/get-all-as-page")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> getAll(@PageableDefault(sort = "name", direction = Sort.Direction.DESC) Pageable pageable){
+    public ResponseEntity<Object> getAll(@PageableDefault(sort = "name", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<Quiz> quizList = quizService.getAll(pageable);
 
@@ -71,7 +71,7 @@ public class QuizAdminController {
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> getByName(@RequestBody UpdateQuizRequest updateQuizRequest)   {
+    public ResponseEntity<Object> getByName(@RequestBody UpdateQuizRequest updateQuizRequest) {
 
         Quiz quiz = quizService.updateQuiz(updateQuizRequest);
 
