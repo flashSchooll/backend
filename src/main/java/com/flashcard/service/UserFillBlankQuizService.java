@@ -29,7 +29,7 @@ public class UserFillBlankQuizService {
 
 
     @Transactional
-    public void save(@NotBlank String title, @NotNull Long topicId) {
+    public void save(@NotBlank String title, @NotNull Long topicId, Integer known) {
 
         User user = authService.getCurrentUser();
         Topic topic = topicRepository.findById(topicId)
@@ -48,7 +48,7 @@ public class UserFillBlankQuizService {
 
         userFillBlankQuizRepository.save(quiz);
 
-        user.raiseStar(count);
+        user.raiseStar(known);
         user.raiseRosette();
 
         userRepository.save(user);

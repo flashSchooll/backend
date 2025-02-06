@@ -27,7 +27,7 @@ public class FillBlankQuizUserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('ADMIN')")
     public ResponseEntity<Object> getByTopic(@PathVariable Long topicId) {
 
-        List<FillBlankQuizUserResponse> responses=fillBlankQuizService.getCountByUser(topicId);
+        List<FillBlankQuizUserResponse> responses = fillBlankQuizService.getCountByUser(topicId);
 
         return ResponseEntity.ok(responses);
     }
@@ -46,9 +46,10 @@ public class FillBlankQuizUserController {
     @PostMapping()
     @PreAuthorize("hasRole('ADMIN') or hasRole('ADMIN')")
     public ResponseEntity<String> saveUserFillBlank(@RequestParam @NotBlank String title,
-                                                    @RequestParam @NotNull Long topicId) {
+                                                    @RequestParam @NotNull Long topicId,
+                                                    @RequestParam Integer known) {
 
-        userFillBlankQuizService.save(title, topicId);
+        userFillBlankQuizService.save(title, topicId, known);
 
         return ResponseEntity.ok("Boşluk doldurmalı soru cevapları başarıyla kaydedildi");
     }
