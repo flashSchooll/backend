@@ -10,7 +10,8 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public enum QuizType {
     RIGHT_WRONG,
-    TEST;
+    TEST,
+    FILL_BLANK;
 
 
     public static QuizType by(String type) {
