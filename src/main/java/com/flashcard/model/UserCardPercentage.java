@@ -32,7 +32,7 @@ public class UserCardPercentage {// kullanıcı kart tamamlama yüzdesini tutar
     @NotNull
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private Lesson lesson;//todo entity graph eklenecek çok fazla sorgu atılıyor
 

@@ -3,6 +3,9 @@ package com.flashcard.controller.card.user;
 import com.flashcard.controller.card.admin.response.CardResponse;
 import com.flashcard.model.Card;
 import com.flashcard.model.MyCard;
+import com.flashcard.model.User;
+import com.flashcard.model.enums.Branch;
+import com.flashcard.security.services.AuthService;
 import com.flashcard.service.CardService;
 import com.flashcard.service.MyCardsService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ public class CardUserController {
 
     private final CardService cardService;
     private final MyCardsService myCardsService;
+    private final AuthService authService;
 
     @GetMapping("/get-all/{flashcardId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -66,7 +70,11 @@ public class CardUserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> exploreForMe() {
 
-        List<Card> response = cardService.explore();
+        User user = authService.getCurrentUser();
+
+        Branch branch = user.getBranch();
+
+        List<Card> response = cardService.explore(branch);
 
         List<CardResponse> tytCardResponses = response.stream().map(CardResponse::new).toList();
 

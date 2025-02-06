@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,20 +38,33 @@ public class UserFillBlankQuizService {
 
         int count = fillBlankQuizRepository.countByTopicAndTitle(topic, title);
 
-        if (count == 0) {
-            throw new IllegalArgumentException(String.format("Yanlış başlık değeri gönderdiniz %s", title));
+        Optional<UserFillBlankQuiz> optionalUserFillBlankQuiz = userFillBlankQuizRepository.findByUserAndTitleAndTopic(user, title, topic);
+        if (optionalUserFillBlankQuiz.isEmpty()) {
+            if (count == 0) {
+                throw new IllegalArgumentException(String.format("Yanlış başlık değeri gönderdiniz %s", title));
+            }
+
+            UserFillBlankQuiz quiz = new UserFillBlankQuiz();
+            quiz.setUser(user);
+            quiz.setTopic(topic);
+            quiz.setTitle(title);
+            quiz.setKnown(known);
+
+            userFillBlankQuizRepository.save(quiz);
+
+            user.raiseStar(known);
+            user.raiseRosette();
+
+            userRepository.save(user);
+        } else {
+            int alreadyKnown = optionalUserFillBlankQuiz.get().getKnown();
+            int totalKnown = alreadyKnown - known;
+
+            user.raiseStar(totalKnown);
+
+            userRepository.save(user);
         }
 
-        UserFillBlankQuiz quiz = new UserFillBlankQuiz();
-        quiz.setUser(user);
-        quiz.setTopic(topic);
-        quiz.setTitle(title);
-
-        userFillBlankQuizRepository.save(quiz);
-
-        user.raiseStar(known);
-        user.raiseRosette();
-
-        userRepository.save(user);
     }
+
 }

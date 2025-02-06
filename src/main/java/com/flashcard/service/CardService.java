@@ -10,11 +10,11 @@ import com.flashcard.model.*;
 import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.CardFace;
 import com.flashcard.model.enums.YKS;
-import com.flashcard.model.enums.YKSLesson;
 import com.flashcard.repository.*;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +35,7 @@ public class CardService {
     private final AuthService authService;
     private final RepeatFlashcardRepository repeatFlashcardRepository;
     private final MyCardsRepository myCardsRepository;
+    private final UserCardPercentageRepository userCardPercentageRepository;
 
     @Transactional
     public Card save(CardSaveRequest tytCardSaveRequest) throws BadRequestException {
@@ -201,11 +201,8 @@ public class CardService {
 
     }
 
-    public List<Card> explore() {
-
-        User user = authService.getCurrentUser();
-
-        Branch branch = user.getBranch();
+ //   @Cacheable(value = "cardsCache", key = "#branch")   todo  bakılacak
+    public List<Card> explore(Branch branch) {
 
         return cardRepository.findRandomCardsByBranch(branch != null ? branch.name() : null);
     }
@@ -235,9 +232,11 @@ public class CardService {
 
         User user = authService.getCurrentUser();
 
-        Branch branch = user.getBranch();
+        //   Branch branch = user.getBranch();
 
-        List<UserSeenCard> cards = userSeenCardRepository.findByUser(user);
+        List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUser(user);
+
+     /*   List<UserSeenCard> cards = userSeenCardRepository.findByUser(user);
 
         Map<YKSLesson, Long> seenCardGroup = cards.stream()
                 .filter(card -> card.getCard().getFlashcard().getTopic().getLesson().getBranch() == null
@@ -260,6 +259,13 @@ public class CardService {
                         seenCardGroup.get(aLong) == null ? 0 : seenCardGroup.get(aLong),
                         (seenCardGroup.get(aLong) != null ? ((double) seenCardGroup.get(aLong) / cardGroup.get(aLong))
                                 : 0)))
+                .toList();*/
+
+        return percentageList.stream().map(
+                        l -> new UserStatisticLessonResponse(
+                                l.getLesson().getYksLesson().label,
+                                (long) l.getCompletedCard(),
+                                (l.getCompletedCard() / (double) l.getTotalCard())))
                 .toList();
     }
 

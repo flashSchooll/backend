@@ -37,4 +37,6 @@ public class UserFillBlankQuiz {
     @ManyToOne
     private Topic topic;
 
+    private Integer known;
+
 }
