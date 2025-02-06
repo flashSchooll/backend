@@ -62,7 +62,7 @@ public class LessonService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
         lesson.setYksLesson(yksLesson);
-        lesson.setBranch(branch);
+        lesson.setBranch(yks.equals(YKS.TYT) ? null : branch);
         lesson.setYks(yks);
 
         if (icon != null) {

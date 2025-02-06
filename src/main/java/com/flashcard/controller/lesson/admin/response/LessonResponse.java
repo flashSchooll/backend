@@ -16,9 +16,9 @@ public class LessonResponse {
 
     public LessonResponse(Lesson lesson) {
         this.lessonId = lesson.getId();
-        this.yksLesson = lesson.getYksLesson() != null ? lesson.getYksLesson().label : null;
+        this.yksLesson = lesson.getYksLesson() != null ? lesson.getYksLesson().name() : null;
         this.icon = lesson.getIcon();
-        this.branch = lesson.getBranch() != null ? lesson.getBranch().label : null;
+        this.branch = lesson.getBranch() != null ? lesson.getBranch().name() : null;
         this.yks = lesson.getYks().name();
     }
 }

@@ -44,7 +44,7 @@ public class LessonAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LessonResponse> update(@RequestParam Long id,
                                                  @RequestParam YKSLesson yksLesson,
-                                                 @RequestParam Branch branch,
+                                                 @RequestParam(required = false) Branch branch,
                                                  @RequestParam YKS yks,
                                                  @RequestBody MultipartFile icon) throws IOException {
 
