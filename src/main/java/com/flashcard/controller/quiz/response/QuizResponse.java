@@ -1,6 +1,7 @@
 package com.flashcard.controller.quiz.response;
 
 import com.flashcard.model.Quiz;
+import com.flashcard.model.enums.QuizType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,7 +30,7 @@ public class QuizResponse {
         this.b = quiz.getB();
         this.c = quiz.getC();
         this.d = quiz.getD();
-        this.optionList = List.of(quiz.getA(), quiz.getB(), quiz.getC(), quiz.getD());
+        this.optionList = quiz.getType().equals(QuizType.TEST) ? List.of(quiz.getA(), quiz.getB(), quiz.getC(), quiz.getD()) : List.of(quiz.getA(), quiz.getB());
         this.answer = quiz.getAnswer().getIndex();
         this.name = quiz.getName();
         this.topic = quiz.getTopic().getSubject();

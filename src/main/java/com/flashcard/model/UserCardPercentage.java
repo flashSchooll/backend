@@ -34,7 +34,7 @@ public class UserCardPercentage {// kullanıcı kart tamamlama yüzdesini tutar
 
     @ManyToOne
     @NotNull
-    private Lesson lesson;
+    private Lesson lesson;//todo entity graph eklenecek çok fazla sorgu atılıyor
 
     private Set<Long> flashCards = new HashSet<>();
 
