@@ -13,6 +13,7 @@ import com.flashcard.security.services.AuthService;
 import com.flashcard.service.excel.FillBlankQuizExcelImporter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,6 +44,7 @@ public class FillBlankQuizService {
         }
     }
 
+ //   @Cacheable(value = "fillBlankQuizes", key = "#topicId")
     public List<FillBlankQuiz> getByTopic(Long topicId) {
 
         Topic topic = topicRepository.findById(topicId)
@@ -60,7 +62,7 @@ public class FillBlankQuizService {
 
         fillBlankQuizRepository.delete(fillBlankQuiz);
     }
-
+  //  @Cacheable(value = "fillBlankQuizesByTitle", key = "#title")
     public List<FillBlankQuiz> getByTitle(String title) {
 
         Objects.requireNonNull(title);

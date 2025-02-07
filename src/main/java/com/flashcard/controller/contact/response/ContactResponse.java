@@ -1,7 +1,7 @@
 package com.flashcard.controller.contact.response;
 
 
-import com.flashcard.model.Contact;
+import com.flashcard.model.ContactMessage;
 import lombok.Getter;
 
 @Getter
@@ -12,12 +12,12 @@ public class ContactResponse {
     private final String userSurname;
     private final Boolean seen;
 
-    public ContactResponse(Contact contact) {
-        this.message = contact.getMessage();
-        this.topic = contact.getTopic();
-        this.userName = contact.getUser().getUserName();
-        this.userSurname = contact.getUser().getUserSurname();
-        this.seen = contact.getSeen();
+    public ContactResponse(ContactMessage contactMessage) {
+        this.message = contactMessage.getMessage();
+        this.topic = contactMessage.getTopic();
+        this.userName = contactMessage.getUser().getUserName();
+        this.userSurname = contactMessage.getUser().getUserSurname();
+        this.seen = contactMessage.getSeen();
 
     }
 }

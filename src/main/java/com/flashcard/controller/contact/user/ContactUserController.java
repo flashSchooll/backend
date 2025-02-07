@@ -2,7 +2,7 @@ package com.flashcard.controller.contact.user;
 
 import com.flashcard.controller.contact.request.ContactSaveRequest;
 import com.flashcard.controller.contact.response.ContactResponse;
-import com.flashcard.model.Contact;
+import com.flashcard.model.ContactMessage;
 import com.flashcard.service.ContactService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +21,9 @@ public class ContactUserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ContactResponse> save(@RequestBody @Valid ContactSaveRequest request) {
 
-        Contact contact = contactService.save(request);
+        ContactMessage contactMessage = contactService.save(request);
 
-        ContactResponse response = new ContactResponse(contact);
+        ContactResponse response = new ContactResponse(contactMessage);
 
         return ResponseEntity.ok(response);
     }

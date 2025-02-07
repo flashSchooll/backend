@@ -74,7 +74,7 @@ public class TopicService {
     }
 
     @Cacheable(value = "lessonTopic", key = "#lessonId")
-    public List<TopicUserResponse> getAllUser(Long lessonId) {
+    public List<TopicUserResponse> getAllByLesson(Long lessonId) {
         Objects.requireNonNull(lessonId);
 
         Lesson tytLesson = lessonRepository.findById(lessonId)
@@ -95,7 +95,6 @@ public class TopicService {
             long count = cardRepository.countByFlashcardTopic(t);
             counts.put(t, count);
         }
-
 
         return topicRepository.findByLesson(tytLesson)
                 .stream()

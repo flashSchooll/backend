@@ -10,6 +10,7 @@ import com.flashcard.repository.UserCardPercentageRepository;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,10 +76,8 @@ public class UserCardPercentageService {
         userCardPercentageRepository.saveAll(percentageList);
     }
 
-
-    public List<UserCardPercentage> getTyt() {
-
-        User user = authService.getCurrentUser();
+  //  @Cacheable(value = "userCardPercentageTyt", key = "#user.id")
+    public List<UserCardPercentage> getTyt(User user) {
 
         List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUserAndLessonYks(user, YKS.TYT);
 
@@ -92,9 +91,8 @@ public class UserCardPercentageService {
 
     }
 
-    public List<UserCardPercentage> getAyt() {
-
-        User user = authService.getCurrentUser();
+ //   @Cacheable(value = "userCardPercentageAyt", key = "#user.id")
+    public List<UserCardPercentage> getAyt(User user) {
 
         Branch branch = user.getBranch();
 
@@ -141,6 +139,7 @@ public class UserCardPercentageService {
         userCardPercentageRepository.saveAll(percentageList);
     }
 
+  //  @Cacheable(value = "countAverageFifty")
     public long countAverageFifty() {
 
         List<UserCardPercentage> percentages = userCardPercentageRepository.findAll();

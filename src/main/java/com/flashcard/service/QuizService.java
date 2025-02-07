@@ -19,6 +19,7 @@ import com.flashcard.security.services.AuthService;
 import com.flashcard.service.excel.QuizExcelImporter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class QuizService {
 
     }
 
-    public List<Quiz> getByTopic(Long topicId) {
+    public List<Quiz> getByTopic(Long topicId) {//todo cache eklenebilir mi
         Objects.requireNonNull(topicId);
 
         Topic topic = topicRepository.findById(topicId)
@@ -94,9 +95,8 @@ public class QuizService {
         return quizRepository.findAll(pageable);
     }
 
-    public List<QuizCount> countByTopic(Long topicId) {
-        Objects.requireNonNull(topicId);
-        User user = authService.getCurrentUser();
+  //  @Cacheable(value = "quizCounts", key = "{#userId,#topicId}")
+    public List<QuizCount> countByTopic(Long userId, Long topicId) {
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
@@ -114,7 +114,7 @@ public class QuizService {
         QuizCount quizCount;
         for (Map.Entry<String, Long> entry : map.entrySet()) {
 
-            boolean existQuiz = userQuizAnswerRepository.existsByUserAndQuizName(user, entry.getKey());
+            boolean existQuiz = userQuizAnswerRepository.existsByUserIdAndQuizName(userId, entry.getKey());
             QuizType type = listMap.get(entry.getKey()).get(0).getType();
             quizCount = new QuizCount(entry.getKey(), entry.getValue(), topicId, existQuiz, type);//type eklenecek
 
@@ -165,9 +165,9 @@ public class QuizService {
 
     }
 
-    public List<UserQuizAnswer> getAnswers(String name) {
-        User user = authService.getCurrentUser();
+  //  @Cacheable(value = "userQuizAnswers", key = "{#userId,#name}")
+    public List<UserQuizAnswer> getAnswers(Long userId, String name) {
 
-        return userQuizAnswerRepository.findByUserAndQuizName(user, name);
+        return userQuizAnswerRepository.findByUserIdAndQuizName(userId, name);
     }
 }

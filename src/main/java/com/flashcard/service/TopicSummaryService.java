@@ -72,7 +72,7 @@ public class TopicSummaryService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_SUMMARY_NOT_FOUND));
     }
 
-    @Cacheable(value = "topicSummaries", key = "#topicId")
+  //  @Cacheable(value = "topicSummaries", key = "#topicId")
     public List<TopicSummaryResponse> getAllByTopic(Long topicId) {
         Objects.requireNonNull(topicId);
 
@@ -84,7 +84,7 @@ public class TopicSummaryService {
         return summaries.stream().map(TopicSummaryResponse::new).toList();
     }
 
-    @Cacheable(value = "topicSummaries", key = "#topicId")
+   // @Cacheable(value = "topicSummaries", key = "#topicId")
     public Page<TopicSummaryResponse> getAllByTopic(Pageable pageable,Long topicId) {
         Objects.requireNonNull(topicId);
 

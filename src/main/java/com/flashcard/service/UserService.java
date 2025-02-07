@@ -10,6 +10,7 @@ import com.flashcard.model.enums.Branch;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.*;
 
@@ -35,13 +37,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final DailyTargetService dailyTargetService;
 
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
     }
 
-    @Cacheable(value = "users")
+    @Cacheable(value = "users", key = "'allUsers'")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -51,6 +54,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = "users", key = "'allUsers'")
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
@@ -210,6 +214,8 @@ public class UserService {
         User user = authService.getCurrentUser();
 
         user.setTarget(target);
+
+        dailyTargetService.updateDailyTargetByDay(target, LocalDate.now());
 
         return userRepository.save(user);
     }

@@ -6,7 +6,9 @@ import com.flashcard.controller.quiz.request.UserQuizAnswerRequestList;
 import com.flashcard.controller.quiz.response.*;
 import com.flashcard.model.MyQuiz;
 import com.flashcard.model.Quiz;
+import com.flashcard.model.User;
 import com.flashcard.model.UserQuizAnswer;
+import com.flashcard.security.services.AuthService;
 import com.flashcard.service.FillBlankQuizService;
 import com.flashcard.service.MyQuizService;
 import com.flashcard.service.QuizService;
@@ -28,6 +30,7 @@ public class QuizUserController {
     private final QuizService quizService;
     private final MyQuizService myQuizService;
     private final FillBlankQuizService fillBlankQuizService;
+    private final AuthService authService;
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -54,8 +57,8 @@ public class QuizUserController {
     @GetMapping("/quiz-count/{topicId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getQuizCount(@PathVariable Long topicId) {
-
-        List<QuizCount> quizList = quizService.countByTopic(topicId);
+        User user = authService.getCurrentUser();
+        List<QuizCount> quizList = quizService.countByTopic(user.getId(), topicId);
 
         List<FillBlankQuizUserResponse> fillBlankQuizUserResponses = fillBlankQuizService.getCountByUser(topicId);
 
@@ -104,8 +107,8 @@ public class QuizUserController {
     @GetMapping("/my-quiz/get-all")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getAllMyQuiz() {
-
-        List<MyQuiz> myQuizs = myQuizService.myQuizes();
+        User user = authService.getCurrentUser();
+        List<MyQuiz> myQuizs = myQuizService.myQuizes(user.getId());
 
         List<MyQuizResponse> responses = myQuizs.stream().map(MyQuizResponse::new).toList();
 
@@ -115,8 +118,8 @@ public class QuizUserController {
     @GetMapping("/get-answers")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getQuizAnswer(@RequestParam String name) {
-
-        List<UserQuizAnswer> answerList = quizService.getAnswers(name);
+        User user = authService.getCurrentUser();
+        List<UserQuizAnswer> answerList = quizService.getAnswers(user.getId(),name);
 
         List<UserQuizAnswerResponse> responses = answerList.stream().map(UserQuizAnswerResponse::new).toList();
 

@@ -15,6 +15,7 @@ import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.excel.FlashcardExcelImporter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -123,7 +124,6 @@ public class FlashCardService {
             flashcardLongMap.put(f, count);
         }
 
-
         List<UserSeenCard> seenCards = userSeenCardService.getAllSeenCardsByTopic(topicId);
 
         List<Long> flashcards = seenCards.stream()
@@ -140,9 +140,9 @@ public class FlashCardService {
                                 Math.toIntExact(flashcardLongMap.get(flashcard)),
                                 flashcards.contains(flashcard.getId())))
                 .toList();
-                //.stream().sorted(Comparator.comparing(FlashcardUserResponse::getCardName)).toList();
     }
 
+  //  @Cacheable(value = "flashcardSearch", key = "#search")
     public List<Flashcard> search(String search) {
 
         return flashCardRepository.search(search);

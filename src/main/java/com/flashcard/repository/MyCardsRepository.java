@@ -26,4 +26,6 @@ public interface MyCardsRepository extends JpaRepository<MyCard, Long> {
     boolean existsByUserAndCard(User user, Card card);
 
     List<MyCard> findByUserAndCardIn(User user, List<Card> cards);
+
+    List<MyCard> findByUserIdAndCardIn(Long userId, List<Card> cards);
 }

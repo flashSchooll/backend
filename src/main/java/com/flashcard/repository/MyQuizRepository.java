@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface MyQuizRepository extends JpaRepository<MyQuiz, Long> {
     List<MyQuiz> findByUser(User user);
+
+    List<MyQuiz> findByUserId(Long userId);
 }

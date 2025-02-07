@@ -12,7 +12,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Entity(name = "Contact")
 @Table(name = "contact")
-public class Contact {
+public class ContactMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

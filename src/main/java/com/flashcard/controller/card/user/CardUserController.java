@@ -30,9 +30,9 @@ public class CardUserController {
     @GetMapping("/get-all/{flashcardId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> getAll(@PathVariable Long flashcardId) {
-
+        User user = authService.getCurrentUser();
         List<Card> response = cardService.getAll(flashcardId);
-        List<MyCard> myCards = myCardsService.getAll(flashcardId);
+        List<MyCard> myCards = myCardsService.getAll(user.getId(), flashcardId);
 
         List<CardResponse> cardResponses = response.stream().map(card -> new CardResponse(card, myCards)).toList();
 
@@ -74,7 +74,7 @@ public class CardUserController {
 
         Branch branch = user.getBranch();
 
-        List<Card> response = cardService.explore(branch);
+        List<Card> response = cardService.explore(branch.name());
 
         List<CardResponse> tytCardResponses = response.stream().map(CardResponse::new).toList();
 

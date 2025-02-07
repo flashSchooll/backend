@@ -93,4 +93,17 @@ public class DailyTargetService {
 
         dailyTargetRepository.save(dailyTarget);
     }
+
+    @Transactional
+    public void updateDailyTargetByDay(Integer target, LocalDate now) {
+        User user = authService.getCurrentUser();
+
+        Optional<DailyTarget> optionalDailyTarget = dailyTargetRepository.findByUserAndDay(user, now);
+        if (optionalDailyTarget.isPresent()) {
+            DailyTarget dailyTarget = optionalDailyTarget.get();
+            dailyTarget.setTarget(target);
+
+            dailyTargetRepository.save(dailyTarget);
+        }
+    }
 }

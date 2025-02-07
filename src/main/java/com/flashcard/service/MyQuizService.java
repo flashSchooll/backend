@@ -9,6 +9,7 @@ import com.flashcard.repository.MyQuizRepository;
 import com.flashcard.repository.QuizRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,9 +55,10 @@ public class MyQuizService {
         myQuizRepository.delete(myQuiz);
     }
 
-    public List<MyQuiz> myQuizes() {
-        User user = authService.getCurrentUser();
+  //  @Cacheable(value = "myQuizes", key = "#userId")
+    public List<MyQuiz> myQuizes(Long userId) {
 
-        return myQuizRepository.findByUser(user);
+        return myQuizRepository.findByUserId(userId);
     }
+
 }

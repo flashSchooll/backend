@@ -2,7 +2,7 @@ package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.contact.request.ContactSaveRequest;
-import com.flashcard.model.Contact;
+import com.flashcard.model.ContactMessage;
 import com.flashcard.model.User;
 import com.flashcard.repository.ContactRepository;
 import com.flashcard.security.services.AuthService;
@@ -22,31 +22,32 @@ public class ContactService {
     private final AuthService authService;
 
     @Transactional
-    public Contact save(@Valid ContactSaveRequest request) {
+    public ContactMessage save(@Valid ContactSaveRequest request) {
 
         User user = authService.getCurrentUser();
 
-        Contact contact = new Contact();
-        contact.setUser(user);
-        contact.setMessage(request.getMessage());
-        contact.setTopic(request.getTopic());
+        ContactMessage contactMessage = new ContactMessage();
+        contactMessage.setUser(user);
+        contactMessage.setMessage(request.getMessage());
+        contactMessage.setTopic(request.getTopic());
 
-        return contactRepository.save(contact);
+        return contactRepository.save(contactMessage);
     }
 
-    public List<Contact> getAll() {
+ //   @Cacheable(value = "contactMessages")
+    public List<ContactMessage> getAll() {
         return contactRepository.findAll();
     }
 
-    public Contact findById(Long id) {
+    public ContactMessage findById(Long id) {
         Objects.requireNonNull(id);
 
-        Contact contact = contactRepository.findById(id)
+        ContactMessage contactMessage = contactRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.CONTACT_MESSAGE_NOT_FOUND));
 
-        contact.updateContact();
+        contactMessage.updateContact();
 
-        return contact;
+        return contactMessage;
     }
 
     @Transactional
@@ -54,10 +55,10 @@ public class ContactService {
 
         Objects.requireNonNull(id);
 
-        Contact contact = contactRepository.findById(id)
+        ContactMessage contactMessage = contactRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.CONTACT_MESSAGE_NOT_FOUND));
 
-        contactRepository.delete(contact);
+        contactRepository.delete(contactMessage);
 
     }
 }

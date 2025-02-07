@@ -21,7 +21,7 @@ public class TopicUserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<List<TopicUserResponse>> getAll(@PathVariable Long lessonId) {
 
-        List<TopicUserResponse> response = topicService.getAllUser(lessonId);
+        List<TopicUserResponse> response = topicService.getAllByLesson(lessonId);
 
         return ResponseEntity.ok(response);
     }

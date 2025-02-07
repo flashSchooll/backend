@@ -7,13 +7,13 @@ import com.flashcard.controller.card.admin.request.CardUpdateRequest;
 import com.flashcard.controller.statistic.response.UserCardStatisticResponse;
 import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
 import com.flashcard.model.*;
-import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.CardFace;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.repository.*;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -94,6 +94,7 @@ public class CardService {
     }
 
     @Transactional
+    @CacheEvict(value = "cardCache", key = "#cardUpdateRequest.cardId")
     public Card update(CardUpdateRequest cardUpdateRequest) throws IOException {
 
         Objects.requireNonNull(cardUpdateRequest.getId());
@@ -127,6 +128,7 @@ public class CardService {
     }
 
     @Transactional
+    @CacheEvict(value = "cardCache", key = "#cardId")
     public void delete(Long id) {
 
         Objects.requireNonNull(id);
@@ -137,7 +139,7 @@ public class CardService {
         cardRepository.delete(tytCard);
     }
 
-
+    @Cacheable(value = "allCards", key = "#flashcardId", unless = "#branch == null")
     public List<Card> getAll(Long flashcardId) {
         Objects.requireNonNull(flashcardId);
 
@@ -201,10 +203,10 @@ public class CardService {
 
     }
 
- //   @Cacheable(value = "cardsCache", key = "#branch")   todo  bakılacak
-    public List<Card> explore(Branch branch) {
+    @Cacheable(value = "cardsCache", key = "#branch", unless = "#branch == null")
+    public List<Card> explore(String branch) {
 
-        return cardRepository.findRandomCardsByBranch(branch != null ? branch.name() : null);
+        return cardRepository.findRandomCardsByBranch(branch);
     }
 
     public UserCardStatisticResponse getUserStatistic() {
@@ -269,6 +271,7 @@ public class CardService {
                 .toList();
     }
 
+    @Cacheable(value = "cardCache", key = "#cardId")
     public Card getCard(Long cardId) {
         Objects.requireNonNull(cardId);
 

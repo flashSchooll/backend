@@ -47,6 +47,7 @@ public class AuthService {
     private static final Random random = new Random();
 
     @Transactional
+  //  @CacheEvict(value = "users", key = "'allUsers'")
     public void register(@Valid SignupRequest signUpRequest, MultipartFile file) {
 
         if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {

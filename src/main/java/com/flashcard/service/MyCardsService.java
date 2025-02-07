@@ -12,6 +12,7 @@ import com.flashcard.repository.MyCardsRepository;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,15 +76,15 @@ public class MyCardsService {
         return myCardsRepository.findByUser(user, difficultyLevel);
     }
 
-    public List<MyCard> getAll(Long flashcardId) {
+    @Cacheable(value = "myCards", key = "{#userId,#flashcardId}")
+    public List<MyCard> getAll(Long userId,Long flashcardId) {
 
-        User user = authService.getCurrentUser();
         Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
         List<Card> cards = cardRepository.findCardsWithFlashcard(flashcard);
 
-        return myCardsRepository.findByUserAndCardIn(user, cards);
+        return myCardsRepository.findByUserIdAndCardIn(userId, cards);
     }
 
     @Transactional
@@ -111,7 +112,6 @@ public class MyCardsService {
             myCard.setUser(user);
             myCard.setDifficultyLevel(newDifficultyLevel);
         }
-
 
         return myCardsRepository.save(myCard);
     }

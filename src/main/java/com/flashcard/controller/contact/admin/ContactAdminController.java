@@ -2,7 +2,7 @@ package com.flashcard.controller.contact.admin;
 
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.contact.response.ContactResponse;
-import com.flashcard.model.Contact;
+import com.flashcard.model.ContactMessage;
 import com.flashcard.service.ContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,9 @@ public class ContactAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ContactResponse>> getAll() {
 
-        List<Contact> contacts = contactService.getAll();
+        List<ContactMessage> contactMessages = contactService.getAll();
 
-        List<ContactResponse> response = contacts.stream().map(ContactResponse::new).toList();
+        List<ContactResponse> response = contactMessages.stream().map(ContactResponse::new).toList();
 
         return ResponseEntity.ok(response);
     }
@@ -33,9 +33,9 @@ public class ContactAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ContactResponse> get(@PathVariable Long id) {
 
-        Contact contact = contactService.findById(id);
+        ContactMessage contactMessage = contactService.findById(id);
 
-        ContactResponse response = new ContactResponse(contact);
+        ContactResponse response = new ContactResponse(contactMessage);
 
         return ResponseEntity.ok(response);
     }

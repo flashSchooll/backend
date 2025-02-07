@@ -73,7 +73,7 @@ public class User {// kullanıcı bilgisini tutar
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Contact> contacts = new ArrayList<>();
+    private List<ContactMessage> contactMessages = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSeenCard> userSeenCards = new ArrayList<>();
