@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name = "UserQuizAnswer")
-@Table(name = "_user_quiz_answer",
+@Table(name = "user_quiz_answer",
         indexes = {
                 @Index(name = "idx__user_quiz_answer", columnList = "user_id")
         })

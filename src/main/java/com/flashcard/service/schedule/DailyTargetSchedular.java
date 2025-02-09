@@ -27,7 +27,7 @@ public class DailyTargetSchedular {
     private final DailyTargetRepository dailyTargetRepository;
 
 
-    @Scheduled(cron = "0 1 0 1 * ?")// her ayın 1 inde 00:01 de çalışır
+    @Scheduled(cron = "0 1 0 1 * ?",zone = "Europe/Istanbul")// her ayın 1 inde 00:01 de çalışır
     public void saveTargets() {
 
         List<DailyTarget> dailyTargets = dailyTargetRepository.findAll();

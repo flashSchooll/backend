@@ -17,8 +17,8 @@ public class MailConfig {
         mailSender.setPort(587); // SMTP portu
 
         // E-posta göndermek için gerekli kimlik doğrulama bilgileri
-        mailSender.setUsername("flashschool86@gmail.com"); // Mail hesabı kullanıcı adı
-        mailSender.setPassword("iiatthpdzjbkdzpd"); // Mail hesabı şifresi
+        mailSender.setUsername("infostumy@gmail.com"); // Mail hesabı kullanıcı adı
+        mailSender.setPassword("ilebdcfoujfeitgq"); // Mail hesabı şifresi
 
         // E-posta gönderiminde kullanılacak mail özellikleri (isteğe bağlı)
         Properties properties = mailSender.getJavaMailProperties();

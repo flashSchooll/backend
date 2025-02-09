@@ -29,7 +29,7 @@ public class EmailService implements EmailSender {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
             helper.setText(email, true);
             helper.setTo(to);
-            helper.setSubject("Welcome to the StudyHive");
+            helper.setSubject("Welcome to the Stumy");
             helper.setFrom(mailAddress);
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
@@ -479,10 +479,10 @@ public class EmailService implements EmailSender {
                 "    <![endif]-->\n" +
                 "  </head>\n" +
                 "  <body>\n" +
-                "    <span class=\"preheader\"\n" +
-                "      >Use this link to reset your password. The link is only valid for 24\n" +
-                "      hours.</span\n" +
-                "    >\n" +
+            //   "    <span class=\"preheader\"\n" +
+            //   "      >Use this link to reset your password. The link is only valid for 24\n" +
+            //   "      hours.</span\n" +
+            //    "    >\n" +
                 "    <table\n" +
                 "      class=\"email-wrapper\"\n" +
                 "      width=\"100%\"\n" +
@@ -500,10 +500,10 @@ public class EmailService implements EmailSender {
                 "            role=\"presentation\"\n" +
                 "          >\n" +
                 "            <tr>\n" +
-                "              <td class=\"email-masthead\">\n" +
-                "                <img src=\"https://gamingpromarket.com/img/logo.png\" alt=\"\" style=\"height: 10vh;\">\n"
-                + // todo buraya studyhive logosu eklenecek
-                "              </td>\n" +
+      //          "              <td class=\"email-masthead\">\n" +
+     //           "                <img src=\"https://gamingpromarket.com/img/logo.png\" alt=\"\" style=\"height: 10vh;\">\n"
+     //           + // todo buraya studyhive logosu eklenecek
+      //          "              </td>\n" +
                 "            </tr>\n" +
                 "            <!-- Email Body -->\n" +
                 "            <tr>\n" +
@@ -528,7 +528,7 @@ public class EmailService implements EmailSender {
                 "                        <h1>Hi " + name + ",</h1>\n" +
                 "                        <p>\n" +
                 "                          You recently requested to reset your password for your\n" +
-                "                          StudyHive account. Use this code to reset\n" +
+                "                          Stumy account. Use this code to reset\n" +
                 "                          it.\n" +
                 "                          <strong\n" +
                 "                            >This password reset is only valid for the next 24\n" +
@@ -569,7 +569,7 @@ public class EmailService implements EmailSender {
                 "                            </td>\n" +
                 "                          </tr>\n" +
                 "                        </table>\n" +
-                "                        <p>Thanks, <br />The StudyHive Team</p>\n" +
+                "                        <p>Thanks, <br />The Stumy Team</p>\n" +
                 "                        <!-- Sub copy -->\n" +
                 "                        <table class=\"body-sub\" role=\"presentation\">\n" +
                 "                          <tr>\n" +
@@ -595,10 +595,10 @@ public class EmailService implements EmailSender {
                 "                >\n" +
                 "                  <tr>\n" +
                 "                    <td class=\"content-cell\" align=\"center\">\n" +
-                "                      <p class=\"f-fallback sub align-center\">\n" +
-                "                        [Company Name, LLC]\n" +
-                "                        <br />NY 10016, USA<br />431 5th Ave, New York\n" +
-                "                      </p>\n" +
+            //   "                      <p class=\"f-fallback sub align-center\">\n" +
+            //   "                        [Company Name, LLC]\n" +
+            //   "                        <br />NY 10016, USA<br />431 5th Ave, New York\n" +
+            //   "                      </p>\n" +
                 "                    </td>\n" +
                 "                  </tr>\n" +
                 "                </table>\n" +

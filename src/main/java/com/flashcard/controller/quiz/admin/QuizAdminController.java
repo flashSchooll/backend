@@ -40,11 +40,9 @@ public class QuizAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getAll(@PathVariable Long topicId) {
 
-        List<Quiz> quizList = quizService.getByTopic(topicId);
+        List<QuizResponse> quizList = quizService.getByTopic(topicId);
 
-        List<QuizResponse> responses = quizList.stream().map(QuizResponse::new).toList();
-
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(quizList);
     }
 
     @GetMapping("/get-all")

@@ -5,21 +5,15 @@ import com.flashcard.controller.quiz.request.UpdateQuizRequest;
 import com.flashcard.controller.quiz.request.UserQuizAnswerRequest;
 import com.flashcard.controller.quiz.request.UserQuizAnswerRequestList;
 import com.flashcard.controller.quiz.response.QuizCount;
-import com.flashcard.model.Quiz;
-import com.flashcard.model.Topic;
-import com.flashcard.model.User;
-import com.flashcard.model.UserQuizAnswer;
+import com.flashcard.controller.quiz.response.QuizResponse;
+import com.flashcard.model.*;
 import com.flashcard.model.enums.QuizOption;
 import com.flashcard.model.enums.QuizType;
-import com.flashcard.repository.QuizRepository;
-import com.flashcard.repository.TopicRepository;
-import com.flashcard.repository.UserQuizAnswerRepository;
-import com.flashcard.repository.UserRepository;
+import com.flashcard.repository.*;
 import com.flashcard.security.services.AuthService;
 import com.flashcard.service.excel.QuizExcelImporter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,6 +35,7 @@ public class QuizService {
     private final AuthService authService;
     private final UserQuizAnswerRepository userQuizAnswerRepository;
     private final UserRepository userRepository;
+    private final MyQuizRepository myQuizRepository;
 
 
     @Transactional
@@ -57,13 +52,21 @@ public class QuizService {
 
     }
 
-    public List<Quiz> getByTopic(Long topicId) {//todo cache eklenebilir mi
+    public List<QuizResponse> getByTopic(Long topicId) {
         Objects.requireNonNull(topicId);
+        User user = authService.getCurrentUser();
+        Topic topic=topicRepository.findById(topicId).orElseThrow(()->new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+        List<MyQuiz> myQuizs = myQuizRepository.findByUserAndQuizTopicWithFetch(user, topic);
+        Map<Long, Quiz> quizMap = myQuizs.stream()
+                .collect(Collectors.toMap(
+                        myQuiz -> myQuiz.getQuiz().getId(),  // Quiz'in ID'sini key olarak alıyoruz
+                        MyQuiz::getQuiz  // Quiz nesnesini value olarak alıyoruz
+                ));
 
-        return quizRepository.findByTopic(topic);
+        List<Quiz> quizList = quizRepository.findByTopic(topic);
+
+        return quizList.stream().map(quiz -> new QuizResponse(quiz, quizMap.get(quiz.getId()) != null)).toList();
     }
 
     public List<Quiz> getByName(String name) {
@@ -95,7 +98,7 @@ public class QuizService {
         return quizRepository.findAll(pageable);
     }
 
-  //  @Cacheable(value = "quizCounts", key = "{#userId,#topicId}")
+    //  @Cacheable(value = "quizCounts", key = "{#userId,#topicId}")
     public List<QuizCount> countByTopic(Long userId, Long topicId) {
 
         Topic topic = topicRepository.findById(topicId)
@@ -165,7 +168,7 @@ public class QuizService {
 
     }
 
-  //  @Cacheable(value = "userQuizAnswers", key = "{#userId,#name}")
+    //  @Cacheable(value = "userQuizAnswers", key = "{#userId,#name}")
     public List<UserQuizAnswer> getAnswers(Long userId, String name) {
 
         return userQuizAnswerRepository.findByUserIdAndQuizName(userId, name);

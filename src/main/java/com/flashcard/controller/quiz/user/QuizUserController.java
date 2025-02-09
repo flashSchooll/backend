@@ -36,11 +36,9 @@ public class QuizUserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getAll(@PathVariable Long topicId) {
 
-        List<Quiz> quizList = quizService.getByTopic(topicId);
+        List<QuizResponse> quizList = quizService.getByTopic(topicId);
 
-        List<QuizResponse> quizResponses = quizList.stream().map(QuizResponse::new).toList();
-
-        return ResponseEntity.ok(quizResponses);
+        return ResponseEntity.ok(quizList);
     }
 
     @GetMapping("/get-all")
@@ -119,7 +117,7 @@ public class QuizUserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getQuizAnswer(@RequestParam String name) {
         User user = authService.getCurrentUser();
-        List<UserQuizAnswer> answerList = quizService.getAnswers(user.getId(),name);
+        List<UserQuizAnswer> answerList = quizService.getAnswers(user.getId(), name);
 
         List<UserQuizAnswerResponse> responses = answerList.stream().map(UserQuizAnswerResponse::new).toList();
 

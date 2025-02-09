@@ -1,6 +1,7 @@
 package com.flashcard.repository;
 
 import com.flashcard.model.*;
+import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.YKS;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -44,4 +45,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findByFlashcardIn(List<Flashcard> flashcards);
 
     Long countByFlashcardTopic(Topic topic);
+
+    int countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranch(YKS yks, Branch branch);
 }

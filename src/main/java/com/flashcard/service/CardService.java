@@ -7,6 +7,7 @@ import com.flashcard.controller.card.admin.request.CardUpdateRequest;
 import com.flashcard.controller.statistic.response.UserCardStatisticResponse;
 import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
 import com.flashcard.model.*;
+import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.CardFace;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.repository.*;
@@ -212,8 +213,8 @@ public class CardService {
     public UserCardStatisticResponse getUserStatistic() {
 
         User user = authService.getCurrentUser();
-
-        int totalCountAyt = cardRepository.countByFlashcardTopicLessonYks(YKS.AYT);
+        Branch branch=user.getBranch();
+        int totalCountAyt = cardRepository.countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranch(YKS.AYT,branch);
         int totalCountTyt = cardRepository.countByFlashcardTopicLessonYks(YKS.TYT);
         int seenCard = userSeenCardRepository.countByUser(user);
 

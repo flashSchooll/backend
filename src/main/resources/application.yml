@@ -17,6 +17,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+      time_zone: Europe/Istanbul
   servlet:
     multipart:
       enabled: true
@@ -32,8 +33,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: flashschool86@gmail.com
-    password: iiatthpdzjbkdzpd
+    username: infostumy@gmail.com
+    password: ilebdcfoujfeitgq
     properties:
       mail:
         smtp:
@@ -41,7 +42,7 @@ spring:
           starttls:
             enable: true
   jackson:
-    time-zone: Asia/Istanbul
+    time-zone: Europe/Istanbul
 # App Properties
 management: #actuator
   endpoints:
@@ -74,6 +75,6 @@ logging:
           hbm2ddl: debug
 info:
   application:
-    name: 'StudyHive Backend App'
-    description: 'This is StudyHive Flashcard Backend Project'
+    name: 'Stumy Backend App'
+    description: 'This is Stumy Backend Project'
     version: '@project.version@'

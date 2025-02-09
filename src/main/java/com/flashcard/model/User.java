@@ -96,6 +96,11 @@ public class User {// kullanıcı bilgisini tutar
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PasswordResetCode> passwordResetCodes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserFillBlankQuiz> userFillBlankQuizs = new ArrayList<>();
+
+
+
     public void raiseStar(int addedStar) {
         int alreadyStar = getStar();
 
