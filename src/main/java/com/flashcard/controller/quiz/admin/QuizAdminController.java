@@ -49,9 +49,7 @@ public class QuizAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getByName(@RequestParam String name) {
 
-        List<Quiz> quizList = quizService.getByName(name);
-
-        List<QuizResponse> responses = quizList.stream().map(QuizResponse::new).toList();
+        List<QuizResponse> responses = quizService.getAllByName(name);
 
         return ResponseEntity.ok(responses);
     }

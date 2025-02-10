@@ -49,6 +49,6 @@ public class QuizResponse {
         this.answer = quiz.getAnswer().getIndex();
         this.name = quiz.getName();
         this.topic = quiz.getTopic().getSubject();
-        this.isSaved = null;
+        this.isSaved = false;
     }
 }

@@ -45,7 +45,7 @@ public class MyQuizService {
     public void deleteMyQuiz(Long myQuizId) {
 
         User user = authService.getCurrentUser();
-        MyQuiz myQuiz = myQuizRepository.findById(myQuizId)
+        MyQuiz myQuiz = myQuizRepository.findByQuizId(myQuizId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.MY_QUIZ_NOT_FOUND));
 
         if (!Objects.equals(user.getId(), myQuiz.getUser().getId())) {

@@ -45,9 +45,7 @@ public class QuizUserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getByName(@RequestParam String name) {
 
-        List<Quiz> quizList = quizService.getByName(name);
-
-        List<QuizResponse> responses = quizList.stream().map(QuizResponse::new).toList();
+        List<QuizResponse> responses = quizService.getByName(name);
 
         return ResponseEntity.ok(responses);
     }
@@ -93,11 +91,11 @@ public class QuizUserController {
         return ResponseEntity.ok("Quiz başarıyla kaydedildi");
     }
 
-    @DeleteMapping("/my-quiz/{myQuizId}")
+    @DeleteMapping("/my-quiz/{quizId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Object> deleteQuiz(@PathVariable Long myQuizId) {
+    public ResponseEntity<Object> deleteQuiz(@PathVariable Long quizId) {
 
-        myQuizService.deleteMyQuiz(myQuizId);
+        myQuizService.deleteMyQuiz(quizId);
 
         return ResponseEntity.ok("Quiz başarıyla silindi");
     }

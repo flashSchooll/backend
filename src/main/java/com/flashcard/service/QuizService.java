@@ -55,7 +55,7 @@ public class QuizService {
     public List<QuizResponse> getByTopic(Long topicId) {
         Objects.requireNonNull(topicId);
         User user = authService.getCurrentUser();
-        Topic topic=topicRepository.findById(topicId).orElseThrow(()->new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+        Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
         List<MyQuiz> myQuizs = myQuizRepository.findByUserAndQuizTopicWithFetch(user, topic);
         Map<Long, Quiz> quizMap = myQuizs.stream()
@@ -69,10 +69,22 @@ public class QuizService {
         return quizList.stream().map(quiz -> new QuizResponse(quiz, quizMap.get(quiz.getId()) != null)).toList();
     }
 
-    public List<Quiz> getByName(String name) {
+    public List<QuizResponse> getByName(String name) {
         Objects.requireNonNull(name);
+        User user = authService.getCurrentUser();
 
-        return quizRepository.findByName(name);
+        List<MyQuiz> myQuizs = myQuizRepository.findByUserAndQuizNameWithFetch(user, name);
+
+        Map<Long, Quiz> quizMap = myQuizs.stream()
+                .collect(Collectors.toMap(
+                        myQuiz -> myQuiz.getQuiz().getId(),  // Quiz'in ID'sini key olarak alıyoruz
+                        MyQuiz::getQuiz  // Quiz nesnesini value olarak alıyoruz
+                ));
+
+        List<Quiz> quizList = quizRepository.findByName(name);
+
+        return quizList.stream().map(quiz -> new QuizResponse(quiz, quizMap.get(quiz.getId()) != null)).toList();
+
     }
 
     @Transactional
@@ -172,5 +184,11 @@ public class QuizService {
     public List<UserQuizAnswer> getAnswers(Long userId, String name) {
 
         return userQuizAnswerRepository.findByUserIdAndQuizName(userId, name);
+    }
+
+    public List<QuizResponse> getAllByName(String name) {
+        Objects.requireNonNull(name);
+
+        return quizRepository.findByName(name).stream().map(quiz -> new QuizResponse(quiz, false)).toList();
     }
 }
