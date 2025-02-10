@@ -140,12 +140,8 @@ public class CardService {
         cardRepository.delete(tytCard);
     }
 
-    @Cacheable(value = "allCards", key = "#flashcardId", unless = "#branch == null")
-    public List<Card> getAll(Long flashcardId) {
-        Objects.requireNonNull(flashcardId);
-
-        Flashcard flashcard = flashCardRepository.findById(flashcardId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
+    @Cacheable(value = "allCards", key = "#flashcard.id", unless = "#branch == null")
+    public List<Card> getAll(Flashcard flashcard) {
 
         return cardRepository.findCardsWithFlashcard(flashcard);
     }
@@ -210,11 +206,11 @@ public class CardService {
         return cardRepository.findRandomCardsByBranch(branch);
     }
 
-    public UserCardStatisticResponse getUserStatistic() {
+    public UserCardStatisticResponse getUserCardStatistic() {
 
         User user = authService.getCurrentUser();
-        Branch branch=user.getBranch();
-        int totalCountAyt = cardRepository.countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranch(YKS.AYT,branch);
+        Branch branch = user.getBranch();
+        int totalCountAyt = cardRepository.countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranch(YKS.AYT, branch);
         int totalCountTyt = cardRepository.countByFlashcardTopicLessonYks(YKS.TYT);
         int seenCard = userSeenCardRepository.countByUser(user);
 

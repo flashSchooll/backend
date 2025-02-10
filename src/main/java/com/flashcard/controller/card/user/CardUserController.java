@@ -1,10 +1,13 @@
 package com.flashcard.controller.card.user;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.card.admin.response.CardResponse;
 import com.flashcard.model.Card;
+import com.flashcard.model.Flashcard;
 import com.flashcard.model.MyCard;
 import com.flashcard.model.User;
 import com.flashcard.model.enums.Branch;
+import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.security.services.AuthService;
 import com.flashcard.service.CardService;
 import com.flashcard.service.MyCardsService;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -26,13 +30,19 @@ public class CardUserController {
     private final CardService cardService;
     private final MyCardsService myCardsService;
     private final AuthService authService;
+    private final FlashCardRepository flashCardRepository;
 
     @GetMapping("/get-all/{flashcardId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> getAll(@PathVariable Long flashcardId) {
-        User user = authService.getCurrentUser();
-        List<Card> response = cardService.getAll(flashcardId);
-        List<MyCard> myCards = myCardsService.getAll(user.getId(), flashcardId);
+
+        User user = authService.getCurrentUser();// todo burası güncellenecek servise taşınacak
+
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
+
+        List<Card> response = cardService.getAll(flashcard);
+        List<MyCard> myCards = myCardsService.getAll(user.getId(), flashcard);
 
         List<CardResponse> cardResponses = response.stream().map(card -> new CardResponse(card, myCards)).toList();
 

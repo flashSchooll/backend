@@ -47,7 +47,7 @@ public class UserStatisticController {
     @GetMapping("/card")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserCardStatisticResponse> getCards() {
-        UserCardStatisticResponse response = cardService.getUserStatistic();
+        UserCardStatisticResponse response = cardService.getUserCardStatistic();
 
         return ResponseEntity.ok(response);
     }
@@ -67,7 +67,7 @@ public class UserStatisticController {
         List<DailyTarget> dailyTargets = dailyTargetService.getWeeklyTargets();
 
         List<DailyTargetStatisticResponse> dailyTargetStatisticResponseList = dailyTargets.stream().map(DailyTargetStatisticResponse::new).toList();
-        UserCardStatisticResponse userCardStatisticResponse = cardService.getUserStatistic();
+        UserCardStatisticResponse userCardStatisticResponse = cardService.getUserCardStatistic();
         List<UserStatisticLessonResponse> userStatisticLessonResponses = cardService.getUserStatisticByLesson();
 
         UserStatisticAllResponse allResponse = new UserStatisticAllResponse();

@@ -1,8 +1,13 @@
 package com.flashcard.controller.fillblankquiz.user;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.fillblankquiz.admin.response.FillBlankQuizResponse;
 import com.flashcard.controller.fillblankquiz.user.response.FillBlankQuizUserResponse;
 import com.flashcard.model.FillBlankQuiz;
+import com.flashcard.model.Topic;
+import com.flashcard.model.User;
+import com.flashcard.repository.TopicRepository;
+import com.flashcard.security.services.AuthService;
 import com.flashcard.service.FillBlankQuizService;
 import com.flashcard.service.UserFillBlankQuizService;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -22,12 +28,16 @@ public class FillBlankQuizUserController {
 
     private final FillBlankQuizService fillBlankQuizService;
     private final UserFillBlankQuizService userFillBlankQuizService;
+    private final AuthService authService;
+    private final TopicRepository topicRepository;
 
     @GetMapping("/{topicId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ADMIN')")
     public ResponseEntity<Object> getByTopic(@PathVariable Long topicId) {
-
-        List<FillBlankQuizUserResponse> responses = fillBlankQuizService.getCountByUser(topicId);
+        User user = authService.getCurrentUser();
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+        List<FillBlankQuizUserResponse> responses = fillBlankQuizService.getCountByUser(user, topic);
 
         return ResponseEntity.ok(responses);
     }

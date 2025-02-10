@@ -1,10 +1,13 @@
 package com.flashcard.controller.card.admin;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.card.admin.request.CardSaveAllRequest;
 import com.flashcard.controller.card.admin.request.CardSaveRequest;
 import com.flashcard.controller.card.admin.request.CardUpdateRequest;
 import com.flashcard.controller.card.admin.response.CardResponse;
 import com.flashcard.model.Card;
+import com.flashcard.model.Flashcard;
+import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.service.CardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -22,6 +26,7 @@ import java.util.List;
 public class CardAdminController {
 
     private final CardService cardService;
+    private final FlashCardRepository flashCardRepository;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -37,7 +42,7 @@ public class CardAdminController {
     @PostMapping("/create-all/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> saveAll(@RequestBody @Valid CardSaveAllRequest request,
-                                     @PathVariable Long flashcardId) throws IOException {
+                                                      @PathVariable Long flashcardId) throws IOException {
 
         List<Card> cardResponses = cardService.saveAll(flashcardId, request);
 
@@ -69,8 +74,9 @@ public class CardAdminController {
     @GetMapping("/get-all/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> getAll(@PathVariable Long flashcardId) {
-
-        List<Card> response = cardService.getAll(flashcardId);
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
+        List<Card> response = cardService.getAll(flashcard);
 
         List<CardResponse> cardResponses = response.stream().map(CardResponse::new).toList();
 

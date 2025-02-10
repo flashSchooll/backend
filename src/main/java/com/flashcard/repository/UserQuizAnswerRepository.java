@@ -1,12 +1,13 @@
 package com.flashcard.repository;
 
+import com.flashcard.model.Topic;
 import com.flashcard.model.User;
 import com.flashcard.model.UserQuizAnswer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface UserQuizAnswerRepository extends JpaRepository<UserQuizAnswer,Long> {
+public interface UserQuizAnswerRepository extends JpaRepository<UserQuizAnswer, Long> {
     List<UserQuizAnswer> findByUserAndQuizName(User user, String name);
 
 
@@ -15,4 +16,6 @@ public interface UserQuizAnswerRepository extends JpaRepository<UserQuizAnswer,L
     boolean existsByUserIdAndQuizName(Long userId, String key);
 
     List<UserQuizAnswer> findByUserIdAndQuizName(Long userId, String name);
+
+    List<UserQuizAnswer> findByUserAndQuizTopic(User user, Topic topic);
 }

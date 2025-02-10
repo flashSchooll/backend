@@ -26,7 +26,7 @@ public class DailyTargetAdminController {
     @GetMapping("/page")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<DailyTargetAdminResponse>> getAll(@RequestParam(required = false) String search,
-                                    @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                                 @PageableDefault(sort = "day", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<DailyTarget> dailyTargets = dailyTargetService.getAllAdmin(search, pageable);
 
         Page<DailyTargetAdminResponse> response = dailyTargets.map(DailyTargetAdminResponse::new);

@@ -1,13 +1,12 @@
 package com.flashcard.controller.quiz.user;
 
+import com.flashcard.constants.Constants;
 import com.flashcard.controller.fillblankquiz.user.response.FillBlankQuizUserResponse;
 import com.flashcard.controller.quiz.request.QuizSaveRequest;
 import com.flashcard.controller.quiz.request.UserQuizAnswerRequestList;
 import com.flashcard.controller.quiz.response.*;
-import com.flashcard.model.MyQuiz;
-import com.flashcard.model.Quiz;
-import com.flashcard.model.User;
-import com.flashcard.model.UserQuizAnswer;
+import com.flashcard.model.*;
+import com.flashcard.repository.TopicRepository;
 import com.flashcard.security.services.AuthService;
 import com.flashcard.service.FillBlankQuizService;
 import com.flashcard.service.MyQuizService;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -31,6 +31,7 @@ public class QuizUserController {
     private final MyQuizService myQuizService;
     private final FillBlankQuizService fillBlankQuizService;
     private final AuthService authService;
+    private final TopicRepository topicRepository;
 
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -54,9 +55,11 @@ public class QuizUserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getQuizCount(@PathVariable Long topicId) {
         User user = authService.getCurrentUser();
-        List<QuizCount> quizList = quizService.countByTopic(user.getId(), topicId);
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+        List<QuizCount> quizList = quizService.countByTopic(user,topic);
 
-        List<FillBlankQuizUserResponse> fillBlankQuizUserResponses = fillBlankQuizService.getCountByUser(topicId);
+        List<FillBlankQuizUserResponse> fillBlankQuizUserResponses = fillBlankQuizService.getCountByUser(user,topic);
 
         List<QuizCountResponse> response = quizList.stream()
                 .map(QuizCountResponse::new)

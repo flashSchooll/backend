@@ -70,11 +70,7 @@ public class FillBlankQuizService {
         return fillBlankQuizRepository.findByTitle(title);
     }
 
-    public List<FillBlankQuizUserResponse> getCountByUser(Long topicId) {
-
-        User user = authService.getCurrentUser();
-        Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+    public List<FillBlankQuizUserResponse> getCountByUser(User user,Topic topic) {
 
         List<FillBlankQuiz> quizs = fillBlankQuizRepository.findByTopic(topic);
         Map<String, Long> map = quizs.stream()
@@ -94,7 +90,7 @@ public class FillBlankQuizService {
             response.setCount(count);
             response.setTitle(title);
             response.setSeen(seen);
-            response.setTopicId(topicId);
+            response.setTopicId(topic.getId());
             response.setQuizType(QuizType.FILL_BLANK);
 
             responseList.add(response);

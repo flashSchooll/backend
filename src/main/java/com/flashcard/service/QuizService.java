@@ -69,6 +69,15 @@ public class QuizService {
         return quizList.stream().map(quiz -> new QuizResponse(quiz, quizMap.get(quiz.getId()) != null)).toList();
     }
 
+    public List<QuizResponse> getByTopicAdmin(Long topicId) {
+        Objects.requireNonNull(topicId);
+        Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+
+        List<Quiz> quizList = quizRepository.findByTopic(topic);
+
+        return quizList.stream().map(quiz -> new QuizResponse(quiz, false)).toList();
+    }
+
     public List<QuizResponse> getByName(String name) {
         Objects.requireNonNull(name);
         User user = authService.getCurrentUser();
@@ -111,10 +120,7 @@ public class QuizService {
     }
 
     //  @Cacheable(value = "quizCounts", key = "{#userId,#topicId}")
-    public List<QuizCount> countByTopic(Long userId, Long topicId) {
-
-        Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+    public List<QuizCount> countByTopic(User user,Topic topic) {
 
         List<Quiz> quizList = quizRepository.findByTopic(topic);
 
@@ -126,12 +132,15 @@ public class QuizService {
         Map<String, List<Quiz>> listMap = quizList.stream().collect(Collectors.groupingBy(Quiz::getName));
 
         List<QuizCount> quizCounts = new ArrayList<>();
+        List<UserQuizAnswer> quizAnswers = userQuizAnswerRepository.findByUserAndQuizTopic(user, topic);
+        List<String> userQuizAnswerQuizNames=quizAnswers.stream().map(q->q.getQuiz().getName()).toList();
         QuizCount quizCount;
         for (Map.Entry<String, Long> entry : map.entrySet()) {
 
-            boolean existQuiz = userQuizAnswerRepository.existsByUserIdAndQuizName(userId, entry.getKey());
+         //   boolean existQuiz = userQuizAnswerRepository.existsByUserIdAndQuizName(userId, entry.getKey());
+            boolean existQuiz = userQuizAnswerQuizNames.contains(entry.getKey());
             QuizType type = listMap.get(entry.getKey()).get(0).getType();
-            quizCount = new QuizCount(entry.getKey(), entry.getValue(), topicId, existQuiz, type);//type eklenecek
+            quizCount = new QuizCount(entry.getKey(), entry.getValue(), topic.getId(), existQuiz, type);//type eklenecek
 
             quizCounts.add(quizCount);
         }

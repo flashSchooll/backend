@@ -76,11 +76,8 @@ public class MyCardsService {
         return myCardsRepository.findByUser(user, difficultyLevel);
     }
 
-    @Cacheable(value = "myCards", key = "{#userId,#flashcardId}")
-    public List<MyCard> getAll(Long userId,Long flashcardId) {
-
-        Flashcard flashcard = flashCardRepository.findById(flashcardId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
+    @Cacheable(value = "myCards", key = "{#userId,#flashcard.id}")
+    public List<MyCard> getAll(Long userId,Flashcard flashcard) {
 
         List<Card> cards = cardRepository.findCardsWithFlashcard(flashcard);
 

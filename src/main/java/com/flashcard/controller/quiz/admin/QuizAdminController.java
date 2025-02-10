@@ -40,7 +40,7 @@ public class QuizAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getAll(@PathVariable Long topicId) {
 
-        List<QuizResponse> quizList = quizService.getByTopic(topicId);
+        List<QuizResponse> quizList = quizService.getByTopicAdmin(topicId);
 
         return ResponseEntity.ok(quizList);
     }
