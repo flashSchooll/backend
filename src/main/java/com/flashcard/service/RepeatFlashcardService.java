@@ -69,7 +69,7 @@ public class RepeatFlashcardService {
         repeatFlashcardRepository.delete(repeatFlashcard);
     }
 
-    public List<RepeatFlashcardResponse> getAll() {
+    public List<RepeatFlashcardResponse> getAll() {// todo buraya bakılacak
         User user = authService.getCurrentUser();
 
         List<RepeatFlashcard> repeatFlashcards = repeatFlashcardRepository.findByUser(user);
