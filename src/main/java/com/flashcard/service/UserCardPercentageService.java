@@ -32,7 +32,13 @@ public class UserCardPercentageService {
     @Transactional
     public void save(User user, YKS yks, Branch branch) {
 
-        List<Card> cards = cardRepository.findAll();
+        List<Card> cards;
+        if (branch == null) {
+            cards = cardRepository.findByFlashcardTopicLessonYks(yks);
+        } else {
+            cards = cardRepository.findByFlashcardTopicLessonYksBranch(yks, branch);
+        }
+
         Map<Lesson, Long> lessonCountMap = cards.stream()
                 .collect(Collectors.groupingBy(
                         card -> card.getFlashcard().getTopic().getLesson(),
@@ -48,7 +54,7 @@ public class UserCardPercentageService {
                     .toList();
 
             saveCardPercentage(user, lessonList, lessonCountMap);
-        } else if (yks.equals(YKS.AYT)) {
+        } else if (yks.equals(YKS.AYT) && !cards.isEmpty()) {
             lessonList = cards.stream()
                     .map(card -> card.getFlashcard().getTopic().getLesson())
                     .distinct()
@@ -76,7 +82,7 @@ public class UserCardPercentageService {
         userCardPercentageRepository.saveAll(percentageList);
     }
 
-  //  @Cacheable(value = "userCardPercentageTyt", key = "#user.id")
+    //  @Cacheable(value = "userCardPercentageTyt", key = "#user.id")
     public List<UserCardPercentage> getTyt(User user) {
 
         List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUserAndLessonYks(user, YKS.TYT);
@@ -91,7 +97,7 @@ public class UserCardPercentageService {
 
     }
 
- //   @Cacheable(value = "userCardPercentageAyt", key = "#user.id")
+    //   @Cacheable(value = "userCardPercentageAyt", key = "#user.id")
     public List<UserCardPercentage> getAyt(User user) {
 
         Branch branch = user.getBranch();
@@ -139,7 +145,7 @@ public class UserCardPercentageService {
         userCardPercentageRepository.saveAll(percentageList);
     }
 
-  //  @Cacheable(value = "countAverageFifty")
+    //  @Cacheable(value = "countAverageFifty")
     public long countAverageFifty() {
 
         List<UserCardPercentage> percentages = userCardPercentageRepository.findAll();

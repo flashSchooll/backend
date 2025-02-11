@@ -47,4 +47,19 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     Long countByFlashcardTopic(Topic topic);
 
     int countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranch(YKS yks, Branch branch);
+
+    @Query("SELECT c FROM Card c " +
+            "JOIN FETCH c.flashcard f " +
+            "JOIN FETCH f.topic t " +
+            "JOIN FETCH t.lesson l " +
+            "WHERE l.yks = :yks")
+    List<Card> findByFlashcardTopicLessonYks(@Param("yks") YKS yks);
+
+    @Query("SELECT c FROM Card c " +
+            "JOIN FETCH c.flashcard f " +
+            "JOIN FETCH f.topic t " +
+            "JOIN FETCH t.lesson l " +
+            "WHERE l.yks = :yks " +
+            "and l.branch = :branch")
+    List<Card> findByFlashcardTopicLessonYksBranch(YKS yks, Branch branch);
 }
