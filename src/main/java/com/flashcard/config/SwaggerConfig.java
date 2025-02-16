@@ -29,8 +29,8 @@ public class SwaggerConfig {
                         )
                 )
                 .info(new Info()
-                        .title("Flashcard Api Service")
-                        .description("Flashcard api documentation")
+                        .title("Stumy Api Service")
+                        .description("Stumy api documentation")
                         .version("1.0")
                 );
     }

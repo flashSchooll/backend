@@ -25,10 +25,8 @@ public class Quiz {
     @NotBlank
     private String question;
 
-    @NotBlank
     private String a;
 
-    @NotBlank
     private String b;
 
     private String c;
