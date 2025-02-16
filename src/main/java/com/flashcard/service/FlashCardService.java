@@ -15,7 +15,6 @@ import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.excel.FlashcardExcelImporter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -107,14 +106,6 @@ public class FlashCardService {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-      /*  List<Card> tytCards = cardRepository.findByTopic(topic);// fixme performansı çok kötü olduğu için düzeltildi
-
-        Map<Flashcard, Long> cardCount = tytCards.stream()
-                .collect(Collectors.groupingBy(
-                        Card::getFlashcard,
-                        Collectors.counting()
-                ));*/
-
         List<Flashcard> flashcardList = flashCardRepository.findByTopic(topic);
 
         Map<Flashcard, Long> flashcardLongMap = new HashMap<>();
@@ -157,7 +148,7 @@ public class FlashCardService {
             userCardPercentageService.saveForLesson(lessonId);
         } catch (IOException e) {
             log.error("Ders eklenirken hata oldu : {}", lessonId);
-            throw new Exception(e);
+            throw new IOException(e);
         }
     }
 }

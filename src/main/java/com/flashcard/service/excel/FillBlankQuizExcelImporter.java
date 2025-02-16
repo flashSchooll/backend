@@ -91,6 +91,9 @@ public class FillBlankQuizExcelImporter {
                                     dto.setQuestion(getStringCell(cell, "soru"));
                             case 2 -> // cevap sütunu
                                     dto.setAnswer(getStringCell(cell, "cevap"));
+                            default -> {
+                                return Collections.emptyList();
+                            }
                         }
                     }
                     if (dto.getAnswer() != null) {

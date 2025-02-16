@@ -9,7 +9,6 @@ import com.flashcard.repository.MyQuizRepository;
 import com.flashcard.repository.QuizRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +41,10 @@ public class MyQuizService {
     }
 
     @Transactional
-    public void deleteMyQuiz(Long myQuizId) {
+    public void deleteMyQuiz(Long quizId) {
 
         User user = authService.getCurrentUser();
-        MyQuiz myQuiz = myQuizRepository.findByQuizId(myQuizId)
+        MyQuiz myQuiz = myQuizRepository.findByQuizId(quizId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.MY_QUIZ_NOT_FOUND));
 
         if (!Objects.equals(user.getId(), myQuiz.getUser().getId())) {

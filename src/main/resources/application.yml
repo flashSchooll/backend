@@ -21,8 +21,8 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 5MB
-      max-request-size: 5MB
+      max-file-size: 25MB
+      max-request-size: 25MB
   http:
     multipart:
       enabled: true
@@ -49,6 +49,7 @@ management: #actuator
     web:
       exposure:
         include: '*'
+      base-path: /actuator
   info:
     env:
       enabled: true

@@ -1,7 +1,6 @@
 package com.flashcard.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,11 +35,9 @@ public class Card {// kart bilgisini tutar
     private Flashcard flashcard;
 
     @Column(columnDefinition = "TEXT")
-    @NotBlank                    // todo boş olabilecek şeklide güncellenecek
     private String frontFace;
 
     @Column(columnDefinition = "TEXT")
-    @NotBlank                   // todo boş olabilecek şeklide güncellenecek
     private String backFace;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

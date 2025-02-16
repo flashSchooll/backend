@@ -165,7 +165,9 @@ public class FlashcardExcelImporter {
                                     cardDTO.setFrontImage(getImageFromCell(cell, "ön resim", workbook));
                             case 5 -> // arka resim sütunu
                                     cardDTO.setBackImage(getImageFromCell(cell, "arka resim", workbook));
-
+                            default -> {
+                                return Collections.emptyList();
+                            }
                         }
                     }
                     if (cardDTO.getSubject() != null) {

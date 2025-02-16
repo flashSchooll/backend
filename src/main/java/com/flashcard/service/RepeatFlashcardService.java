@@ -2,7 +2,10 @@ package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.repeatflashcard.response.RepeatFlashcardResponse;
-import com.flashcard.model.*;
+import com.flashcard.model.Flashcard;
+import com.flashcard.model.RepeatFlashcard;
+import com.flashcard.model.Topic;
+import com.flashcard.model.User;
 import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.RepeatFlashcardRepository;
 import com.flashcard.repository.TopicRepository;
@@ -72,14 +75,14 @@ public class RepeatFlashcardService {
     public List<RepeatFlashcardResponse> getAll() {// todo buraya bakılacak
         User user = authService.getCurrentUser();
 
-        List<RepeatFlashcard> repeatFlashcards = repeatFlashcardRepository.findByUser(user);
-        List<UserSeenCard> seenCards = userSeenCardRepository.findByUser(user);
-        List<Long> flashcards = seenCards.stream().map(f -> f.getCard().getFlashcard().getId()).toList();
+        List<RepeatFlashcard> repeatFlashcards = repeatFlashcardRepository.findByUserWithTopicAndLesson(user);
+
+        List<Long> ids=userSeenCardRepository.findByUserWithAllData(user);
 
         return repeatFlashcards
                 .stream()
                 .map(
-                        repeatFlashcard -> new RepeatFlashcardResponse(repeatFlashcard, flashcards))
+                        repeatFlashcard -> new RepeatFlashcardResponse(repeatFlashcard, ids))
                 .toList();
     }
 

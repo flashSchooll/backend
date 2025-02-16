@@ -172,7 +172,7 @@ public class CardService {
         List<Card> repeatFlashcards = myCardsRepository.findByUser(user).stream().map(MyCard::getCard).toList();
 
 
-        List<Flashcard> flashcards = repeatFlashcardRepository.findByUser(user).stream()
+        List<Flashcard> flashcards = repeatFlashcardRepository.findByUserWithTopicAndLesson(user).stream()
                 .map(RepeatFlashcard::getFlashcards) // Her RepeatFlashcard nesnesinin flashcards listesini alıyoruz
                 .flatMap(List::stream) // Liste içindeki tüm Flashcard'ları tek bir akışa düzleştiriyoruz
                 .toList(); // Akışı bir listeye topluyoruz
@@ -231,34 +231,7 @@ public class CardService {
 
         User user = authService.getCurrentUser();
 
-        //   Branch branch = user.getBranch();
-
         List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUser(user);
-
-     /*   List<UserSeenCard> cards = userSeenCardRepository.findByUser(user);
-
-        Map<YKSLesson, Long> seenCardGroup = cards.stream()
-                .filter(card -> card.getCard().getFlashcard().getTopic().getLesson().getBranch() == null
-                        || card.getCard().getFlashcard().getTopic().getLesson().getBranch().equals(branch))
-                .collect(Collectors.groupingBy(
-                        card -> card.getCard().getFlashcard().getTopic().getLesson().getYksLesson(),
-                        Collectors.counting()));
-
-        List<Card> cardList = cardRepository.findAll();
-
-        Map<YKSLesson, Long> cardGroup = cardList.stream()
-                .filter(card -> card.getFlashcard().getTopic().getLesson().getBranch() == null
-                        || card.getFlashcard().getTopic().getLesson().getBranch().equals(branch))
-                .collect(Collectors.groupingBy(
-                        card -> card.getFlashcard().getTopic().getLesson().getYksLesson(),
-                        Collectors.counting()));
-
-        return cardGroup.keySet().stream()
-                .map(aLong -> new UserStatisticLessonResponse(aLong.label,
-                        seenCardGroup.get(aLong) == null ? 0 : seenCardGroup.get(aLong),
-                        (seenCardGroup.get(aLong) != null ? ((double) seenCardGroup.get(aLong) / cardGroup.get(aLong))
-                                : 0)))
-                .toList();*/
 
         return percentageList.stream().map(
                         l -> new UserStatisticLessonResponse(

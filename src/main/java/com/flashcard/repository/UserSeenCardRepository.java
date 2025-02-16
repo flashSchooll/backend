@@ -27,4 +27,10 @@ public interface UserSeenCardRepository extends JpaRepository<UserSeenCard, Long
     List<UserSeenCard> findByUser(User user);
 
     Integer countByUserAndCardFlashcard(User user, Flashcard flashcard);
+
+    @Query("SELECT f.id FROM UserSeenCard rf " +
+            "LEFT JOIN rf.card c " +
+            "LEFT JOIN c.flashcard f " +
+            "WHERE rf.user = :user")
+    List<Long> findByUserWithAllData(User user);
 }

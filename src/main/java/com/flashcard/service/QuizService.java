@@ -47,7 +47,7 @@ public class QuizService {
 
         } catch (IOException e) {
             log.error("Quiz eklenirken hata oldu : {}", topicId);
-            throw new Exception(e);
+            throw new IOException(e);
         }
 
     }
@@ -137,7 +137,6 @@ public class QuizService {
         QuizCount quizCount;
         for (Map.Entry<String, Long> entry : map.entrySet()) {
 
-         //   boolean existQuiz = userQuizAnswerRepository.existsByUserIdAndQuizName(userId, entry.getKey());
             boolean existQuiz = userQuizAnswerQuizNames.contains(entry.getKey());
             QuizType type = listMap.get(entry.getKey()).get(0).getType();
             quizCount = new QuizCount(entry.getKey(), entry.getValue(), topic.getId(), existQuiz, type);//type eklenecek

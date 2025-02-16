@@ -502,7 +502,7 @@ public class EmailService implements EmailSender {
                 "            <tr>\n" +
       //          "              <td class=\"email-masthead\">\n" +
      //           "                <img src=\"https://gamingpromarket.com/img/logo.png\" alt=\"\" style=\"height: 10vh;\">\n"
-     //           + // todo buraya studyhive logosu eklenecek
+     //           + // todo buraya stumy logosu eklenecek
       //          "              </td>\n" +
                 "            </tr>\n" +
                 "            <!-- Email Body -->\n" +

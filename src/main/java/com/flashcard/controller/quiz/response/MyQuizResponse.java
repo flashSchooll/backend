@@ -13,7 +13,7 @@ public class MyQuizResponse {
     private final QuizResponse quizResponse;
 
     public MyQuizResponse(MyQuiz myQuiz) {
-        id = myQuiz.getId();
+        id = myQuiz.getQuiz().getId();
         option = myQuiz.getOption();
         quizResponse = new QuizResponse(myQuiz.getQuiz());
     }

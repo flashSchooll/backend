@@ -80,14 +80,6 @@ public class TopicService {
         Lesson tytLesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
-      /*  List<Card> tytCards = cardRepository.findByLesson(tytLesson);// fixme burası düzeltildi performansı düşük
-
-        Map<Topic, Long> cardCount = tytCards.stream()
-                .collect(Collectors.groupingBy(
-                        tytCard -> tytCard.getFlashcard().getTopic(),
-                        Collectors.counting()
-                ));*/
-
         List<Topic> topics = topicRepository.findByLesson(tytLesson);
 
         Map<Topic, Long> counts = new HashMap<>();

@@ -169,13 +169,6 @@ public class UserService {
         User user = authService.getCurrentUser();
 
         List<User> users = userRepository.findByStar();
-        //  .stream()
-        //  .sorted(
-        //          Comparator.comparing(User::getStar)
-        //                  .reversed()
-        //                  .thenComparing(Comparator.comparing(User::getRosette).reversed())
-        //  )
-        //  .toList();
 
         boolean userExist = users.stream().anyMatch(u -> Objects.equals(u.getId(), user.getId()));
 
@@ -184,7 +177,7 @@ public class UserService {
         users.forEach(u -> {
             UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
                     .userName(u.getUserName())
-                    .userSurname(u.getUserSurname())
+                    .userSurname(u.getUserSurname().charAt(0)+".")
                     .profilePhoto(u.getProfilePhoto())
                     .id(u.getId())
                     .star(u.getStar())
