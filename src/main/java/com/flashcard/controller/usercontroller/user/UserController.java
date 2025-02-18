@@ -1,8 +1,8 @@
 package com.flashcard.controller.usercontroller.user;
 
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
-import com.flashcard.model.dto.UserDTO;
 import com.flashcard.model.User;
+import com.flashcard.model.dto.UserDTO;
 import com.flashcard.model.enums.Branch;
 import com.flashcard.payload.response.MessageResponse;
 import com.flashcard.service.UserService;
@@ -35,7 +35,7 @@ public class UserController {
     @PutMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserDTO> update(@RequestBody UpdateUserRequest updateUserRequest) {
-        User user  = userService.updateUser(updateUserRequest);
+        User user = userService.updateUser(updateUserRequest);
 
         UserDTO userDTO = new UserDTO(user);
 
@@ -54,9 +54,9 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<Object> uploadPhoto(@RequestBody MultipartFile file) throws IOException {
 
-        userService.saveImage(file);
+       String  path=  userService.saveImage(file);
 
-        return ResponseEntity.ok("Resim başarıyla yüklendi");
+        return ResponseEntity.ok(path);
     }
 
     @DeleteMapping("/photo")
@@ -83,7 +83,7 @@ public class UserController {
     @PutMapping("/update-branch")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserDTO> updateBranch(@RequestParam Branch branch) {
-        User user  = userService.updateBranch(branch);
+        User user = userService.updateBranch(branch);
 
         UserDTO userDTO = new UserDTO(user);
 
@@ -93,7 +93,7 @@ public class UserController {
     @PutMapping("/update-target")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserDTO> updateTarget(@RequestParam Integer target) {
-        User user  = userService.updateTarget(target);
+        User user = userService.updateTarget(target);
 
         UserDTO userDTO = new UserDTO(user);
 

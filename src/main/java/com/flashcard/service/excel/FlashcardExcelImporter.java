@@ -3,11 +3,13 @@ package com.flashcard.service.excel;
 import com.flashcard.constants.Constants;
 import com.flashcard.exception.BusinessException;
 import com.flashcard.model.*;
+import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.model.enums.CardFace;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.TopicRepository;
+import com.flashcard.service.S3StorageService;
 import com.flashcard.service.UserCardPercentageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,7 @@ public class FlashcardExcelImporter {
     private final CardRepository cardRepository;
     private static List<XSSFPictureData> pictures;
     private final UserCardPercentageService userCardPercentageService;
+    private final S3StorageService s3StorageService;
 
     @Transactional
     public void saveExcel(Long lessonId, MultipartFile file) throws IOException {
@@ -96,25 +99,32 @@ public class FlashcardExcelImporter {
 
                 for (ExcelCardDTO dto : entryFlash.getValue()) {
                     List<ImageData> imageData = new ArrayList<>();
+                    card = new Card();
                     if (dto.getFrontImage() != null) {
                         imageDataFront = new ImageData();
                         imageDataFront.setFace(CardFace.FRONT);
-                        imageDataFront.setData(dto.getFrontImage());
-                        imageData.add(imageDataFront);
+                      //  imageDataFront.setData(dto.getFrontImage());
+                      //  imageData.add(imageDataFront);
+
+                        String path = s3StorageService.uploadFile(dto.getFrontImage(), AWSDirectory.CARDS);
+                        card.setFrontPhotoPath(path);
                     }
 
                     if (dto.getBackImage() != null) {
                         imageDataBack = new ImageData();
                         imageDataBack.setFace(CardFace.BACK);
-                        imageDataBack.setData(dto.getFrontImage());
-                        imageData.add(imageDataBack);
+                     //  imageDataBack.setData(dto.getFrontImage());
+                     //   imageData.add(imageDataBack);
+
+                        String path = s3StorageService.uploadFile(dto.getBackImage(), AWSDirectory.CARDS);
+                        card.setBackPhotoPath(path);
                     }
 
-                    card = new Card();
+
                     card.setFlashcard(flashcard);
                     card.setFrontFace(dto.getFrontFace());
                     card.setBackFace(dto.getBackFace());
-                    card.setImageData(imageData.isEmpty() ? null : imageData);
+                  //  card.setImageData(imageData.isEmpty() ? null : imageData);
 
                     cards.add(card);
                 }
@@ -127,7 +137,7 @@ public class FlashcardExcelImporter {
 
             }
         }
-        userCardPercentageService.updateCardCount(lesson, dtoList.size());
+        userCardPercentageService.updateCardCount(lesson);
     }
 
     private List<ExcelCardDTO> getExcelDataFomExcel(MultipartFile file) throws IOException {
@@ -162,9 +172,9 @@ public class FlashcardExcelImporter {
                             case 3 -> // arka yüz sütunu
                                     cardDTO.setBackFace(getStringCell(cell, "arka yüz"));
                             case 4 -> // ön resim sütunu
-                                    cardDTO.setFrontImage(getImageFromCell(cell, "ön resim", workbook));
+                                    cardDTO.setFrontImage(getImageFromCell(cell, cell.getRowIndex() + "ön resim", workbook));
                             case 5 -> // arka resim sütunu
-                                    cardDTO.setBackImage(getImageFromCell(cell, "arka resim", workbook));
+                                    cardDTO.setBackImage(getImageFromCell(cell, cell.getRowIndex() + "arka resim", workbook));
                             default -> {
                                 return Collections.emptyList();
                             }
@@ -185,7 +195,7 @@ public class FlashcardExcelImporter {
         return excelCardDTOS.stream().toList();
     }
 
-    public static byte[] getImageFromCell(Cell cell, String columnName, XSSFWorkbook workbook) {
+    public static MultipartFile getImageFromCell(Cell cell, String columnName, XSSFWorkbook workbook) {
         // Eğer hücre boşsa veya içerik yoksa, null döndür.
         if (cell == null || cell.toString().isEmpty()) {
             return null;
@@ -196,10 +206,13 @@ public class FlashcardExcelImporter {
             pictures = workbook.getAllPictures();
 
             byte[] picture = pictures.get(0).getData();
+         //   CustomMultipartFile file = new CustomMultipartFile(picture,"filename","image/jpeg");
 
             pictures.remove(0);
+            return new CustomMultipartFile(picture," file.getOriginalFilename()", "image/jpeg");
 
-            return picture;
+
+            //  return picture;
 
         } catch (Exception e) {
             // Hata durumunda özel exception fırlat

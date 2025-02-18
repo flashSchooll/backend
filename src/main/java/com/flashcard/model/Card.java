@@ -2,6 +2,7 @@ package com.flashcard.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,12 @@ public class Card {// kart bilgisini tutar
 
     @Column(columnDefinition = "TEXT")
     private String backFace;
+
+    @Size(max = 128)
+    private String frontPhotoPath;
+
+    @Size(max = 128)
+    private String backPhotoPath;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ImageData> imageData;

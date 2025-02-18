@@ -65,6 +65,8 @@ public class User {// kullanıcı bilgisini tutar
 
     private Integer target;
 
+    private String photoPath;
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

@@ -5,10 +5,8 @@ import com.flashcard.model.*;
 import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.repository.CardRepository;
-import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.UserCardPercentageRepository;
 import com.flashcard.repository.UserRepository;
-import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -22,9 +20,7 @@ import java.util.stream.Collectors;
 public class UserCardPercentageService {
 
     private final UserCardPercentageRepository userCardPercentageRepository;
-    private final LessonRepository lessonRepository;
     private final CardRepository cardRepository;
-    private final AuthService authService;
     private final ApplicationContext applicationContext;
     private final UserRepository userRepository;
 
@@ -44,7 +40,7 @@ public class UserCardPercentageService {
                         Collectors.counting()));
 
         List<Lesson> lessonList;
-
+        UserCardPercentageService proxy = applicationContext.getBean(UserCardPercentageService.class);
         if (yks.equals(YKS.TYT)) {
             lessonList = cards.stream()
                     .map(card -> card.getFlashcard().getTopic().getLesson())
@@ -52,7 +48,8 @@ public class UserCardPercentageService {
                     .filter(lesson -> lesson.getYks().equals(YKS.TYT))
                     .toList();
 
-            saveCardPercentage(user, lessonList, lessonCountMap);
+            proxy.saveCardPercentage(user, lessonList, lessonCountMap);
+
         } else if (yks.equals(YKS.AYT) && !cards.isEmpty()) {
             lessonList = cards.stream()
                     .map(card -> card.getFlashcard().getTopic().getLesson())
@@ -60,13 +57,15 @@ public class UserCardPercentageService {
                     .filter(lesson -> lesson.getYks().equals(YKS.AYT) && lesson.getBranch().equals(branch))
                     .toList();
 
-            saveCardPercentage(user, lessonList, lessonCountMap);
+            proxy.saveCardPercentage(user, lessonList, lessonCountMap);
+
         } else {
             throw new IllegalArgumentException(Constants.WRONG_PARAMETER);
         }
     }
 
-    void saveCardPercentage(User user, List<Lesson> lessonList, Map<Lesson, Long> lessonCountMap) {
+    @Transactional
+    public void saveCardPercentage(User user, List<Lesson> lessonList, Map<Lesson, Long> lessonCountMap) {
         List<UserCardPercentage> percentageList = lessonList.stream()
                 .map(lesson -> {
                     int cardCount = Math.toIntExact(lessonCountMap.getOrDefault(lesson, 0L));  // null olmasi durumunda 0 döndür
@@ -109,8 +108,8 @@ public class UserCardPercentageService {
             UserCardPercentageService proxy = applicationContext.getBean(UserCardPercentageService.class);
             proxy.save(user, YKS.AYT, branch);
         }
-        return userCardPercentageRepository.findByUserAndLessonYksAndLessonBranch(user, YKS.AYT, branch);
 
+        return userCardPercentageRepository.findByUserAndLessonYksAndLessonBranch(user, YKS.AYT, branch);
     }
 
 
@@ -129,19 +128,21 @@ public class UserCardPercentageService {
 
             userCardPercentageRepository.save(userCardPercentage);
         }
-
     }
 
     @Transactional
-    public void updateCardCount(Lesson lesson, int size) {
+    public void updateCardCount(Lesson lesson) {
 
-        List<UserCardPercentage> percentageList = userCardPercentageRepository.findByLesson(lesson);
+        int count = cardRepository.countByFlashcardTopicLesson(lesson);
 
-        for (UserCardPercentage percentage : percentageList) {
-            percentage.setTotalCard(percentage.getTotalCard() + size);
+        int percentageCount = userCardPercentageRepository.countByLesson(lesson);
+
+        if (percentageCount == 0) {
+            UserCardPercentageService proxy = applicationContext.getBean(UserCardPercentageService.class);
+            proxy.saveForLesson(lesson);
+        } else {
+            userCardPercentageRepository.updateTotalCardByLesson(lesson, count);
         }
-
-        userCardPercentageRepository.saveAll(percentageList);
     }
 
     //  @Cacheable(value = "countAverageFifty")
@@ -156,11 +157,7 @@ public class UserCardPercentageService {
     }
 
     @Transactional
-    public void saveForLesson(Long lessonId) {
-        Objects.requireNonNull(lessonId);
-
-        Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
+    public void saveForLesson(Lesson lesson) {
 
         long countCard = cardRepository.countByFlashcardTopicLesson(lesson);
 

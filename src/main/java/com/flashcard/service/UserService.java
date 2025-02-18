@@ -6,6 +6,7 @@ import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.User;
 import com.flashcard.model.dto.UserDTO;
+import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.model.enums.Branch;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
@@ -18,18 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +33,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthService authService;
     private final DailyTargetService dailyTargetService;
+    public final S3StorageService s3StorageService;
 
     public User getUserById(Long id) {
         return userRepository.findById(id)
@@ -95,9 +91,12 @@ public class UserService {
 
 
     @Transactional
-    public void saveImage(MultipartFile file) throws IOException {
+    public String saveImage(MultipartFile file) throws IOException {
         User user = authService.getCurrentUser();
 
+        String url = s3StorageService.uploadFile(file, AWSDirectory.USERS);
+
+        /*
         // Resmi yükle
         BufferedImage inputImage = ImageIO.read(file.getInputStream());
         if (inputImage == null) {
@@ -142,11 +141,13 @@ public class UserService {
             }
             writer.write(null, new IIOImage(outputImage, null, null), param);
             imageData = baos.toByteArray();
-        }
+        }*/
 
         // Kullanıcıya fotoğrafı kaydet
-        user.setProfilePhoto(imageData);
-        userRepository.save(user);
+        //  user.setProfilePhoto(imageData);
+
+        user.setPhotoPath(url);
+        return userRepository.save(user).getPhotoPath();
     }
 
     public byte[] getImage() {
@@ -159,7 +160,10 @@ public class UserService {
     @Transactional
     public void deletePhoto() {
         User user = authService.getCurrentUser();
-        user.setProfilePhoto(null);
+        //  user.setProfilePhoto(null);
+        s3StorageService.deleteFile(user.getPhotoPath());
+        user.setPhotoPath(null);
+
 
         userRepository.save(user);
     }
@@ -177,7 +181,7 @@ public class UserService {
         users.forEach(u -> {
             UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
                     .userName(u.getUserName())
-                    .userSurname(u.getUserSurname().charAt(0)+".")
+                    .userSurname(u.getUserSurname().charAt(0) + ".")
                     .profilePhoto(u.getProfilePhoto())
                     .id(u.getId())
                     .star(u.getStar())
