@@ -2,6 +2,7 @@ package com.flashcard.service;
 
 import com.flashcard.constants.Constants;
 import com.flashcard.model.Lesson;
+import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.model.enums.YKSLesson;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class LessonService {
 
     private final LessonRepository lessonRepository;
+    private final S3StorageService s3StorageService;
 
     @Transactional
     public Lesson save(YKS yks, Branch branch, YKSLesson yksLesson, MultipartFile icon) throws IOException {
@@ -31,12 +33,14 @@ public class LessonService {
         if (optionalLesson.isPresent()) {
             throw new BadRequestException(Constants.LESSON_ALREADY_SAVED);
         }
+        String path = s3StorageService.uploadFile(icon, AWSDirectory.LESSONS);
 
         Lesson lesson = new Lesson();
         lesson.setYksLesson(yksLesson);
         lesson.setBranch(yks.equals(YKS.TYT) ? null : branch);
         lesson.setYks(yks);
         lesson.setIcon(icon.getBytes());
+        lesson.setPath(path);
 
         return lessonRepository.save(lesson);
     }
@@ -67,6 +71,8 @@ public class LessonService {
 
         if (icon != null) {
             lesson.setIcon(icon.getBytes());
+            String path = s3StorageService.uploadFile(icon, AWSDirectory.LESSONS);
+            lesson.setPath(path);
         }
 
         return lessonRepository.save(lesson);
@@ -79,7 +85,11 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
-        lesson.setIcon(icon.getBytes());
+        s3StorageService.deleteFile(lesson.getPath());
+
+      //  lesson.setIcon(icon.getBytes());
+        String path = s3StorageService.uploadFile(icon, AWSDirectory.LESSONS);
+        lesson.setPath(path);
 
         return lessonRepository.save(lesson);
     }

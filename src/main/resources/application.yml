@@ -57,7 +57,7 @@ management: #actuator
     health:
       show-details: always
     shutdown:
-      enabled:  true
+      enabled: true
   flashSchool:
     app:
       jwtSecret: 5Xz3Pb8+fttP9V1phnx5hOqWzHj2fFg14jSt+zBQquOe2c0qGZ7m+NqzNH5sDhq1zqD1+8Am00uP7XujMxw5yDsg8Rh3yPppT2yAl4h0eEOB2LZZnLQDb3ZPz3Jt5g==
@@ -79,3 +79,24 @@ info:
     name: 'Stumy Backend App'
     description: 'This is Stumy Backend Project'
     version: '@project.version@'
+
+supabase:
+  api:
+    url: https://wauruqdnimihwjwcmijg.supabase.co/storage/v1/s3
+    key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhdXJ1cWRuaW1paHdqd2NtaWpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY0NDk5NDcsImV4cCI6MjA1MjAyNTk0N30.bvdBKTPaBekKm1qx3tr8JepbKyUa5V_ug4UDk8BlJ5c
+
+
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAZ5TC5E2FRZOHIFNO
+      secret-key: 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
+    region:
+      static: eu-north-1
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: stumystorage
+    url: https://stumystorage.s3.eu-north-1.amazonaws.com/

@@ -133,7 +133,7 @@ public class FlashCardService {
                 .toList();
     }
 
-  //  @Cacheable(value = "flashcardSearch", key = "#search")
+    //  @Cacheable(value = "flashcardSearch", key = "#search")
     public List<Flashcard> search(String search) {
 
         return flashCardRepository.search(search);
@@ -145,7 +145,6 @@ public class FlashCardService {
         try {
             flashcardExcelImporter.saveExcel(lessonId, file);
 
-            userCardPercentageService.saveForLesson(lessonId);
         } catch (IOException e) {
             log.error("Ders eklenirken hata oldu : {}", lessonId);
             throw new IOException(e);

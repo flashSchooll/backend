@@ -5,6 +5,7 @@ import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.model.enums.YKSLesson;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,5 +41,8 @@ public class Lesson {//ders bilgisini tutar
 
     @NotNull
     private byte[] icon;
+
+    @NotBlank
+    private String path;
 
 }
