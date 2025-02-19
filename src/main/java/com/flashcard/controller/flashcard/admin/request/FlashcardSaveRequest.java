@@ -14,7 +14,7 @@ public class FlashcardSaveRequest {
     private Long topicId;
 
     @NotBlank
-    @Size(min = 0, max = 256)
+    @Size(max = 256)
     private String cardName;
 
 }

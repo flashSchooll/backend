@@ -229,7 +229,7 @@ public class FlashcardExcelImporter {
             cellValue = cell.getStringCellValue();
             return cellValue;
         } catch (Exception e) {
-            throw new InvalidCellException(columnName, cellValue, e);
+            throw new InvalidCellException(columnName, cell.getStringCellValue(), e);
         }
     }
 }

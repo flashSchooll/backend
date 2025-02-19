@@ -12,11 +12,11 @@ public class CardUpdateRequest {
 
     private Long id;
 
-    @Size(min = 0, max = 256)
+    @Size(max = 256)
     @NotBlank
     private String frontFace;
 
-    @Size(min = 0, max = 256)
+    @Size(max = 256)
     @NotBlank
     private String backFace;
 

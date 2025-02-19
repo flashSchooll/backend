@@ -136,7 +136,7 @@ public class QuizExcelImporter {
             cellValue = cell.getStringCellValue();
 
         } catch (Exception e) {
-            throw new InvalidCellException(quizType, String.valueOf(cellValue), e);
+            throw new InvalidCellException(quizType, String.valueOf(cell.getStringCellValue()), e);
         }
         return QuizType.by(cellValue);
     }

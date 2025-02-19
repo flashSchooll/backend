@@ -36,7 +36,10 @@ public class S3StorageService {
         String filename = UUID.randomUUID() + ".png";
         s3Client.putObject(new PutObjectRequest(bucketName, awsDirectory.path + filename, convertedFile));
 
-        convertedFile.delete();
+        boolean isDeleted = convertedFile.delete();
+        if (!isDeleted) {
+            log.warn(String.format("%s silinemedi", file.getOriginalFilename()));
+        }
 
         return baseUrl + awsDirectory.path + filename;
 
