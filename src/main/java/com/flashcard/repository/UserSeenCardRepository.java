@@ -3,6 +3,7 @@ package com.flashcard.repository;
 import com.flashcard.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -20,7 +21,13 @@ public interface UserSeenCardRepository extends JpaRepository<UserSeenCard, Long
 
     List<UserSeenCard> findByUserAndCardFlashcardAndStateOfKnowledgeIsTrue(User user, Flashcard flashcard);
 
-    List<UserSeenCard> findByUserAndCardFlashcardTopic(User user, Topic topic);
+    @Query("SELECT usc FROM UserSeenCard usc " +
+            "JOIN FETCH usc.card c " +
+            "JOIN FETCH c.flashcard f " +
+            "JOIN FETCH f.topic t " +
+            "WHERE usc.user = :user AND t = :topic")
+    List<UserSeenCard> findByUserAndCardFlashcardTopic(@Param("user") User user, @Param("topic") Topic topic);
+
 
     int countByUser(User user);
 
@@ -33,4 +40,13 @@ public interface UserSeenCardRepository extends JpaRepository<UserSeenCard, Long
             "LEFT JOIN c.flashcard f " +
             "WHERE rf.user = :user")
     List<Long> findByUserWithAllData(User user);
+
+    @Query("SELECT distinct f.id FROM UserSeenCard usc " +
+            "JOIN usc.card c " +
+            "JOIN c.flashcard f " +
+            "JOIN f.topic t " +
+            "WHERE usc.user = :user AND t.id = :topicId")
+    List<Long> findByUserAndCardFlashcardTopic(@Param("user") User user, @Param("topicId") Long topicId);
+
+
 }

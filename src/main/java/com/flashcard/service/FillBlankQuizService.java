@@ -13,6 +13,8 @@ import com.flashcard.security.services.AuthService;
 import com.flashcard.service.excel.FillBlankQuizExcelImporter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,13 +45,13 @@ public class FillBlankQuizService {
         }
     }
 
- //   @Cacheable(value = "fillBlankQuizes", key = "#topicId")
-    public List<FillBlankQuiz> getByTopic(Long topicId) {
+    //   @Cacheable(value = "fillBlankQuizes", key = "#topicId")
+    public Page<FillBlankQuiz> getByTopic(Long topicId, Pageable pageable) {
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        return fillBlankQuizRepository.findByTopic(topic);
+        return fillBlankQuizRepository.findByTopicAsPage(pageable, topic);
     }
 
     @Transactional
@@ -61,7 +63,8 @@ public class FillBlankQuizService {
 
         fillBlankQuizRepository.delete(fillBlankQuiz);
     }
-  //  @Cacheable(value = "fillBlankQuizesByTitle", key = "#title")
+
+    //  @Cacheable(value = "fillBlankQuizesByTitle", key = "#title")
     public List<FillBlankQuiz> getByTitle(String title) {
 
         Objects.requireNonNull(title);
@@ -69,7 +72,7 @@ public class FillBlankQuizService {
         return fillBlankQuizRepository.findByTitle(title);
     }
 
-    public List<FillBlankQuizUserResponse> getCountByUser(User user,Topic topic) {
+    public List<FillBlankQuizUserResponse> getCountByUser(User user, Topic topic) {
 
         List<FillBlankQuiz> quizs = fillBlankQuizRepository.findByTopic(topic);
         Map<String, Long> map = quizs.stream()

@@ -26,4 +26,11 @@ public interface FlashCardRepository extends JpaRepository<Flashcard, Long> {
     List<Flashcard> search(@Param("search") String search);
 
     Optional<Flashcard> findByCardNameAndTopic(String flashCardName, Topic topic);
+
+    @Query("SELECT f, COUNT(c) " +
+            "FROM Flashcard f " +
+            "LEFT JOIN Card c ON c.flashcard.id = f.id " +
+            "WHERE f.topic = :topic " +
+            "GROUP BY f")
+    List<Object[]> findFlashcardsWithCountByTopic(Topic topic);
 }

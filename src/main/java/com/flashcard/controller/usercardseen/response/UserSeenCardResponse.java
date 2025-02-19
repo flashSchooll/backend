@@ -14,11 +14,17 @@ public class UserSeenCardResponse {
     private final String backFace;
     private final Boolean stateOfKnowledge;
     private final Duration duration;
+    private final String frontPhotoPath;
+    private final String backPhotoPath;
+
+
 
     public UserSeenCardResponse(UserSeenCard seenCard) {
         this.frontFace = seenCard.getCard().getFrontFace();
         this.backFace = seenCard.getCard().getBackFace();
         this.stateOfKnowledge = seenCard.getStateOfKnowledge();
         this.duration = seenCard.getDuration();
+        this.frontPhotoPath = seenCard.getCard().getFrontPhotoPath();
+        this.backPhotoPath = seenCard.getCard().getBackPhotoPath();
     }
 }

@@ -16,4 +16,5 @@ public class UserRosetteStatistic {
     public final long order;
     public final boolean me;
     public final byte[] profilePhoto;
+    public final String photoPath;
 }

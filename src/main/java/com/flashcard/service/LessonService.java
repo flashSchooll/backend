@@ -78,6 +78,7 @@ public class LessonService {
         return lessonRepository.save(lesson);
     }
 
+    @Transactional
     public Lesson updateIcon(Long id, MultipartFile icon) throws IOException {
         if (icon.isEmpty()) {
             throw new IllegalArgumentException("Resim boş olamaz");

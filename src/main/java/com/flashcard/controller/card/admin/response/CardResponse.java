@@ -24,6 +24,8 @@ public class CardResponse {
     private final boolean isSaved;
     private final String lesson;
     private final String yks;
+    private final String frontPhotoPath;
+    private final String backPhotoPath;
 
     public CardResponse(Card card) {
 
@@ -51,6 +53,8 @@ public class CardResponse {
         this.isSaved = false;
         this.lesson = card.getFlashcard().getTopic().getLesson().getYksLesson().label;
         this.yks = card.getFlashcard().getTopic().getLesson().getYks().name();
+        this.frontPhotoPath = card.getFrontPhotoPath();
+        this.backPhotoPath = card.getBackPhotoPath();
     }
 
     public CardResponse(Card card, List<MyCard> myCards) {
@@ -83,6 +87,8 @@ public class CardResponse {
         this.isSaved = myCard != null;
         this.lesson = card.getFlashcard().getTopic().getLesson().getYksLesson().label;
         this.yks = card.getFlashcard().getTopic().getLesson().getYks().name();
+        this.frontPhotoPath = card.getFrontPhotoPath();
+        this.backPhotoPath = card.getBackPhotoPath();
     }
 
     public CardResponse(MyCard myCard) {
@@ -111,5 +117,7 @@ public class CardResponse {
         this.isSaved = true;
         this.lesson = myCard.getCard().getFlashcard().getTopic().getLesson().getYksLesson().label;
         this.yks = myCard.getCard().getFlashcard().getTopic().getLesson().getYks().name();
+        this.frontPhotoPath = myCard.getCard().getFrontPhotoPath();
+        this.backPhotoPath = myCard.getCard().getBackPhotoPath();
     }
 }

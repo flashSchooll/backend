@@ -7,6 +7,7 @@ import com.flashcard.controller.card.admin.request.CardUpdateRequest;
 import com.flashcard.controller.statistic.response.UserCardStatisticResponse;
 import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
 import com.flashcard.model.*;
+import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.CardFace;
 import com.flashcard.model.enums.YKS;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,9 +39,10 @@ public class CardService {
     private final RepeatFlashcardRepository repeatFlashcardRepository;
     private final MyCardsRepository myCardsRepository;
     private final UserCardPercentageRepository userCardPercentageRepository;
+    private final S3StorageService s3StorageService;
 
     @Transactional
-    public Card save(CardSaveRequest tytCardSaveRequest) throws BadRequestException {
+    public Card save(CardSaveRequest tytCardSaveRequest) throws IOException {
         // Null kontrolü
         Long flashcardId = tytCardSaveRequest.getTytFlashcardId();
         Objects.requireNonNull(flashcardId, "Flashcard ID cannot be null");
@@ -54,17 +57,20 @@ public class CardService {
         }
 
         // Görselleri işleyip listeye ekle
-        List<ImageData> imageDataList = createImageDataList(tytCardSaveRequest);
-
+        // List<ImageData> imageDataList = createImageDataList(tytCardSaveRequest);
+        String frontPath = s3StorageService.uploadFile(tytCardSaveRequest.getFrontFile(), AWSDirectory.CARDS);
+        String backPath = s3StorageService.uploadFile(tytCardSaveRequest.getBackFile(), AWSDirectory.CARDS);
         // Yeni TYTCard nesnesini oluştur
-        Card tytCard = new Card();
-        tytCard.setFlashcard(flashcard);
-        tytCard.setBackFace(tytCardSaveRequest.getBackFace());
-        tytCard.setFrontFace(tytCardSaveRequest.getFrontFace());
-        tytCard.setImageData(imageDataList);
+        Card card = new Card();
+        card.setFlashcard(flashcard);
+        card.setBackFace(tytCardSaveRequest.getBackFace());
+        card.setFrontFace(tytCardSaveRequest.getFrontFace());
+        card.setFrontPhotoPath(frontPath);
+        card.setBackPhotoPath(backPath);
+        //  tytCard.setImageData(imageDataList);
 
         // TYTCard'ı veritabanına kaydet
-        return cardRepository.save(tytCard);
+        return cardRepository.save(card);
     }
 
     private List<ImageData> createImageDataList(CardSaveRequest tytCardSaveRequest) throws BadRequestException {
@@ -100,7 +106,7 @@ public class CardService {
 
         Objects.requireNonNull(cardUpdateRequest.getId());
 
-        Card tytCard = cardRepository.findById(cardUpdateRequest.getId())
+        Card card = cardRepository.findById(cardUpdateRequest.getId())
                 .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
         ImageData imageData;
@@ -108,24 +114,30 @@ public class CardService {
         List<ImageData> imageDataList = new ArrayList<>();
 
         if (cardUpdateRequest.getFrontFile() != null) {
-            imageData = new ImageData();
-            imageData.setData(cardUpdateRequest.getFrontFile().getBytes());
-            imageData.setFace(CardFace.FRONT);
-            imageDataList.add(imageData);
+            //  imageData = new ImageData();
+            //  imageData.setData(cardUpdateRequest.getFrontFile().getBytes());
+            //  imageData.setFace(CardFace.FRONT);
+            //  imageDataList.add(imageData);
+            String frontPath = s3StorageService.uploadFile(cardUpdateRequest.getFrontFile(), AWSDirectory.CARDS);
+            card.setFrontPhotoPath(frontPath);
+
         }
 
         if (cardUpdateRequest.getBackFile() != null) {
-            imageData = new ImageData();
-            imageData.setData(cardUpdateRequest.getBackFile().getBytes());
-            imageData.setFace(CardFace.BACK);
-            imageDataList.add(imageData);
+            //   imageData = new ImageData();
+            //   imageData.setData(cardUpdateRequest.getBackFile().getBytes());
+            //   imageData.setFace(CardFace.BACK);
+            //   imageDataList.add(imageData);
+            String frontPath = s3StorageService.uploadFile(cardUpdateRequest.getBackFile(), AWSDirectory.CARDS);
+            card.setBackPhotoPath(frontPath);
+
         }
 
-        tytCard.setBackFace(cardUpdateRequest.getBackFace());
-        tytCard.setFrontFace(cardUpdateRequest.getFrontFace());
-        tytCard.setImageData(imageDataList);
+        card.setBackFace(cardUpdateRequest.getBackFace());
+        card.setFrontFace(cardUpdateRequest.getFrontFace());
+      //  card.setImageData(imageDataList);
 
-        return cardRepository.save(tytCard);
+        return cardRepository.save(card);
     }
 
     @Transactional
@@ -134,10 +146,10 @@ public class CardService {
 
         Objects.requireNonNull(id);
 
-        Card tytCard = cardRepository.findById(id)
+        Card card = cardRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
-        cardRepository.delete(tytCard);
+        cardRepository.delete(card);
     }
 
     @Cacheable(value = "allCards", key = "#flashcard.id", unless = "#branch == null")
@@ -165,19 +177,20 @@ public class CardService {
         return cardRepository.findByFlashcard(flashcard);
     }
 
-    public List<Card> exploreForMe() {
+    public List<Card> exploreForMe() {//todo bakılacak
 
         User user = authService.getCurrentUser();
         // RepeatFlashcard ve UserSeenCard tablolarından kartları al
         List<Card> repeatFlashcards = myCardsRepository.findByUser(user).stream().map(MyCard::getCard).toList();
 
 
-        List<Flashcard> flashcards = repeatFlashcardRepository.findByUserWithTopicAndLesson(user).stream()
-                .map(RepeatFlashcard::getFlashcards) // Her RepeatFlashcard nesnesinin flashcards listesini alıyoruz
-                .flatMap(List::stream) // Liste içindeki tüm Flashcard'ları tek bir akışa düzleştiriyoruz
-                .toList(); // Akışı bir listeye topluyoruz
+        List<Long> flashcards = repeatFlashcardRepository.findByUserWithTopicAndLesson(user).stream()
+                .map(repeatFlashcard -> repeatFlashcard.getFlashcards()) // RepeatFlashcard nesnesinden flashcards listesini alıyoruz
+                .flatMap(List::stream) // List içindeki tüm Flashcard'ları tek bir akışa düzleştiriyoruz
+                .map(flashcard -> flashcard.getId()) // Her bir Flashcard nesnesinin ID'sini alıyoruz
+                .collect(Collectors.toList()); // Akışı bir listeye topluyoruz
 
-        List<Card> cardList = cardRepository.findByFlashcardIn(flashcards);
+        List<Card> cardList = cardRepository.findByFlashcardIn(flashcards); // todo sorguya bakılacak çok fazla istek atıyor
 
         // İki listeyi birleştir
         List<Card> combinedCards = new ArrayList<>();
@@ -203,7 +216,7 @@ public class CardService {
     @Cacheable(value = "cardsCache", key = "#branch", unless = "#branch == null")
     public List<Card> explore(String branch) {
 
-        return cardRepository.findRandomCardsByBranch(branch);
+        return cardRepository.findRandomCardsByBranch(branch);// TODO ÇOK İSTEK ATIYOR 100 TANE
     }
 
     public UserCardStatisticResponse getUserCardStatistic() {

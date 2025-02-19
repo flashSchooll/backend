@@ -28,7 +28,7 @@ public class DailyTarget {// günlük hedef bilgisini tutar
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     private User user;
 

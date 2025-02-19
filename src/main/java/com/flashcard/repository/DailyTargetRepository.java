@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,8 +18,12 @@ public interface DailyTargetRepository extends JpaRepository<DailyTarget, Long> 
 
     @Query("SELECT d " +
             "FROM DailyTarget d " +
-            "where (:search is null or (d.user.userName ILIKE (%:search%) or d.user.userSurname ILIKE (%:search%)))")
-    List<DailyTarget> findBySearch(String search);
+            "JOIN FETCH d.user u " +
+            "WHERE (:search IS NULL OR " +
+            "(u.userName ILIKE %:search% OR u.userSurname ILIKE %:search%))")
+    List<DailyTarget> findBySearch(@Param("search") String search);
+
+
 
     @Query("SELECT d " +
             "FROM DailyTarget d " +

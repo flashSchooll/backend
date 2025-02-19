@@ -3,6 +3,7 @@ package com.flashcard.controller.fillblankquiz.admin.response;
 import com.flashcard.model.FillBlankQuiz;
 import lombok.Getter;
 import lombok.Setter;
+import org.antlr.v4.runtime.misc.Array2DHashSet;
 
 import java.util.*;
 
@@ -22,18 +23,18 @@ public class FillBlankQuizResponse {
     }
 
     private List<String> getLetters(String answer) {
+        Set<String> letterList = new HashSet<>(Arrays.asList(answer.split("")));
 
-        List<String> letterList = new ArrayList<>(Arrays.stream(answer.split("")).toList());
-
-        int size = answer.length() < 10 ? 10 : 20;
+        int size = 14;
 
         while (letterList.size() < size) {
-
             char randomHarf = (char) ('a' + rand.nextInt(26));
             letterList.add(String.valueOf(randomHarf));
         }
-        Collections.shuffle(letterList);
 
-        return letterList;
+        List<String> result = new ArrayList<>(letterList);
+        Collections.shuffle(result);
+
+        return result;
     }
 }

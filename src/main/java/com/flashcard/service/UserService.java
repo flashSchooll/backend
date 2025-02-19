@@ -183,6 +183,7 @@ public class UserService {
                     .userName(u.getUserName())
                     .userSurname(u.getUserSurname().charAt(0) + ".")
                     .profilePhoto(u.getProfilePhoto())
+                    .photoPath(u.getPhotoPath())
                     .id(u.getId())
                     .star(u.getStar())
                     .rosette(u.getRosette())

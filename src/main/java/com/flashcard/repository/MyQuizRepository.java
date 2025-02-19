@@ -13,7 +13,12 @@ import java.util.Optional;
 public interface MyQuizRepository extends JpaRepository<MyQuiz, Long> {
     List<MyQuiz> findByUser(User user);
 
-    List<MyQuiz> findByUserId(Long userId);
+    @Query("SELECT mq FROM MyQuiz mq " +
+            "JOIN FETCH mq.user u " +
+            "JOIN FETCH mq.quiz q " +
+            "WHERE u.id = :userId")
+    List<MyQuiz> findByUserId(@Param("userId") Long userId);
+
 
     @Query("SELECT mq FROM MyQuiz mq " +
             "JOIN FETCH mq.quiz q " +

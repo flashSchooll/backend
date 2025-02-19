@@ -34,15 +34,22 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     int countByFlashcardTopicLessonYks(YKS yks);
 
-    @Query(value = "SELECT c.* FROM Card c " +
-            "JOIN Flashcard f ON c.flashcard_id = f.id " +
-            "JOIN Topic t ON f.topic_id = t.id " +
-            "JOIN Lesson l ON t.lesson_id = l.id " +
-            "WHERE (l.branch is null or (:branch is null or l.branch = :branch)) " +
-            "ORDER BY RANDOM() LIMIT 100", nativeQuery = true)
+    @Query(value = "WITH RandomizedCards AS ( " +
+            "    SELECT c.*, ROW_NUMBER() OVER (ORDER BY RANDOM()) as rn " +
+            "    FROM Card c " +
+            "    JOIN Flashcard f ON c.flashcard_id = f.id " +
+            "    JOIN Topic t ON f.topic_id = t.id " +
+            "    JOIN Lesson l ON t.lesson_id = l.id " +
+            "    WHERE (l.branch IS NULL OR (:branch IS NULL OR l.branch = :branch)) " +
+            ") " +
+            "SELECT * FROM RandomizedCards " +
+            "WHERE rn <= 100 ", nativeQuery = true)
     List<Card> findRandomCardsByBranch(@Param("branch") String branch);
 
-    List<Card> findByFlashcardIn(List<Flashcard> flashcards);
+    @Query("SELECT DISTINCT c FROM Card c " +
+            "JOIN FETCH c.flashcard f " +
+            "WHERE f.id IN :flashcardIds")
+    List<Card> findByFlashcardIn(List<Long> flashcardIds);
 
     Long countByFlashcardTopic(Topic topic);
 

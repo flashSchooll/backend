@@ -5,6 +5,10 @@ import com.flashcard.controller.fillblankquiz.admin.response.FillBlankQuizRespon
 import com.flashcard.model.FillBlankQuiz;
 import com.flashcard.service.FillBlankQuizService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -33,11 +37,12 @@ public class FillBlankQuizAdminController {
 
     @GetMapping("/{topicId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> getByTopic(@PathVariable Long topicId) {// todo burası page yapısıyla dönmeli ve bütün datayı dönmeli
+    public ResponseEntity<Object> getByTopic(@PathVariable Long topicId,
+                                             @PageableDefault(sort = "title", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        List<FillBlankQuiz> fillBlankQuizList = fillBlankQuizService.getByTopic(topicId);
+        Page<FillBlankQuiz> fillBlankQuizList = fillBlankQuizService.getByTopic(topicId, pageable);
 
-        List<FillBlankQuizResponse> responses = fillBlankQuizList.stream().map(FillBlankQuizResponse::new).toList();
+        Page<FillBlankQuizResponse> responses = fillBlankQuizList.map(FillBlankQuizResponse::new);
 
         return ResponseEntity.ok(responses);
     }

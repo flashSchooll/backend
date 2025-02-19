@@ -41,7 +41,6 @@ public class QuizService {
     @Transactional
     public void importExcel(Long topicId, MultipartFile file) throws Exception {
 
-
         try {
             quizExcelImporter.saveExcel(topicId, file);
 
@@ -147,6 +146,7 @@ public class QuizService {
         return quizCounts;
     }
 
+    @Transactional
     public void saveAnswer(UserQuizAnswerRequestList userQuizAnswerRequest) {
         User user = authService.getCurrentUser();
 

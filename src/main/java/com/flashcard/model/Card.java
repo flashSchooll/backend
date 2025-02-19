@@ -31,7 +31,7 @@ public class Card {// kart bilgisini tutar
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     private Flashcard flashcard;
 

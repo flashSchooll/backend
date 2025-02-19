@@ -5,13 +5,11 @@ import com.flashcard.controller.flashcard.admin.request.FlashcardSaveRequest;
 import com.flashcard.controller.flashcard.admin.request.FlashcardUpdateRequest;
 import com.flashcard.controller.flashcard.user.response.FlashcardUserResponse;
 import com.flashcard.exception.BadRequestException;
-import com.flashcard.model.Card;
-import com.flashcard.model.Flashcard;
-import com.flashcard.model.Topic;
-import com.flashcard.model.UserSeenCard;
+import com.flashcard.model.*;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.TopicRepository;
+import com.flashcard.security.services.AuthService;
 import com.flashcard.service.excel.FlashcardExcelImporter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +33,7 @@ public class FlashCardService {
     private final FlashcardExcelImporter flashcardExcelImporter;
     private final UserSeenCardService userSeenCardService;
     private final UserCardPercentageService userCardPercentageService;
+    private final AuthService authService;
 
     @Transactional
     public Flashcard save(FlashcardSaveRequest flashcardSaveRequest) {
@@ -102,26 +101,32 @@ public class FlashCardService {
 
     public List<FlashcardUserResponse> getAllUser(Long topicId) {
         Objects.requireNonNull(topicId);
+        User user=authService.getCurrentUser();
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        List<Flashcard> flashcardList = flashCardRepository.findByTopic(topic);
+
+        List<Object[]> result=flashCardRepository.findFlashcardsWithCountByTopic(topic);
 
         Map<Flashcard, Long> flashcardLongMap = new HashMap<>();
 
-        for (Flashcard f : flashcardList) {
-            long count = cardRepository.countByFlashcard(f);
-            flashcardLongMap.put(f, count);
+        for (Object[] row : result) {
+            Flashcard flashcard = (Flashcard) row[0];
+            Long count = (Long) row[1];
+            flashcardLongMap.put(flashcard, count);
         }
 
-        List<UserSeenCard> seenCards = userSeenCardService.getAllSeenCardsByTopic(topicId);
+     // List<UserSeenCard> seenCards = userSeenCardService.getAllSeenCardsByTopic(topicId);
+//
+     // List<Long> flashcards = seenCards.stream()
+     //         .map(UserSeenCard::getCard)
+     //         .map(Card::getFlashcard)
+     //         .map(Flashcard::getId)
+     //         .distinct()
+     //         .toList();
 
-        List<Long> flashcards = seenCards.stream()
-                .map(UserSeenCard::getCard)
-                .map(Card::getFlashcard)
-                .map(Flashcard::getId)
-                .toList();
+        List<Long> flashcardIds=userSeenCardService.findFlashcardIdsByTopic(user,topicId);
 
         return flashCardRepository.findByTopic(topic)
                 .stream()
@@ -129,7 +134,7 @@ public class FlashCardService {
                         new FlashcardUserResponse(
                                 flashcard,
                                 Math.toIntExact(flashcardLongMap.get(flashcard)),
-                                flashcards.contains(flashcard.getId())))
+                                flashcardIds.contains(flashcard.getId())))
                 .toList();
     }
 

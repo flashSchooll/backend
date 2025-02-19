@@ -126,4 +126,9 @@ public class UserSeenCardService {
 
         return userSeenCardRepository.findByUserAndCardFlashcardTopic(user, topic);
     }
+
+    public List<Long> findFlashcardIdsByTopic(User user,Long topicId) {
+
+        return userSeenCardRepository.findByUserAndCardFlashcardTopic(user,topicId);
+    }
 }

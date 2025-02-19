@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/card/user")
 @RequiredArgsConstructor
-public class CardUserController {
+public class UserCardController {
 
     private final CardService cardService;
     private final MyCardsService myCardsService;

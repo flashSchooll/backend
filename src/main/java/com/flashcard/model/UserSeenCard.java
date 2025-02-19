@@ -35,11 +35,11 @@ public class UserSeenCard {// kullanıcının bitirmiş olduğu kart bilgilerini
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     private Card card;
 

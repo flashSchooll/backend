@@ -189,7 +189,7 @@ public class AuthService {
 
         StringBuilder kod = new StringBuilder();
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 4; i++) {
             // 0-9 arasında rastgele bir rakam seç
             int rakam = random.nextInt(10);
             kod.append(rakam);
