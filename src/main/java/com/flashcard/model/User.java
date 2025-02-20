@@ -101,6 +101,9 @@ public class User {// kullanıcı bilgisini tutar
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserFillBlankQuiz> userFillBlankQuizs = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OwnerFlashcard> ownerFlashcards = new ArrayList<>();
+
 
 
     public void raiseStar(int addedStar) {

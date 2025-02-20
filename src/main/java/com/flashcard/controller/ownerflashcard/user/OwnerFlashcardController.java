@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/owner-flashcard/user")
@@ -21,7 +23,7 @@ public class OwnerFlashcardController {
 
     @PostMapping("/save")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<OwnerFlashcardResponse> getAll(@RequestBody @Valid OwnerFlashcardSaveRequest request) {
+    public ResponseEntity<OwnerFlashcardResponse> save(@RequestBody @Valid OwnerFlashcardSaveRequest request) {
 
         OwnerFlashcard ownerFlashcard = ownerFlashcardService.save(request);
 
@@ -31,7 +33,7 @@ public class OwnerFlashcardController {
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<OwnerFlashcardResponse> getAll(@RequestBody @Valid OwnerFlashcardUpdateRequest request) {
+    public ResponseEntity<OwnerFlashcardResponse> update(@RequestBody @Valid OwnerFlashcardUpdateRequest request) {
 
         OwnerFlashcard ownerFlashcard = ownerFlashcardService.update(request);
 
@@ -41,10 +43,21 @@ public class OwnerFlashcardController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<String> getAll(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
 
         ownerFlashcardService.delete(id);
 
         return ResponseEntity.ok("Başarıyla silindi");
+    }
+
+    @GetMapping("/get-all")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<List<OwnerFlashcardResponse>> getAll() {
+
+        List<OwnerFlashcard> ownerCards = ownerFlashcardService.getAll();
+
+        List<OwnerFlashcardResponse> responses = ownerCards.stream().map(OwnerFlashcardResponse::new).toList();
+
+        return ResponseEntity.ok(responses);
     }
 }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
@@ -51,5 +52,12 @@ public class OwnerFlashcardService {
                 .findById(id).orElseThrow(() -> new NoSuchElementException("OwnerFlashcard bulunamadı"));
 
         ownerFlashcardRepository.delete(ownerFlashcard);
+    }
+
+    public List<OwnerFlashcard> getAll() {
+
+        User user = authService.getCurrentUser();
+
+        return ownerFlashcardRepository.findByUser(user);
     }
 }

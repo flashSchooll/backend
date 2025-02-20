@@ -1,0 +1,16 @@
+package com.flashcard.repository;
+
+import com.flashcard.model.OwnerFlashcard;
+import com.flashcard.service.OwnerCard;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface OwnerCardRepository extends JpaRepository<OwnerCard,Long> {
+
+    @EntityGraph(value = "ownerFlashcard")
+    List<OwnerCard> findByOwnerFlashcardId(Long ownerFlashcardId);
+
+    int countByOwnerFlashcard(OwnerFlashcard ownerFlashcard);
+}
