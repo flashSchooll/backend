@@ -13,7 +13,7 @@ import java.util.List;
 @Entity(name = "Card")
 @Table(name = "card",
         indexes = {
-                @Index(name = "idx_card_flashcard", columnList = "flashcard")
+                @Index(name = "idx_card_flashcard", columnList = "flashcard_id")
         })
 @Getter
 @Setter
@@ -47,7 +47,7 @@ public class Card {// kart bilgisini tutar
     @Size(max = 128)
     private String backPhotoPath;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ImageData> imageData;
 
 }

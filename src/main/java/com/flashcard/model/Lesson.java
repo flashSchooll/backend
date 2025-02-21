@@ -16,7 +16,7 @@ import lombok.Setter;
 @Table(name = "lesson",
         indexes = {
                 @Index(name = "idx_lesson_branch", columnList = "branch"),
-                @Index(name = "idx_lesson_yksLesson", columnList = "yksLesson")
+                @Index(name = "idx_lesson_yksLesson", columnList = "yks_lesson")
         })
 @Getter
 @Setter

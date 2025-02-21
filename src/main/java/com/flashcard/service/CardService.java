@@ -181,7 +181,7 @@ public class CardService {
 
         User user = authService.getCurrentUser();
         // RepeatFlashcard ve UserSeenCard tablolarından kartları al
-        List<Card> repeatFlashcards = myCardsRepository.findByUser(user).stream().map(MyCard::getCard).toList();
+        List<Card> myCards = myCardsRepository.findByUser(user).stream().map(MyCard::getCard).toList();
 
 
         List<Long> flashcards = repeatFlashcardRepository.findByUserWithTopicAndLesson(user).stream()
@@ -190,12 +190,14 @@ public class CardService {
                 .map(flashcard -> flashcard.getId()) // Her bir Flashcard nesnesinin ID'sini alıyoruz
                 .collect(Collectors.toList()); // Akışı bir listeye topluyoruz
 
-        List<Card> cardList = cardRepository.findByFlashcardIn(flashcards); // todo sorguya bakılacak çok fazla istek atıyor
+       List<Card> cardList = cardRepository.findByFlashcardIn(flashcards); // todo sorguya bakılacak çok fazla istek atıyor
 
         // İki listeyi birleştir
         List<Card> combinedCards = new ArrayList<>();
-        combinedCards.addAll(repeatFlashcards);
-        combinedCards.addAll(cardList);
+        combinedCards.addAll(myCards);
+   //     combinedCards.addAll(cardList);
+
+        List<Card> lastCombinedCards=cardRepository.findCombinedCards(user);
 
         if (!combinedCards.isEmpty()) {
             // Rastgele 100 kart seç
@@ -216,7 +218,7 @@ public class CardService {
     @Cacheable(value = "cardsCache", key = "#branch", unless = "#branch == null")
     public List<Card> explore(String branch) {
 
-        return cardRepository.findRandomCardsByBranch(branch);// TODO ÇOK İSTEK ATIYOR 100 TANE
+        return cardRepository.findRandomCardsByBranch(branch);
     }
 
     public UserCardStatisticResponse getUserCardStatistic() {
@@ -261,4 +263,17 @@ public class CardService {
         return cardRepository.findById(cardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
     }
+    public List<Card> getRandomCardsFromUserCollection() {
+
+        User user = authService.getCurrentUser();
+
+        List<Card> allCards = cardRepository.getUserRepeatCardsAndMyCards(user.getId());
+        // Random seçim için kartları karıştır
+      //  Collections.shuffle(allCards);
+
+        return allCards.stream()
+                .limit(Math.min(100, allCards.size()))
+                .collect(Collectors.toList());
+    }
+
 }

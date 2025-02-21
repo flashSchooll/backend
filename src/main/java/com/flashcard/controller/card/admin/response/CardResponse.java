@@ -18,8 +18,8 @@ public class CardResponse {
     private final String flashcardName;
     private final String frontFace;
     private final String backFace;
-    private final byte[] dataFrontFace;
-    private final byte[] dataBackFace;
+    private final byte[] dataFrontFace;// todo burası kaldırılacak
+    private final byte[] dataBackFace;// todo burası kaldırılacak
     private final DifficultyLevel difficultyLevel;
     private final boolean isSaved;
     private final String lesson;

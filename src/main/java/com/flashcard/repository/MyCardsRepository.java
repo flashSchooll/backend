@@ -1,8 +1,8 @@
 package com.flashcard.repository;
 
+import com.flashcard.model.Card;
 import com.flashcard.model.Flashcard;
 import com.flashcard.model.MyCard;
-import com.flashcard.model.Card;
 import com.flashcard.model.User;
 import com.flashcard.model.enums.DifficultyLevel;
 import org.springframework.data.jpa.repository.JpaRepository;

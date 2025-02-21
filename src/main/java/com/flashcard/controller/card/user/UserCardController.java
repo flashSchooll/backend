@@ -64,7 +64,7 @@ public class UserCardController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> explore() {
 
-        List<Card> response = cardService.exploreForMe();
+        List<Card> response = cardService.getRandomCardsFromUserCollection();
 
         List<CardResponse> cardResponses = response.stream()
                 .map(CardResponse::new)
