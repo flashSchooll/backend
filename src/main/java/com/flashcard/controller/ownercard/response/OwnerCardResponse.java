@@ -8,11 +8,14 @@ import lombok.Setter;
 @Getter
 public class OwnerCardResponse {
 
+    private final Long id;
+
     private final String frontFace;
 
     private final String backFace;
 
     public OwnerCardResponse(OwnerCard ownerCard) {
+        this.id = ownerCard.getId();
         this.frontFace = ownerCard.getFrontFace();
         this.backFace = ownerCard.getBackFace();
     }
