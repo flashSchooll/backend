@@ -39,7 +39,7 @@ public class Lesson {//ders bilgisini tutar
     @NotNull()
     private YKS yks;
 
-    @NotNull
+
     private byte[] icon;
 
     @NotBlank
