@@ -61,7 +61,7 @@ management: #actuator
   flashSchool:
     app:
       jwtSecret: 5Xz3Pb8+fttP9V1phnx5hOqWzHj2fFg14jSt+zBQquOe2c0qGZ7m+NqzNH5sDhq1zqD1+8Am00uP7XujMxw5yDsg8Rh3yPppT2yAl4h0eEOB2LZZnLQDb3ZPz3Jt5g==
-      jwtExpirationMs: 86400000
+      jwtExpirationMs: 2592000000
       mailAddress: infostumy@gmail.com
 
 logging:
