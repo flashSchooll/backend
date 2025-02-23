@@ -11,8 +11,8 @@ import lombok.Setter;
 @Entity(name = "Flashcard")
 @Table(name = "flashcard",
         indexes = {
-                @Index(name = "idx_flashcard_cardName", columnList = "cardName"),
-                @Index(name = "idx_flashcard_topic", columnList = "topic")
+                @Index(name = "idx_flashcard_cardName", columnList = "card_name"),
+                @Index(name = "idx_flashcard_topic", columnList = "topic_id")
         },
         uniqueConstraints = {
                 @UniqueConstraint(name = "flashcard_topic_cardName", columnNames = {"topic_id", "card_name"})

@@ -11,7 +11,7 @@ import lombok.Setter;
 @Entity(name = "Topic")
 @Table(name = "topic",
         indexes = {
-                @Index(name = "idx_topic_lesson", columnList = "lesson"),
+                @Index(name = "idx_topic_lesson", columnList = "lesson_id"),
                 @Index(name = "idx_topic_subject", columnList = "subject")
         })
 @Getter

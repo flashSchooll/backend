@@ -42,9 +42,9 @@ public class CardService {
     private final S3StorageService s3StorageService;
 
     @Transactional
-    public Card save(CardSaveRequest tytCardSaveRequest) throws IOException {
+    public Card save(CardSaveRequest cardSaveRequest) throws IOException {
         // Null kontrolü
-        Long flashcardId = tytCardSaveRequest.getTytFlashcardId();
+        Long flashcardId = cardSaveRequest.getTytFlashcardId();
         Objects.requireNonNull(flashcardId, "Flashcard ID cannot be null");
 
         // Flashcard verisini al, var mı kontrol et
@@ -58,13 +58,22 @@ public class CardService {
 
         // Görselleri işleyip listeye ekle
         // List<ImageData> imageDataList = createImageDataList(tytCardSaveRequest);
-        String frontPath = s3StorageService.uploadFile(tytCardSaveRequest.getFrontFile(), AWSDirectory.CARDS);
-        String backPath = s3StorageService.uploadFile(tytCardSaveRequest.getBackFile(), AWSDirectory.CARDS);
+        String frontPath = null;
+        String backPath = null;
+
+        if (cardSaveRequest.getFrontFile() != null) {
+            frontPath = s3StorageService.uploadFile(cardSaveRequest.getFrontFile(), AWSDirectory.CARDS);
+        }
+        if (cardSaveRequest.getBackFile() != null) {
+            backPath = s3StorageService.uploadFile(cardSaveRequest.getBackFile(), AWSDirectory.CARDS);
+
+        }
+
         // Yeni TYTCard nesnesini oluştur
         Card card = new Card();
         card.setFlashcard(flashcard);
-        card.setBackFace(tytCardSaveRequest.getBackFace());
-        card.setFrontFace(tytCardSaveRequest.getFrontFace());
+        card.setBackFace(cardSaveRequest.getBackFace());
+        card.setFrontFace(cardSaveRequest.getFrontFace());
         card.setFrontPhotoPath(frontPath);
         card.setBackPhotoPath(backPath);
         //  tytCard.setImageData(imageDataList);
@@ -135,7 +144,7 @@ public class CardService {
 
         card.setBackFace(cardUpdateRequest.getBackFace());
         card.setFrontFace(cardUpdateRequest.getFrontFace());
-      //  card.setImageData(imageDataList);
+        //  card.setImageData(imageDataList);
 
         return cardRepository.save(card);
     }
@@ -190,14 +199,14 @@ public class CardService {
                 .map(flashcard -> flashcard.getId()) // Her bir Flashcard nesnesinin ID'sini alıyoruz
                 .collect(Collectors.toList()); // Akışı bir listeye topluyoruz
 
-       List<Card> cardList = cardRepository.findByFlashcardIn(flashcards); // todo sorguya bakılacak çok fazla istek atıyor
+        List<Card> cardList = cardRepository.findByFlashcardIn(flashcards); // todo sorguya bakılacak çok fazla istek atıyor
 
         // İki listeyi birleştir
         List<Card> combinedCards = new ArrayList<>();
         combinedCards.addAll(myCards);
-   //     combinedCards.addAll(cardList);
+        //     combinedCards.addAll(cardList);
 
-        List<Card> lastCombinedCards=cardRepository.findCombinedCards(user);
+        List<Card> lastCombinedCards = cardRepository.findCombinedCards(user);
 
         if (!combinedCards.isEmpty()) {
             // Rastgele 100 kart seç
@@ -263,13 +272,14 @@ public class CardService {
         return cardRepository.findById(cardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
     }
+
     public List<Card> getRandomCardsFromUserCollection() {
 
         User user = authService.getCurrentUser();
 
         List<Card> allCards = cardRepository.getUserRepeatCardsAndMyCards(user.getId());
         // Random seçim için kartları karıştır
-      //  Collections.shuffle(allCards);
+        //  Collections.shuffle(allCards);
 
         return allCards.stream()
                 .limit(Math.min(100, allCards.size()))

@@ -39,7 +39,7 @@ public class LessonService {
         lesson.setYksLesson(yksLesson);
         lesson.setBranch(yks.equals(YKS.TYT) ? null : branch);
         lesson.setYks(yks);
-        lesson.setIcon(icon.getBytes());
+      //  lesson.setIcon(icon.getBytes());
         lesson.setPath(path);
 
         return lessonRepository.save(lesson);
@@ -70,7 +70,7 @@ public class LessonService {
         lesson.setYks(yks);
 
         if (icon != null) {
-            lesson.setIcon(icon.getBytes());
+         //   lesson.setIcon(icon.getBytes());
             String path = s3StorageService.uploadFile(icon, AWSDirectory.LESSONS);
             lesson.setPath(path);
         }

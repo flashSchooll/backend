@@ -54,7 +54,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<Object> uploadPhoto(@RequestBody MultipartFile file) throws IOException {
 
-       String  path=  userService.saveImage(file);
+        String path = userService.saveImage(file);
 
         return ResponseEntity.ok(path);
     }

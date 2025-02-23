@@ -94,6 +94,10 @@ public class UserService {
     public String saveImage(MultipartFile file) throws IOException {
         User user = authService.getCurrentUser();
 
+        if (file.getSize() > 5 * 1024 * 1024) {
+            throw new BadRequestException("Dosya boyutu 5 mb dan büyük olamaz");
+        }
+
         String url = s3StorageService.uploadFile(file, AWSDirectory.USERS);
 
         /*
@@ -147,6 +151,7 @@ public class UserService {
         //  user.setProfilePhoto(imageData);
 
         user.setPhotoPath(url);
+
         return userRepository.save(user).getPhotoPath();
     }
 
