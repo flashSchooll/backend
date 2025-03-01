@@ -84,7 +84,7 @@ public class UserCardController {
 
         Branch branch = user.getBranch();
 
-        List<Card> response = cardService.explore(branch.name());
+        List<Card> response = cardService.explore(branch);
         Collections.shuffle(response);
 
         List<CardResponse> tytCardResponses = response.stream().map(CardResponse::new).toList();

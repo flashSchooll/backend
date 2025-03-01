@@ -225,7 +225,7 @@ public class CardService {
     }
 
     @Cacheable(value = "cardsCache", key = "#branch", unless = "#branch == null")
-    public List<Card> explore(String branch) {
+    public List<Card> explore(Branch branch) {
 
         return cardRepository.findRandomCardsByBranch(branch);
     }

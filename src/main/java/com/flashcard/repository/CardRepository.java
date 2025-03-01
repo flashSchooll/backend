@@ -35,35 +35,43 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     int countByFlashcardTopicLessonYks(YKS yks);
 
 
-    @Query(value = """
-            WITH filtered_lessons AS (
-              SELECT id
-              FROM lesson
-              WHERE branch = :branch OR :branch IS NULL OR branch IS NULL
-            ),
-            total_lessons AS (
-              SELECT COUNT(*) as total FROM filtered_lessons
-            ),
-            randomized_cards AS (
-              SELECT
-                c.*,
-                CEIL(100.0 / (SELECT total FROM total_lessons)) as per_lesson_limit,
-                ROW_NUMBER() OVER (
-                  PARTITION BY t.lesson_id
-                  ORDER BY RANDOM()
-                ) as lesson_rn
-              FROM card c
-              INNER JOIN flashcard f ON c.flashcard_id = f.id
-              INNER JOIN topic t ON f.topic_id = t.id
-              INNER JOIN filtered_lessons l ON t.lesson_id = l.id
-            )
-            SELECT *
-            FROM randomized_cards
-            WHERE lesson_rn <= per_lesson_limit
-            ORDER BY RANDOM()
-            LIMIT 100
-            """, nativeQuery = true)
-    List<Card> findRandomCardsByBranch(@Param("branch") String branch);//todo düzgün çalışmıyor
+  //  @Query(value = """
+  //          WITH filtered_lessons AS (
+  //            SELECT id
+  //            FROM lesson
+  //            WHERE branch = :branch OR :branch IS NULL OR branch IS NULL
+  //          ),
+  //          total_lessons AS (
+  //            SELECT COUNT(*) as total FROM filtered_lessons
+  //          ),
+  //          randomized_cards AS (
+  //            SELECT
+  //              c.*,
+  //              CEIL(100.0 / (SELECT total FROM total_lessons)) as per_lesson_limit,
+  //              ROW_NUMBER() OVER (
+  //                PARTITION BY t.lesson_id
+  //                ORDER BY RANDOM()
+  //              ) as lesson_rn
+  //            FROM card c
+  //            INNER JOIN flashcard f ON c.flashcard_id = f.id
+  //            INNER JOIN topic t ON f.topic_id = t.id
+  //            INNER JOIN filtered_lessons l ON t.lesson_id = l.id
+  //          )
+  //          SELECT *
+  //          FROM randomized_cards
+  //          WHERE lesson_rn <= per_lesson_limit
+  //          ORDER BY RANDOM()
+  //          LIMIT 100
+  //          """, nativeQuery = true)
+    @Query("SELECT c " +
+            "FROM Card c " +
+            "JOIN Flashcard f ON c.flashcard.id = f.id " +
+            "JOIN Topic t ON f.topic.id = t.id " +
+            "JOIN Lesson l ON t.lesson.id = l.id " +
+            "WHERE l.branch is null or l.branch = :branch " +
+            "ORDER BY RANDOM() " +
+            "LIMIT 100")
+    List<Card> findRandomCardsByBranch(@Param("branch") Branch branch);//todo düzgün çalışmıyor
 
     @Query("SELECT DISTINCT c FROM Card c JOIN FETCH c.flashcard f WHERE f.id IN :flashcardIds")
     List<Card> findByFlashcardIn(List<Long> flashcardIds);
