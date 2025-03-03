@@ -14,9 +14,6 @@ import lombok.Setter;
         indexes = {
                 @Index(name = "idx_fill_blank_quiz_topic", columnList = "topic_id"),
                 @Index(name = "idx_fill_blank_quiz_title", columnList = "title")
-        },
-        uniqueConstraints = {
-                @UniqueConstraint(name = "fill_blank_quiz_topic_title_question", columnNames = {"topic_id", "title", "question"})
         })
 @Getter
 @Setter
