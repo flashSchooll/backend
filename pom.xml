@@ -31,6 +31,14 @@
         <java.version>17</java.version>
         <spring-ai.version>1.0.0-M4</spring-ai.version>
     </properties>
+    <repositories>
+      <repository>
+            <id>com.e-iceblue</id>
+            <name>e-iceblue</name>
+            <url>https://repo.e-iceblue.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -190,6 +198,11 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.4</version>
         </dependency>
+        <dependency>
+            <groupId>e-iceblue</groupId>
+            <artifactId>spire.xls</artifactId>
+            <version>15.2.1</version>
+         </dependency>
 
     </dependencies>
 

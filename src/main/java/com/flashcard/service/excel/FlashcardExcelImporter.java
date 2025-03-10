@@ -18,7 +18,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFPictureData;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -103,8 +104,8 @@ public class FlashcardExcelImporter {
                     if (dto.getFrontImage() != null) {
                         imageDataFront = new ImageData();
                         imageDataFront.setFace(CardFace.FRONT);
-                      //  imageDataFront.setData(dto.getFrontImage());
-                      //  imageData.add(imageDataFront);
+                        //  imageDataFront.setData(dto.getFrontImage());
+                        //  imageData.add(imageDataFront);
 
                         String path = s3StorageService.uploadFile(dto.getFrontImage(), AWSDirectory.CARDS);
                         card.setFrontPhotoPath(path);
@@ -113,8 +114,8 @@ public class FlashcardExcelImporter {
                     if (dto.getBackImage() != null) {
                         imageDataBack = new ImageData();
                         imageDataBack.setFace(CardFace.BACK);
-                     //  imageDataBack.setData(dto.getFrontImage());
-                     //   imageData.add(imageDataBack);
+                        //  imageDataBack.setData(dto.getFrontImage());
+                        //   imageData.add(imageDataBack);
 
                         String path = s3StorageService.uploadFile(dto.getBackImage(), AWSDirectory.CARDS);
                         card.setBackPhotoPath(path);
@@ -124,7 +125,7 @@ public class FlashcardExcelImporter {
                     card.setFlashcard(flashcard);
                     card.setFrontFace(dto.getFrontFace());
                     card.setBackFace(dto.getBackFace());
-                  //  card.setImageData(imageData.isEmpty() ? null : imageData);
+                    //  card.setImageData(imageData.isEmpty() ? null : imageData);
 
                     cards.add(card);
                 }
@@ -172,9 +173,9 @@ public class FlashcardExcelImporter {
                             case 3 -> // arka yüz sütunu
                                     cardDTO.setBackFace(getStringCell(cell, "arka yüz"));
                             case 4 -> // ön resim sütunu
-                                    cardDTO.setFrontImage(getImageFromCell(cell, cell.getRowIndex() + "ön resim", workbook));
+                                    cardDTO.setFrontImage(getImageFromCell(cell, cell.getRowIndex() + " ön resim", workbook));
                             case 5 -> // arka resim sütunu
-                                    cardDTO.setBackImage(getImageFromCell(cell, cell.getRowIndex() + "arka resim", workbook));
+                                    cardDTO.setBackImage(getImageFromCell(cell, cell.getRowIndex() + " arka resim", workbook));
                             default -> {
                                 return Collections.emptyList();
                             }
@@ -206,10 +207,10 @@ public class FlashcardExcelImporter {
             pictures = workbook.getAllPictures();
 
             byte[] picture = pictures.get(0).getData();
-         //   CustomMultipartFile file = new CustomMultipartFile(picture,"filename","image/jpeg");
+            //   CustomMultipartFile file = new CustomMultipartFile(picture,"filename","image/jpeg");
 
             pictures.remove(0);
-            return new CustomMultipartFile(picture," file.getOriginalFilename()", "image/jpeg");
+            return new CustomMultipartFile(picture, " file.getOriginalFilename()", "image/jpeg");
 
 
             //  return picture;
@@ -221,15 +222,34 @@ public class FlashcardExcelImporter {
     }
 
     private String getStringCell(Cell cell, String columnName) {
-        if (cell.toString().isEmpty()) {
+        if (cell == null || cell.toString().isEmpty()) {
             return null;
         }
+
         String cellValue = null;
         try {
-            cellValue = cell.getStringCellValue();
+            switch (cell.getCellType()) {
+                case STRING:
+                    cellValue = cell.getStringCellValue();
+                    break;
+                case NUMERIC:
+                    // Numeric değeri String'e çevir
+                    cellValue = String.valueOf(cell.getNumericCellValue());
+                    // Eğer tam sayı istiyorsanız alternatif olarak:
+                    // cellValue = String.format("%.0f", cell.getNumericCellValue());
+                    break;
+                case BOOLEAN:
+                    cellValue = String.valueOf(cell.getBooleanCellValue());
+                    break;
+                case BLANK:
+                    cellValue = "";
+                    break;
+                default:
+                    throw new InvalidCellException(columnName, "Unsupported cell type", null);
+            }
             return cellValue;
         } catch (Exception e) {
-            throw new InvalidCellException(columnName, cell.getStringCellValue(), e);
+            throw new InvalidCellException(columnName, cell.toString(), e);
         }
     }
 }

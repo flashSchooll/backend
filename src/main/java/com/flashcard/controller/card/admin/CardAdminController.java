@@ -53,9 +53,9 @@ public class CardAdminController {
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CardResponse> update(@RequestBody CardUpdateRequest tytCardUpdateRequest) throws IOException {
+    public ResponseEntity<CardResponse> update(@RequestBody CardUpdateRequest cardUpdateRequest) throws IOException {
 
-        Card response = cardService.update(tytCardUpdateRequest);
+        Card response = cardService.update(cardUpdateRequest);
 
         CardResponse cardResponse = new CardResponse(response);
 

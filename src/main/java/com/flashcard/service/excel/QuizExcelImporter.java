@@ -149,7 +149,7 @@ public class QuizExcelImporter {
         String cellValue = null;
 
         try {
-            cellValue = cell.getStringCellValue();
+            cellValue = cell.getStringCellValue().trim();
 
             return QuizOption.byLabel(cellValue);
         } catch (Exception e) {
