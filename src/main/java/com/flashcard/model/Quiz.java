@@ -5,6 +5,7 @@ import com.flashcard.model.enums.QuizType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class Quiz {
     private Long id;
 
     @NotBlank
+    @Size(max = 512)
     private String question;
 
     private String a;

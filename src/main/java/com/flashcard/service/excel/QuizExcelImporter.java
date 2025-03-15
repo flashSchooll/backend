@@ -11,10 +11,7 @@ import com.flashcard.repository.QuizRepository;
 import com.flashcard.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,13 +157,31 @@ public class QuizExcelImporter {
 
 
     private String getStringCell(Cell cell, String columnName) {
-        if (cell.toString().isEmpty()) {
-            return null;
+        if (cell == null || cell.getCellType() == CellType.BLANK) {
+            return null; // Hücre boşsa null dön
         }
+
         String cellValue = null;
         try {
-            cellValue = cell.getStringCellValue();
-            return cellValue.trim();
+            switch (cell.getCellType()) {
+                case STRING:
+                    cellValue = cell.getStringCellValue().trim();
+                    break;
+                case NUMERIC:
+                    // Numeric hücreyi string'e çevir (örneğin: 123 → "123")
+                    if (DateUtil.isCellDateFormatted(cell)) {
+                        // Tarih formatındaysa özel işlem yap (opsiyonel)
+                        cellValue = cell.getLocalDateTimeCellValue().toString();
+                    } else {
+                        cellValue = String.valueOf(cell.getNumericCellValue());
+                        // Ondalık kısmı kaldırmak isterseniz:
+                        // cellValue = String.valueOf((int) cell.getNumericCellValue());
+                    }
+                    break;
+                default:
+                    throw new InvalidCellException(columnName, "Beklenmeyen hücre tipi: " + cell.getCellType(),null);
+            }
+            return cellValue.isEmpty() ? null : cellValue; // Boş string kontrolü
         } catch (Exception e) {
             throw new InvalidCellException(columnName, cellValue, e);
         }
