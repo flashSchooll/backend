@@ -42,11 +42,12 @@ public class FillBlankQuizUserController {
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/title")
+    @GetMapping("/{topicId}/title")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ADMIN')")
-    public ResponseEntity<Object> getByTitle(@RequestParam String title) {
+    public ResponseEntity<Object> getByTitle(@RequestParam String title,
+                                             @PathVariable Long topicId) {
 
-        List<FillBlankQuiz> fillBlankQuizList = fillBlankQuizService.getByTitle(title);
+        List<FillBlankQuiz> fillBlankQuizList = fillBlankQuizService.getByTitleAndTopic(title, topicId);
 
         List<FillBlankQuizResponse> responses = fillBlankQuizList.stream().map(FillBlankQuizResponse::new).toList();
 

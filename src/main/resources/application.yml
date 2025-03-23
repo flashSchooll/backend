@@ -99,4 +99,5 @@ cloud:
 application:
   bucket:
     name: stumystorage
-    url: https://stumystorage.s3.eu-north-1.amazonaws.com/
+    url: https://stumystorage.s3.eu-north-1.amazonaws.com/  # burada tutulacak
+    cdn: https://d2c7jt33cnh7in.cloudfront.net/             # buradan çekilecek

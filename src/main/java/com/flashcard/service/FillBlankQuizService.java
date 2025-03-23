@@ -65,11 +65,13 @@ public class FillBlankQuizService {
     }
 
     //  @Cacheable(value = "fillBlankQuizesByTitle", key = "#title")
-    public List<FillBlankQuiz> getByTitle(String title) {
+    public List<FillBlankQuiz> getByTitleAndTopic(String title, long topicId) {
 
         Objects.requireNonNull(title);
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        return fillBlankQuizRepository.findByTitle(title);
+        return fillBlankQuizRepository.findByTitleAndTopic(title, topic);
     }
 
     public List<FillBlankQuizUserResponse> getCountByUser(User user, Topic topic) {

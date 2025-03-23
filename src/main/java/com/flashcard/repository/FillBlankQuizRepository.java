@@ -13,7 +13,7 @@ import java.util.List;
 public interface FillBlankQuizRepository extends JpaRepository<FillBlankQuiz, Long> {
     List<FillBlankQuiz> findByTopic(Topic topic);
 
-    List<FillBlankQuiz> findByTitle(String title);
+    List<FillBlankQuiz> findByTitleAndTopic(String title, Topic topic);
 
     int countByTopicAndTitle(Topic topic, @NotBlank String title);
 
