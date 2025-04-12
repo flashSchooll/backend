@@ -3,9 +3,9 @@ package com.flashcard.controller.fillblankquiz.admin.response;
 import com.flashcard.model.FillBlankQuiz;
 import lombok.Getter;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.Array2DHashSet;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -23,7 +23,7 @@ public class FillBlankQuizResponse {
     }
 
     private List<String> getLetters(String answer) {
-        Set<String> letterList = new HashSet<>(Arrays.asList(answer.split("")));
+        Set<String> letterList = new HashSet<>(Arrays.asList(answer.split(""))).stream().toList().stream().map(String::toUpperCase).collect(Collectors.toSet());
 
         int size = 14;
 

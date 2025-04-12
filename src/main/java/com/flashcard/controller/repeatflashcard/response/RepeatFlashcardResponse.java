@@ -18,7 +18,7 @@ public class RepeatFlashcardResponse {
     private final Long topicId;
     private final List<FlashcardResponse> flashcards;
     private final LocalDateTime repeatTime;
-    private final byte[] icon;
+    private final String icon;
 
     public RepeatFlashcardResponse(RepeatFlashcard repeatFlashcard, List<Long> flashcardIds) {
         this.id = repeatFlashcard.getId();
@@ -26,8 +26,8 @@ public class RepeatFlashcardResponse {
         this.lesson = repeatFlashcard.getTopic().getLesson().getYksLesson().label;
         this.topicId = repeatFlashcard.getTopic().getId();
         this.repeatTime = repeatFlashcard.getRepeatTime();
-        this.flashcards = repeatFlashcard.getFlashcards().stream().map(flashcard -> new FlashcardResponse(flashcard, flashcardIds)).toList();
-        this.icon = repeatFlashcard.getTopic().getLesson().getIcon();
+        this.flashcards = flashcardIds != null ? repeatFlashcard.getFlashcards().stream().map(flashcard -> new FlashcardResponse(flashcard, flashcardIds)).toList() : null;
+        this.icon = repeatFlashcard.getTopic().getLesson().getPath();
     }
 }
 

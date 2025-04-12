@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface QuizRepository extends JpaRepository<Quiz,Long> {
+public interface QuizRepository extends JpaRepository<Quiz, Long> {
     List<Quiz> findByTopic(Topic topic);
 
-    List<Quiz> findByName(String name);
+    List<Quiz> findByNameAndTopic(String name, Topic topic);
 
-    int countByName(String name);
+    int countByNameAndTopic(String name,Topic topic);
 }

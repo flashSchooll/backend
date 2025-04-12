@@ -22,22 +22,23 @@ public class RepeatTopicController {
 
     @PostMapping("/flashcard")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<RepeatFlashcard> save(@RequestParam Long flashcardId,
-                                                @RequestParam LocalDateTime repeatTime) {
+    public ResponseEntity<RepeatFlashcardResponse> save(@RequestParam Long flashcardId,
+                                                        @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.save(flashcardId, repeatTime);
-
-        return ResponseEntity.ok(repeatFlashcard);
+        RepeatFlashcardResponse response = new RepeatFlashcardResponse(repeatFlashcard, null);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/topic")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<RepeatFlashcard> saveByTopic(@RequestParam Long topicId,
-                                                       @RequestParam LocalDateTime repeatTime) {
+    public ResponseEntity<RepeatFlashcardResponse> saveByTopic(@RequestParam Long topicId,
+                                                               @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.saveByTopic(topicId, repeatTime);
 
-        return ResponseEntity.ok(repeatFlashcard);
+        RepeatFlashcardResponse response = new RepeatFlashcardResponse(repeatFlashcard, null);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

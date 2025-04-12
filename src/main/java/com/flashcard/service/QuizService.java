@@ -77,10 +77,11 @@ public class QuizService {
         return quizList.stream().map(quiz -> new QuizResponse(quiz, false)).toList();
     }
 
-    public List<QuizResponse> getByName(String name) {
+    public List<QuizResponse> getByNameAndTopic(String name, Long topicId) {
         Objects.requireNonNull(name);
         User user = authService.getCurrentUser();
-
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
         List<MyQuiz> myQuizs = myQuizRepository.findByUserAndQuizNameWithFetch(user, name);
 
         Map<Long, Quiz> quizMap = myQuizs.stream()
@@ -89,7 +90,7 @@ public class QuizService {
                         MyQuiz::getQuiz  // Quiz nesnesini value olarak alıyoruz
                 ));
 
-        List<Quiz> quizList = quizRepository.findByName(name);
+        List<Quiz> quizList = quizRepository.findByNameAndTopic(name, topic);
 
         return quizList.stream().map(quiz -> new QuizResponse(quiz, quizMap.get(quiz.getId()) != null)).toList();
 
@@ -119,7 +120,7 @@ public class QuizService {
     }
 
     //  @Cacheable(value = "quizCounts", key = "{#userId,#topicId}")
-    public List<QuizCount> countByTopic(User user,Topic topic) {
+    public List<QuizCount> countByTopic(User user, Topic topic) {
 
         List<Quiz> quizList = quizRepository.findByTopic(topic);
 
@@ -132,7 +133,7 @@ public class QuizService {
 
         List<QuizCount> quizCounts = new ArrayList<>();
         List<UserQuizAnswer> quizAnswers = userQuizAnswerRepository.findByUserAndQuizTopic(user, topic);
-        List<String> userQuizAnswerQuizNames=quizAnswers.stream().map(q->q.getQuiz().getName()).toList();
+        List<String> userQuizAnswerQuizNames = quizAnswers.stream().map(q -> q.getQuiz().getName()).toList();
         QuizCount quizCount;
         for (Map.Entry<String, Long> entry : map.entrySet()) {
 
@@ -150,53 +151,87 @@ public class QuizService {
     public void saveAnswer(UserQuizAnswerRequestList userQuizAnswerRequest) {
         User user = authService.getCurrentUser();
 
-        List<Quiz> quizList = quizRepository.findByName(userQuizAnswerRequest.getName());
+        Topic topic = topicRepository.findById(userQuizAnswerRequest.getTopicId())
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+
+        List<Quiz> quizList = quizRepository.findByNameAndTopic(userQuizAnswerRequest.getName(), topic);
         Map<Long, Quiz> quizMap = quizList.stream()
                 .collect(Collectors.toMap(Quiz::getId, quiz -> quiz));
 
 
-        int quizCount = quizRepository.countByName(userQuizAnswerRequest.getName());
+        int quizCount = quizRepository.countByNameAndTopic(userQuizAnswerRequest.getName(), topic);
 
         if (userQuizAnswerRequest.getAnswerList().size() != quizCount) {
             throw new IllegalArgumentException("Quizdeki soru sayısı doğru değil");
         }
 
-        List<UserQuizAnswer> answerList = new ArrayList<>();
+        List<Long> quizIds = userQuizAnswerRequest.getAnswerList().stream().map(UserQuizAnswerRequest::getQuizId).toList();
 
-        UserQuizAnswer answer;
-        int starCount = 0;
+        List<UserQuizAnswer> answeredQuizes = userQuizAnswerRepository.findByUserAndQuizIdIn(user, quizIds);
 
-        for (UserQuizAnswerRequest u : userQuizAnswerRequest.getAnswerList()) {
-            answer = new UserQuizAnswer();
-            answer.setUser(user);
-            answer.setAnswer(QuizOption.byIndex(u.getIndex()));
-            answer.setQuiz(quizMap.get(u.getQuizId()));
+        List<UserQuizAnswerRequest> answerlist = userQuizAnswerRequest.getAnswerList();
 
-            if (u.getIndex().equals(quizMap.get(u.getQuizId()).getAnswer().getIndex())) {
-                starCount++;
+        if (!answeredQuizes.isEmpty()) {
+            if (userQuizAnswerRequest.getAnswerList().size() != answeredQuizes.size()) {
+                throw new IllegalArgumentException("Quizdeki soru sayısı doğru değil");
+            }
+            for (UserQuizAnswer userQuizAnswer : answeredQuizes) {
+                userQuizAnswer.setAnswer(QuizOption.byIndex(answerlist.stream().filter(q-> Objects.equals(q.getQuizId(), userQuizAnswer.getQuiz().getId())).toList().get(0).getIndex()));
             }
 
-            answerList.add(answer);
+        } else {
+            List<UserQuizAnswer> answerList = new ArrayList<>();
+
+            UserQuizAnswer answer;
+            int starCount = 0;
+
+            for (UserQuizAnswerRequest u : userQuizAnswerRequest.getAnswerList()) {
+                answer = new UserQuizAnswer();
+                answer.setUser(user);
+                answer.setAnswer(QuizOption.byIndex(u.getIndex()));
+                answer.setQuiz(quizMap.get(u.getQuizId()));
+
+                if (u.getIndex().equals(quizMap.get(u.getQuizId()).getAnswer().getIndex())) {
+                    starCount++;
+                }
+
+                answerList.add(answer);
+            }
+
+            userQuizAnswerRepository.saveAll(answerList);
+
+            user.raiseStar(starCount);
+            user.raiseRosette();
+
+            userRepository.save(user);
+
         }
-
-        userQuizAnswerRepository.saveAll(answerList);
-
-        user.raiseStar(starCount);
-        user.raiseRosette();
-
-        userRepository.save(user);
-
     }
 
     //  @Cacheable(value = "userQuizAnswers", key = "{#userId,#name}")
-    public List<UserQuizAnswer> getAnswers(Long userId, String name) {
+    public List<UserQuizAnswer> getAnswers(Long userId, String name,Long topicId) {
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        return userQuizAnswerRepository.findByUserIdAndQuizName(userId, name);
+        return userQuizAnswerRepository.findByUserIdAndQuizNameAndQuizTopic(userId, name,topic);
     }
 
-    public List<QuizResponse> getAllByName(String name) {
+    public List<QuizResponse> getAllByName(String name, Long topicId) {
         Objects.requireNonNull(name);
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        return quizRepository.findByName(name).stream().map(quiz -> new QuizResponse(quiz, false)).toList();
+        return quizRepository.findByNameAndTopic(name, topic)
+                .stream()
+                .map(quiz -> new QuizResponse(quiz, false))
+                .toList();
+    }
+
+    @Transactional
+    public void deleteUserQuiz(String name, Long topicId) {
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+
+        userQuizAnswerRepository.deleteByQuizTopicAndQuizName(topic,name);
     }
 }

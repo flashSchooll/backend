@@ -17,9 +17,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -44,9 +44,9 @@ public class QuizUserController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Object> getByName(@RequestParam String name) {
+    public ResponseEntity<Object> getByName(@RequestParam String name, @RequestParam("topicId") Long topicId) {
 
-        List<QuizResponse> responses = quizService.getByName(name);
+        List<QuizResponse> responses = quizService.getByNameAndTopic(name, topicId);
 
         return ResponseEntity.ok(responses);
     }
@@ -57,20 +57,25 @@ public class QuizUserController {
         User user = authService.getCurrentUser();
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
-        List<QuizCount> quizList = quizService.countByTopic(user,topic);
+        List<QuizCount> quizList = quizService.countByTopic(user, topic);
 
-        List<FillBlankQuizUserResponse> fillBlankQuizUserResponses = fillBlankQuizService.getCountByUser(user,topic);
+        List<FillBlankQuizUserResponse> fillBlankQuizUserResponses = fillBlankQuizService.getCountByUser(user, topic);
 
         List<QuizCountResponse> response = quizList.stream()
                 .map(QuizCountResponse::new)
-                .collect(Collectors.toList());
+                .toList();
         List<QuizCountResponse> response1 = fillBlankQuizUserResponses.stream()
                 .map(QuizCountResponse::new)
-                .collect(Collectors.toList());
+                .toList();
 
         List<QuizCountResponse> responses = new ArrayList<>();
         responses.addAll(response1);
         responses.addAll(response);
+
+        responses.sort(
+                Comparator.comparing(QuizCountResponse::getQuizType)
+                        .thenComparing(QuizCountResponse::getName)
+        );
 
         return ResponseEntity.ok(responses);
     }
@@ -116,13 +121,21 @@ public class QuizUserController {
 
     @GetMapping("/get-answers")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Object> getQuizAnswer(@RequestParam String name) {
+    public ResponseEntity<Object> getQuizAnswer(@RequestParam String name, @RequestParam Long topicId) {
         User user = authService.getCurrentUser();
-        List<UserQuizAnswer> answerList = quizService.getAnswers(user.getId(), name);
+        List<UserQuizAnswer> answerList = quizService.getAnswers(user.getId(), name, topicId);
 
         List<UserQuizAnswerResponse> responses = answerList.stream().map(UserQuizAnswerResponse::new).toList();
 
         return ResponseEntity.ok(responses);
     }
 
+    @DeleteMapping("/repeat-quiz")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Object> deleteUserQuizAnswer(@RequestParam String name, @RequestParam Long topicId) {
+
+        quizService.deleteUserQuiz(name, topicId);
+
+        return ResponseEntity.ok("Quiz başarıyla silindi");
+    }
 }

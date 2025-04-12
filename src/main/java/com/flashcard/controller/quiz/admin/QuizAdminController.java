@@ -47,9 +47,9 @@ public class QuizAdminController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> getByName(@RequestParam String name) {
+    public ResponseEntity<Object> getByName(@RequestParam String name, @RequestParam Long topicId) {
 
-        List<QuizResponse> responses = quizService.getAllByName(name);
+        List<QuizResponse> responses = quizService.getAllByName(name, topicId);
 
         return ResponseEntity.ok(responses);
     }

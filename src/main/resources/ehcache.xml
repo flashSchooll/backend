@@ -10,8 +10,8 @@
         <key-type>java.lang.String</key-type>
         <value-type>java.util.List</value-type>
         <expiry>
-            <!-- 120 sn sonunda cache silinsin -->
-            <ttl unit="seconds">120</ttl>
+            <!-- 70 sn sonunda cache silinsin -->
+            <ttl unit="seconds">70</ttl>
         </expiry>
         <listeners>
             <listener>
@@ -25,7 +25,7 @@
         </listeners>
         <resources>
             <!-- Maksimum 100 branch için cache'le -->
-            <heap unit="entries">100</heap>
+            <heap unit="entries">70</heap>
             <!-- Off-heap bellek kullanımı (opsiyonel) -->
             <offheap unit="MB">50</offheap>
         </resources>

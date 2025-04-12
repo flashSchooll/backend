@@ -274,15 +274,15 @@ public class CardService {
     }
 
     public List<Card> getRandomCardsFromUserCollection() {
-
+        // tekrar edeceklerim ve favoriler
         User user = authService.getCurrentUser();
 
         List<Card> allCards = cardRepository.getUserRepeatCardsAndMyCards(user.getId());
         // Random seçim için kartları karıştır
-        //  Collections.shuffle(allCards);
+        //  Collections.shuffle(allCards);  // todo random çalışmazsa bakılacak
 
         return allCards.stream()
-                .limit(Math.min(100, allCards.size()))
+                .limit(Math.min(50, allCards.size()))
                 .collect(Collectors.toList());
     }
 

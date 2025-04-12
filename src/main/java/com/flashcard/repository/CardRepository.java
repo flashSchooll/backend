@@ -70,7 +70,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             "JOIN Lesson l ON t.lesson.id = l.id " +
             "WHERE l.branch is null or l.branch = :branch " +
             "ORDER BY RANDOM() " +
-            "LIMIT 100")
+            "LIMIT 70")
     List<Card> findRandomCardsByBranch(@Param("branch") Branch branch);//todo düzgün çalışmıyor
 
     @Query("SELECT DISTINCT c FROM Card c JOIN FETCH c.flashcard f WHERE f.id IN :flashcardIds")
@@ -107,17 +107,16 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query(value = """
                     SELECT c.*
-                    FROM my_card mc
-                    JOIN card c ON mc.card_id = c.id
+                    FROM card c
+                    LEFT JOIN my_card c ON mc.card_id = c.id
                     LEFT JOIN repeat_flashcard rf ON mc.user_id = rf.user_id
                     LEFT JOIN topic t ON rf.topic_id = t.id
                     LEFT JOIN flashcard f ON f.topic_id = t.id
                     LEFT JOIN repeat_flashcard_flashcards rff ON rf.id = rff.repeat_flashcard_id
                     WHERE mc.user_id = :userId
-                       OR (rf.user_id = :userId AND rf.topic_id IS NOT NULL)
-                       OR (rff.flashcards_id IS NOT NULL)
+                       OR (rf.user_id = :userId )
                     ORDER BY RANDOM()
-                    LIMIT 100;
+                    LIMIT 50;
             
             """, nativeQuery = true)
     List<Card> getUserRepeatCardsAndMyCards(Long userId);
