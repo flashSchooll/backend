@@ -106,18 +106,24 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
 
     @Query(value = """
-                    SELECT c.*
-                    FROM card c
-                    LEFT JOIN my_card c ON mc.card_id = c.id
-                    LEFT JOIN repeat_flashcard rf ON mc.user_id = rf.user_id
-                    LEFT JOIN topic t ON rf.topic_id = t.id
-                    LEFT JOIN flashcard f ON f.topic_id = t.id
-                    LEFT JOIN repeat_flashcard_flashcards rff ON rf.id = rff.repeat_flashcard_id
-                    WHERE mc.user_id = :userId
-                       OR (rf.user_id = :userId )
-                    ORDER BY RANDOM()
-                    LIMIT 50;
+        SELECT c.*
+        FROM card c
+        WHERE c.id IN (
+            SELECT mc.card_id
+            FROM my_card mc
+            WHERE mc.user_id = :userId
             
-            """, nativeQuery = true)
-    List<Card> getUserRepeatCardsAndMyCards(Long userId);
+            UNION
+            
+            SELECT c2.id
+            FROM repeat_flashcard rf
+            JOIN repeat_flashcard_flashcards rff ON rf.id = rff.repeat_flashcard_id
+            JOIN flashcard f ON rff.flashcards_id = f.id
+            JOIN card c2 ON c2.flashcard_id = f.id
+            WHERE rf.user_id = :userId
+        )
+        ORDER BY RANDOM()
+        LIMIT 50
+""", nativeQuery = true)
+    List<Card> getUserRepeatCardsAndMyCards(@Param("userId") Long userId); // todo test edilecek
 }

@@ -17,8 +17,8 @@ public class FillBlankQuizResponse {
     private List<String> letters;
 
     public FillBlankQuizResponse(FillBlankQuiz fillBlankQuiz) {
-        this.question = fillBlankQuiz.getQuestion();
-        this.answer = fillBlankQuiz.getAnswer();
+        this.question = fillBlankQuiz.getQuestion().trim().toUpperCase();
+        this.answer = fillBlankQuiz.getAnswer().trim().toUpperCase();
         this.letters = getLetters(answer);
     }
 
@@ -29,7 +29,7 @@ public class FillBlankQuizResponse {
 
         while (letterList.size() < size) {
             char randomHarf = (char) ('a' + rand.nextInt(26));
-            letterList.add(String.valueOf(randomHarf));
+            letterList.add(String.valueOf(randomHarf).toUpperCase());
         }
 
         List<String> result = new ArrayList<>(letterList);

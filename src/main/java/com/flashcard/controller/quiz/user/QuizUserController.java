@@ -72,10 +72,7 @@ public class QuizUserController {
         responses.addAll(response1);
         responses.addAll(response);
 
-        responses.sort(
-                Comparator.comparing(QuizCountResponse::getQuizType)
-                        .thenComparing(QuizCountResponse::getName)
-        );
+        responses.sort(Comparator.comparing(QuizCountResponse::getName));
 
         return ResponseEntity.ok(responses);
     }

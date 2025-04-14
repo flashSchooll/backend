@@ -32,7 +32,7 @@ public class FillBlankQuizUserController {
     private final TopicRepository topicRepository;
 
     @GetMapping("/{topicId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<Object> getByTopic(@PathVariable Long topicId) {
         User user = authService.getCurrentUser();
         Topic topic = topicRepository.findById(topicId)
@@ -43,7 +43,7 @@ public class FillBlankQuizUserController {
     }
 
     @GetMapping("/{topicId}/title")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<Object> getByTitle(@RequestParam String title,
                                              @PathVariable Long topicId) {
 
@@ -55,7 +55,7 @@ public class FillBlankQuizUserController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<String> saveUserFillBlank(@RequestParam @NotBlank String title,
                                                     @RequestParam @NotNull Long topicId,
                                                     @RequestParam Integer known) {

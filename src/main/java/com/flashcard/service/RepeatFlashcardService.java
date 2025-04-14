@@ -94,27 +94,23 @@ public class RepeatFlashcardService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
         User user = authService.getCurrentUser();
-
         Optional<RepeatFlashcard> optionalRepeatFlashcard = repeatFlashcardRepository.findByUserAndTopic(user, topic);
-
         List<Flashcard> flashcards = flashCardRepository.findByTopic(topic);
-
         Set<Flashcard> flashcardSet = new HashSet<>(flashcards);
 
         RepeatFlashcard repeatFlashcard = optionalRepeatFlashcard
                 .map(existingRepeatFlashcard -> {
-                    existingRepeatFlashcard.setFlashcards(flashcardSet.stream().toList());
+                    existingRepeatFlashcard.setFlashcards(new ArrayList<>(flashcardSet)); // Düzeltme burada
                     return existingRepeatFlashcard;
                 })
                 .orElseGet(() -> {
                     RepeatFlashcard newRepeatFlashcard = new RepeatFlashcard();
                     newRepeatFlashcard.setUser(user);
-                    newRepeatFlashcard.setFlashcards(flashcardSet.stream().toList());
+                    newRepeatFlashcard.setFlashcards(new ArrayList<>(flashcardSet)); // Düzeltme burada
                     newRepeatFlashcard.setTopic(topic);
                     newRepeatFlashcard.setRepeatTime(repeatTime);
                     return newRepeatFlashcard;
                 });
-
 
         return repeatFlashcardRepository.save(repeatFlashcard);
     }
