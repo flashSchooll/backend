@@ -41,7 +41,7 @@ public class CardService {
     private final S3StorageService s3StorageService;
 
     @Transactional
-    public Card save(CardSaveRequest cardSaveRequest,MultipartFile frontFile,MultipartFile backFile) throws IOException {
+    public Card save(CardSaveRequest cardSaveRequest, MultipartFile frontFile, MultipartFile backFile) throws IOException {
         // Null kontrolü
         Long flashcardId = cardSaveRequest.getTytFlashcardId();
         Objects.requireNonNull(flashcardId, "Flashcard ID cannot be null");
@@ -82,47 +82,34 @@ public class CardService {
     }
 
     @Transactional
-    @CacheEvict(value = "cardCache", key = "#cardUpdateRequest.cardId")
-    public Card update(CardUpdateRequest cardUpdateRequest) throws IOException {
+    @CacheEvict(value = "cardCache", key = "#id")
+    public Card update(CardUpdateRequest cardUpdateRequest, Long id, MultipartFile frontFile, MultipartFile backFile) throws IOException {
 
-        Objects.requireNonNull(cardUpdateRequest.getId());
+        Objects.requireNonNull(id);
 
-        Card card = cardRepository.findById(cardUpdateRequest.getId())
+        Card card = cardRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
-        ImageData imageData;
+        if (frontFile != null) {
 
-        List<ImageData> imageDataList = new ArrayList<>();
-
-        if (cardUpdateRequest.getFrontFile() != null) {
-            //  imageData = new ImageData();
-            //  imageData.setData(cardUpdateRequest.getFrontFile().getBytes());
-            //  imageData.setFace(CardFace.FRONT);
-            //  imageDataList.add(imageData);
-            String frontPath = s3StorageService.uploadFile(cardUpdateRequest.getFrontFile(), AWSDirectory.CARDS);
+            String frontPath = s3StorageService.uploadFile(frontFile, AWSDirectory.CARDS);
             card.setFrontPhotoPath(frontPath);
-
         }
 
-        if (cardUpdateRequest.getBackFile() != null) {
-            //   imageData = new ImageData();
-            //   imageData.setData(cardUpdateRequest.getBackFile().getBytes());
-            //   imageData.setFace(CardFace.BACK);
-            //   imageDataList.add(imageData);
-            String frontPath = s3StorageService.uploadFile(cardUpdateRequest.getBackFile(), AWSDirectory.CARDS);
-            card.setBackPhotoPath(frontPath);
+        if (backFile != null) {
 
+            String frontPath = s3StorageService.uploadFile(backFile, AWSDirectory.CARDS);
+            card.setBackPhotoPath(frontPath);
         }
 
         card.setBackFace(cardUpdateRequest.getBackFace());
         card.setFrontFace(cardUpdateRequest.getFrontFace());
-        //  card.setImageData(imageDataList);
 
         return cardRepository.save(card);
     }
 
     @Transactional
-    @CacheEvict(value = "cardCache", key = "#cardId")
+    @CacheEvict(value = "cardCache", key = "#id")
     public void delete(Long id) {
 
         Objects.requireNonNull(id);
@@ -152,7 +139,7 @@ public class CardService {
 
         for (CardSaveRequest saveRequest : request.getCardSaveRequests()) {
             CardService proxy = applicationContext.getBean(CardService.class);
-         //   proxy.save(saveRequest);  todo
+            //   proxy.save(saveRequest);  todo
         }
 
         return cardRepository.findByFlashcard(flashcard);

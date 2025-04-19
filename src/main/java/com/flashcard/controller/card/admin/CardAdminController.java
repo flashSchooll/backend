@@ -54,11 +54,14 @@ public class CardAdminController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CardResponse> update(@RequestBody CardUpdateRequest cardUpdateRequest) throws IOException {
+    public ResponseEntity<CardResponse> update(@PathVariable Long id,
+                                               @RequestPart CardUpdateRequest cardUpdateRequest,
+                                               @RequestPart MultipartFile frontFile,
+                                               @RequestPart MultipartFile backFile) throws IOException {
 
-        Card response = cardService.update(cardUpdateRequest);
+        Card response = cardService.update(cardUpdateRequest, id, frontFile, backFile);
 
         CardResponse cardResponse = new CardResponse(response);
 
