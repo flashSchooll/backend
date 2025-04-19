@@ -9,7 +9,6 @@ import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
 import com.flashcard.model.*;
 import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.model.enums.Branch;
-import com.flashcard.model.enums.CardFace;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.repository.*;
 import com.flashcard.security.services.AuthService;
@@ -42,7 +41,7 @@ public class CardService {
     private final S3StorageService s3StorageService;
 
     @Transactional
-    public Card save(CardSaveRequest cardSaveRequest) throws IOException {
+    public Card save(CardSaveRequest cardSaveRequest,MultipartFile frontFile,MultipartFile backFile) throws IOException {
         // Null kontrolü
         Long flashcardId = cardSaveRequest.getTytFlashcardId();
         Objects.requireNonNull(flashcardId, "Flashcard ID cannot be null");
@@ -61,11 +60,11 @@ public class CardService {
         String frontPath = null;
         String backPath = null;
 
-        if (cardSaveRequest.getFrontFile() != null) {
-            frontPath = s3StorageService.uploadFile(cardSaveRequest.getFrontFile(), AWSDirectory.CARDS);
+        if (frontFile != null) {
+            frontPath = s3StorageService.uploadFile(frontFile, AWSDirectory.CARDS);
         }
-        if (cardSaveRequest.getBackFile() != null) {
-            backPath = s3StorageService.uploadFile(cardSaveRequest.getBackFile(), AWSDirectory.CARDS);
+        if (backFile != null) {
+            backPath = s3StorageService.uploadFile(backFile, AWSDirectory.CARDS);
 
         }
 
@@ -80,33 +79,6 @@ public class CardService {
 
         // TYTCard'ı veritabanına kaydet
         return cardRepository.save(card);
-    }
-
-    private List<ImageData> createImageDataList(CardSaveRequest tytCardSaveRequest) throws BadRequestException {
-        List<ImageData> imageDataList = new ArrayList<>();
-
-        // Ön yüz dosyası varsa, onu ekle
-        if (tytCardSaveRequest.getFrontFile() != null) {
-            imageDataList.add(createImageData(tytCardSaveRequest.getFrontFile(), CardFace.FRONT));
-        }
-
-        // Arka yüz dosyası varsa, onu ekle
-        if (tytCardSaveRequest.getBackFile() != null) {
-            imageDataList.add(createImageData(tytCardSaveRequest.getBackFile(), CardFace.BACK));
-        }
-
-        return imageDataList;
-    }
-
-    private ImageData createImageData(MultipartFile file, CardFace face) throws BadRequestException {
-        try {
-            ImageData imageData = new ImageData();
-            imageData.setData(file.getBytes());
-            imageData.setFace(face);
-            return imageData;
-        } catch (IOException e) {
-            throw new BadRequestException("Error processing image file: " + e.getMessage());
-        }
     }
 
     @Transactional
@@ -180,7 +152,7 @@ public class CardService {
 
         for (CardSaveRequest saveRequest : request.getCardSaveRequests()) {
             CardService proxy = applicationContext.getBean(CardService.class);
-            proxy.save(saveRequest);
+         //   proxy.save(saveRequest);  todo
         }
 
         return cardRepository.findByFlashcard(flashcard);

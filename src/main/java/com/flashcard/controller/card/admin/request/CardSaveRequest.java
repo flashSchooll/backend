@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Setter
 @Getter
@@ -19,10 +18,5 @@ public class CardSaveRequest {
     @Size(min = 0, max = 512)
     @NotBlank
     private String backFace;
-
-    private MultipartFile frontFile;
-
-    private MultipartFile backFile;
-
 
 }

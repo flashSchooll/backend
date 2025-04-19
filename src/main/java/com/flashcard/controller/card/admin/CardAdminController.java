@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,9 +31,11 @@ public class CardAdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CardResponse> save(@RequestBody @Valid CardSaveRequest tytCardSaveRequest) throws IOException {
+    public ResponseEntity<CardResponse> save(@RequestPart @Valid CardSaveRequest cardSaveRequest,
+                                             @RequestPart MultipartFile frontFile,
+                                             @RequestPart MultipartFile backFile) throws IOException {
 
-        Card cardResponse = cardService.save(tytCardSaveRequest);
+        Card cardResponse = cardService.save(cardSaveRequest, frontFile, backFile);
 
         CardResponse response = new CardResponse(cardResponse);
 
