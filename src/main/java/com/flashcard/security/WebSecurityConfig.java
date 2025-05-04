@@ -21,6 +21,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -62,29 +67,19 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(Customizer.withDefaults())
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Önemli: corsConfigurationSource bean'ini referans alıyor
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // burada unauthorizedHandler AuthEntryPointJwt
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth ->
-                        auth.requestMatchers("/api/auth/**").permitAll()  // /api/auth/** endpoint'lerine erişim izin veriliyor.
-                                .requestMatchers("/api/test/**").permitAll()
-                                .requestMatchers("/actuator/**").hasRole("ADMIN")// /api/test/** endpoint'lerine erişim izin veriliyor.
-                                .requestMatchers(
-                                        "/v3/api-docs/**",
-                                        "/swagger-ui/**",
-                                        "/swagger-ui.html"
-                                )
-                                //.hasRole("ADMIN")
-                                .permitAll() // /api/test/** endpoint'lerine erişim izin veriliyor.
-                                .requestMatchers("/favicon.ico.").permitAll()  // /api/test/** endpoint'lerine erişim izin veriliyor.
-                                .anyRequest().authenticated()  // Diğer tüm endpoint'ler kimlik doğrulaması gerektiriyor.
+                        auth.requestMatchers("/api/auth/**", "/api/test/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/favicon.ico").permitAll()
+                                .requestMatchers("/actuator/**").hasRole("ADMIN")
+                                .anyRequest().authenticated()
                 );
 
         http.authenticationProvider(authenticationProvider());
-
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
@@ -94,21 +89,43 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*")
+                        .allowedOriginPatterns( // Değişiklik burada
+                                "https://www.stumy.com.tr",
+                                "http://localhost:3000"
+                        )
                         .allowedHeaders("*")
-                        .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
+                        .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+                        .allowCredentials(false);
             }
         };
     }
 
 
-    protected void configure(WebSecurity web)  {
+    protected void configure(WebSecurity web) {
         web.ignoring().requestMatchers(
                 "/favicon.ico",
                 "/resources/**",
                 "/static/**",
                 "/public/**",
                 "/webjars/**");
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // allowedOriginPatterns kullanın (allowedOrigins DEĞİL)
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+                "https://www.stumy.com.tr",
+                "http://localhost:3000"
+        ));
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowCredentials(true); // Kimlik bilgilerine izin ver
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization")); // JWT token'ı istemciye göster
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Tüm endpoint'ler için geçerli
+        return source;
     }
 
 }
