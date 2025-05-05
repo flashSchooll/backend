@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -39,6 +40,14 @@ public class FillBlankQuizExcelImporter {
         }
 
         List<FillBlankQuizDTO> dtoList = getExcelDataFromExcel(file);
+        Map<String, List<FillBlankQuizDTO>> groupedByTitle = dtoList.stream()
+                .collect(Collectors.groupingBy(FillBlankQuizDTO::getTitle));
+
+        groupedByTitle.forEach((title, quizzes) -> {
+            if (quizzes.size() == 1) {
+                throw new IllegalArgumentException( title + "birden fazla soru içermeli");
+            }
+        });
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
