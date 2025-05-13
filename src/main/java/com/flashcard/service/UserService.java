@@ -4,10 +4,13 @@ import com.flashcard.constants.Constants;
 import com.flashcard.controller.statistic.response.UserRosetteStatistic;
 import com.flashcard.controller.usercontroller.user.request.UpdateUserRequest;
 import com.flashcard.exception.BadRequestException;
+import com.flashcard.model.Role;
 import com.flashcard.model.User;
 import com.flashcard.model.dto.UserDTO;
 import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.model.enums.Branch;
+import com.flashcard.model.enums.ERole;
+import com.flashcard.repository.RoleRepository;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +34,7 @@ public class UserService {
     private final AuthService authService;
     private final DailyTargetService dailyTargetService;
     public final S3StorageService s3StorageService;
+    private final RoleRepository roleRepository;
 
     public User getUserById(Long id) {
         return userRepository.findById(id)
@@ -238,4 +239,18 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    @Transactional
+    public User makeAdmin(Long userId) {
+        Objects.requireNonNull(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
+
+        Role admin = roleRepository.findByName(ERole.ROLE_ADMIN)
+                .orElseThrow(() -> new NoSuchElementException("Admin rolü bulunamadı"));
+
+        user.getRoles().add(admin);
+        return userRepository.save(user);
+    }
+
 }

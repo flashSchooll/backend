@@ -1,6 +1,7 @@
 package com.flashcard.service.excel;
 
 import com.flashcard.constants.Constants;
+import com.flashcard.exception.BadRequestException;
 import com.flashcard.exception.BusinessException;
 import com.flashcard.model.*;
 import com.flashcard.model.enums.AWSDirectory;
@@ -11,15 +12,16 @@ import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.S3StorageService;
 import com.flashcard.service.UserCardPercentageService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFPictureData;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -72,14 +74,12 @@ public class FlashcardExcelImporter {
                 topic = topicRepository.save(topic);
             }
 
-
             Map<String, List<ExcelCardDTO>> groupedByFlashcard = groupedBySubject.get(topic.getSubject()).stream()
                     .collect(Collectors.groupingBy(ExcelCardDTO::getFlashcardName));
 
             for (Map.Entry<String, List<ExcelCardDTO>> entryFlash : groupedByFlashcard.entrySet()) {// flashcarda göre
                 // grupladık
                 String flashCardName = entryFlash.getKey();
-
 
                 Optional<Flashcard> optionalFlashcard = flashCardRepository.findByCardNameAndTopic(flashCardName, topic);
                 Flashcard flashcard;
@@ -99,13 +99,11 @@ public class FlashcardExcelImporter {
                 ImageData imageDataBack;
 
                 for (ExcelCardDTO dto : entryFlash.getValue()) {
-                    List<ImageData> imageData = new ArrayList<>();
+
                     card = new Card();
                     if (dto.getFrontImage() != null) {
                         imageDataFront = new ImageData();
                         imageDataFront.setFace(CardFace.FRONT);
-                        //  imageDataFront.setData(dto.getFrontImage());
-                        //  imageData.add(imageDataFront);
 
                         String path = s3StorageService.uploadFile(dto.getFrontImage(), AWSDirectory.CARDS);
                         card.setFrontPhotoPath(path);
@@ -114,18 +112,14 @@ public class FlashcardExcelImporter {
                     if (dto.getBackImage() != null) {
                         imageDataBack = new ImageData();
                         imageDataBack.setFace(CardFace.BACK);
-                        //  imageDataBack.setData(dto.getFrontImage());
-                        //   imageData.add(imageDataBack);
 
                         String path = s3StorageService.uploadFile(dto.getBackImage(), AWSDirectory.CARDS);
                         card.setBackPhotoPath(path);
                     }
 
-
                     card.setFlashcard(flashcard);
                     card.setFrontFace(dto.getFrontFace());
                     card.setBackFace(dto.getBackFace());
-                    //  card.setImageData(imageData.isEmpty() ? null : imageData);
 
                     cards.add(card);
                 }
@@ -141,6 +135,55 @@ public class FlashcardExcelImporter {
         userCardPercentageService.updateCardCount(lesson);
     }
 
+    @Getter
+    @Setter
+    class ImageInfo {
+        private int row;
+        private int column;
+        private byte[] imageData;
+        private String imageFormat;
+        private String cellReference;
+
+        // Getters and setters
+        // ... (implement as needed)
+    }
+
+    public HashMap<String, ImageInfo> readImagesWithDetails(Sheet sheet) {
+        HashMap<String, ImageInfo> imageInfoMap = new HashMap<>();
+
+        XSSFDrawing drawing = (XSSFDrawing) sheet.getDrawingPatriarch();
+
+        if (drawing != null) {
+            for (XSSFShape shape : drawing.getShapes()) {
+                if (shape instanceof XSSFPicture) {
+                    XSSFPicture picture = (XSSFPicture) shape;
+                    XSSFClientAnchor anchor = (XSSFClientAnchor) picture.getAnchor();
+
+                    ImageInfo info = new ImageInfo();
+                    info.setRow(anchor.getRow1());
+                    info.setColumn(anchor.getCol1());
+                    info.setImageData(picture.getPictureData().getData());
+                    info.setImageFormat(getImageFormat(picture.getPictureData()));
+                    info.setCellReference(getCellReference(anchor.getRow1(), anchor.getCol1()));
+
+                    imageInfoMap.put(getCellReference(anchor.getRow1(), anchor.getCol1()), info);
+                }
+            }
+        }
+
+
+        return imageInfoMap;
+    }
+
+    private String getCellReference(int row1, int col1) {
+        return CellReference.convertNumToColString(col1) + (row1 + 1);
+    }
+
+    private String getImageFormat(XSSFPictureData pictureData) {
+        String format = pictureData.suggestFileExtension();
+        return format != null ? format : "unknown";
+    }
+
     private List<ExcelCardDTO> getExcelDataFomExcel(MultipartFile file) throws IOException {
 
         XSSFWorkbook workbook;
@@ -148,11 +191,13 @@ public class FlashcardExcelImporter {
 
         workbook = new XSSFWorkbook(inputStream);
 
+
         Set<ExcelCardDTO> excelCardDTOS = new HashSet<>();
         ExcelCardDTO cardDTO;
         int numberOfSheets = workbook.getNumberOfSheets();
         for (int i = 0; i < numberOfSheets; i++) {
             Sheet sheet = workbook.getSheetAt(i);
+            HashMap<String, ImageInfo> stringImageInfoHashMap = readImagesWithDetails(sheet);
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) {
                     continue;
@@ -189,7 +234,7 @@ public class FlashcardExcelImporter {
 
                 } catch (InvalidCellException e) {
                     log.debug("Hata oluştu. Satır: " + (row.getRowNum() + 1) + ", Hata: " + e.getMessage(), e);
-                    throw new BusinessException(row.getRowNum() + 1 + " Satırda okunamadı " + e.getMessage());
+                    throw new BusinessException(row.getRowNum() + " Satırda okunamadı " + e.getMessage());
                 }
             }
         }
@@ -206,12 +251,14 @@ public class FlashcardExcelImporter {
             // Excel dosyasındaki tüm resimleri al
             pictures = workbook.getAllPictures();
 
-            byte[] picture = pictures.get(0).getData();
-            //   CustomMultipartFile file = new CustomMultipartFile(picture,"filename","image/jpeg");
+            if (!pictures.isEmpty()) {
+                byte[] picture = pictures.get(0).getData();
+                //   CustomMultipartFile file = new CustomMultipartFile(picture,"filename","image/jpeg");
 
-            pictures.remove(0);
-            return new CustomMultipartFile(picture, " file.getOriginalFilename()", "image/jpeg");
-
+                pictures.remove(0);
+                return new CustomMultipartFile(picture, " file.getOriginalFilename()", "image/jpeg");
+            }
+            return null;
 
             //  return picture;
 

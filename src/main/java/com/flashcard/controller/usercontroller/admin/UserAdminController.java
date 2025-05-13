@@ -46,7 +46,7 @@ public class UserAdminController {
     @GetMapping("/pages")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UserDTOAdmin>> getAllUsersByPage(@RequestParam(required = false) String search,
-                                               @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                                @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<User> users = userService.getUserPage(search, pageable);
 
@@ -61,5 +61,13 @@ public class UserAdminController {
         userService.deleteUser(userId);
 
         return ResponseEntity.ok(new MessageResponse("Kullanıcı başarıyla silindi"));
+    }
+
+    @PutMapping("/updateRole/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserDTOAdmin> updateUserRole(@PathVariable Long userId) {
+        User user = userService.makeAdmin(userId);
+        UserDTOAdmin response = new UserDTOAdmin(user);
+        return ResponseEntity.ok(response);
     }
 }

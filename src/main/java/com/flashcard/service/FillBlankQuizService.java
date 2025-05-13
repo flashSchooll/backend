@@ -9,7 +9,6 @@ import com.flashcard.model.enums.QuizType;
 import com.flashcard.repository.FillBlankQuizRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.repository.UserFillBlankQuizRepository;
-import com.flashcard.security.services.AuthService;
 import com.flashcard.service.excel.FillBlankQuizExcelImporter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,6 @@ public class FillBlankQuizService {
     private final FillBlankQuizRepository fillBlankQuizRepository;
     private final FillBlankQuizExcelImporter fillBlankQuizExcelImporter;
     private final TopicRepository topicRepository;
-    private final AuthService authService;
     private final UserFillBlankQuizRepository userFillBlankQuizRepository;
 
     @Transactional

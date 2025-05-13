@@ -47,7 +47,7 @@ public class AuthService {
     private static final Random random = new Random();
 
     @Transactional
-  //  @CacheEvict(value = "users", key = "'allUsers'")
+    //  @CacheEvict(value = "users", key = "'allUsers'")
     public void register(@Valid SignupRequest signUpRequest, MultipartFile file) {
 
         if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {
@@ -71,33 +71,9 @@ public class AuthService {
         //  Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
-        if (signUpRequest.getRole() == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_USER)));
-            roles.add(userRole);
-        } else {
-            Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                    .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_ADMIN)));
-            roles.add(adminRole);
-        }
-      /*  if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_USER)));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                if (role.equals(Constants.ROLE_ADMIN)) {
-                    Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                            .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_ADMIN)));
-                    roles.add(adminRole);
-                } else {
-                    Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                            .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_USER)));
-                    roles.add(userRole);
-                }
-            });
-        }*/
-
+        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException(String.format(Constants.ROLE_NOT_FOUND, ERole.ROLE_USER)));
+        roles.add(userRole);
 
         user.setRoles(roles);
         userRepository.save(user);

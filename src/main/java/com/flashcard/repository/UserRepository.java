@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u " +
             "FROM User u " +
-            "where (:search is null or (u.userName ILIKE (%:search%) or u.userSurname ILIKE (%:search%)))")
+            "where (:search is null or (u.userName ILIKE (%:search%)) or u.userSurname ILIKE (%:search%) or u.email ILIKE (%:search%))")
     Page<User> findAllAsPage(String search, Pageable pageable);
 
     @Query("select u from User u order by u.star desc,u.rosette desc limit 20")
