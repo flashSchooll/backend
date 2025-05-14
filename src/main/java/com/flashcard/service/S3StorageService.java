@@ -45,8 +45,6 @@ public class S3StorageService {
         File convertedFile = convertMultipartFileToFile(multipartFile);
 
         String filename = UUID.randomUUID() + ".png";
-        System.out.println("multipartfile :" + file.getSize()); // todo kaldırılacak
-        System.out.println("file :" + convertedFile.length() / 1024.0);   // todo kaldırılacak
 
         s3Client.putObject(new PutObjectRequest(bucketName, awsDirectory.path + filename, convertedFile));
 

@@ -47,6 +47,8 @@ public class Card {// kart bilgisini tutar
     @Size(max = 128)
     private String backPhotoPath;
 
+    private Integer index;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ImageData> imageData;
 

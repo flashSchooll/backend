@@ -9,6 +9,10 @@ import com.flashcard.model.enums.YKSLesson;
 import com.flashcard.service.LessonService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -76,9 +80,20 @@ public class LessonAdminController {
         return ResponseEntity.ok(Constants.LESSON_SUCCESSFULLY_DELETED);
     }
 
+    @GetMapping("/get-all-as-page")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<LessonResponse>> getLessons(@PageableDefault(sort = "yksLesson", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<Lesson> lessons = lessonService.getAll(pageable);
+
+        Page<LessonResponse> response = lessons.map(LessonResponse::new);
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<LessonResponse>> getId() {
+    public ResponseEntity<List<LessonResponse>> getLessonsAsPage() {
 
         List<Lesson> lessons = lessonService.getAll();
 

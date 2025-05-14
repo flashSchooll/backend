@@ -9,6 +9,8 @@ import com.flashcard.model.enums.YKSLesson;
 import com.flashcard.repository.LessonRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,6 +59,10 @@ public class LessonService {
     public List<Lesson> getAll() {
 
         return lessonRepository.findAll();
+    }
+    public Page<Lesson> getAll(Pageable pageable) {
+
+        return lessonRepository.findAll(pageable);
     }
 
     @Transactional

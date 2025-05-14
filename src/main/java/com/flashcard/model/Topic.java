@@ -31,4 +31,6 @@ public class Topic {// derslere ait konu bilgilerini tutar
     @Column(columnDefinition = "TEXT")
     @NotBlank
     private String subject;
+    
+    private Integer index;
 }

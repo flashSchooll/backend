@@ -35,4 +35,6 @@ public class Flashcard {// flashcard bilgisini tutar
     @Column(columnDefinition = "TEXT")
     private String cardName;
 
+    private Integer index;
+
 }
