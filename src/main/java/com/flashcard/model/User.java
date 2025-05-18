@@ -105,7 +105,6 @@ public class User {// kullanıcı bilgisini tutar
     private List<OwnerFlashcard> ownerFlashcards = new ArrayList<>();
 
 
-
     public void raiseStar(int addedStar) {
         int alreadyStar = getStar();
 
@@ -116,5 +115,9 @@ public class User {// kullanıcı bilgisini tutar
         int alreadyRosette = getRosette();
 
         this.setRosette(alreadyRosette + 1);
+    }
+
+    public String getUserNameAndSurname() {
+        return userName + " " + userSurname;
     }
 }

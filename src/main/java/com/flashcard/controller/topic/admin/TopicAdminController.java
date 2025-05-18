@@ -61,7 +61,7 @@ public class TopicAdminController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<TopicAdminResponse>> getAll(@RequestParam(required = false) Long lessonId,
+    public ResponseEntity<Page<TopicAdminResponse>> getAll(@RequestParam(required = false) Long lessonId,
                                                            @PageableDefault(sort = "subject", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<Topic> tytTopics;
@@ -72,7 +72,7 @@ public class TopicAdminController {
             tytTopics = topicService.getAllWithLesson(lessonId, pageable);
         }
 
-        List<TopicAdminResponse> response = tytTopics.stream().map(TopicAdminResponse::new).toList();
+        Page<TopicAdminResponse> response = tytTopics.map(TopicAdminResponse::new);
 
         return ResponseEntity.ok(response);
     }

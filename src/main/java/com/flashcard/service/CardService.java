@@ -17,6 +17,8 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -118,6 +120,12 @@ public class CardService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
         cardRepository.delete(card);
+    }
+
+
+    public Page<Card> getAll(Flashcard flashcard, Pageable pageable) {
+
+        return cardRepository.findCardsWithFlashcard(flashcard, pageable);
     }
 
     @Cacheable(value = "allCards", key = "#flashcard.id", unless = "#branch == null")

@@ -3,6 +3,8 @@ package com.flashcard.repository;
 import com.flashcard.model.*;
 import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.YKS;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +16,10 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
 
     List<Card> findByFlashcard(Flashcard flashcard);
+
+    @Query("select c from Card c where c.flashcard = :flashcard")
+    @EntityGraph("card-graph")
+    Page<Card> findCardsWithFlashcard(Flashcard flashcard, Pageable pageable);
 
     @Query("select c from Card c where c.flashcard = :flashcard")
     @EntityGraph("card-graph")
@@ -35,34 +41,34 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     int countByFlashcardTopicLessonYks(YKS yks);
 
 
-  //  @Query(value = """
-  //          WITH filtered_lessons AS (
-  //            SELECT id
-  //            FROM lesson
-  //            WHERE branch = :branch OR :branch IS NULL OR branch IS NULL
-  //          ),
-  //          total_lessons AS (
-  //            SELECT COUNT(*) as total FROM filtered_lessons
-  //          ),
-  //          randomized_cards AS (
-  //            SELECT
-  //              c.*,
-  //              CEIL(100.0 / (SELECT total FROM total_lessons)) as per_lesson_limit,
-  //              ROW_NUMBER() OVER (
-  //                PARTITION BY t.lesson_id
-  //                ORDER BY RANDOM()
-  //              ) as lesson_rn
-  //            FROM card c
-  //            INNER JOIN flashcard f ON c.flashcard_id = f.id
-  //            INNER JOIN topic t ON f.topic_id = t.id
-  //            INNER JOIN filtered_lessons l ON t.lesson_id = l.id
-  //          )
-  //          SELECT *
-  //          FROM randomized_cards
-  //          WHERE lesson_rn <= per_lesson_limit
-  //          ORDER BY RANDOM()
-  //          LIMIT 100
-  //          """, nativeQuery = true)
+    //  @Query(value = """
+    //          WITH filtered_lessons AS (
+    //            SELECT id
+    //            FROM lesson
+    //            WHERE branch = :branch OR :branch IS NULL OR branch IS NULL
+    //          ),
+    //          total_lessons AS (
+    //            SELECT COUNT(*) as total FROM filtered_lessons
+    //          ),
+    //          randomized_cards AS (
+    //            SELECT
+    //              c.*,
+    //              CEIL(100.0 / (SELECT total FROM total_lessons)) as per_lesson_limit,
+    //              ROW_NUMBER() OVER (
+    //                PARTITION BY t.lesson_id
+    //                ORDER BY RANDOM()
+    //              ) as lesson_rn
+    //            FROM card c
+    //            INNER JOIN flashcard f ON c.flashcard_id = f.id
+    //            INNER JOIN topic t ON f.topic_id = t.id
+    //            INNER JOIN filtered_lessons l ON t.lesson_id = l.id
+    //          )
+    //          SELECT *
+    //          FROM randomized_cards
+    //          WHERE lesson_rn <= per_lesson_limit
+    //          ORDER BY RANDOM()
+    //          LIMIT 100
+    //          """, nativeQuery = true)
     @Query("SELECT c " +
             "FROM Card c " +
             "JOIN Flashcard f ON c.flashcard.id = f.id " +
@@ -106,24 +112,24 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
 
     @Query(value = """
-        SELECT c.*
-        FROM card c
-        WHERE c.id IN (
-            SELECT mc.card_id
-            FROM my_card mc
-            WHERE mc.user_id = :userId
+                    SELECT c.*
+                    FROM card c
+                    WHERE c.id IN (
+                        SELECT mc.card_id
+                        FROM my_card mc
+                        WHERE mc.user_id = :userId
             
-            UNION
+                        UNION
             
-            SELECT c2.id
-            FROM repeat_flashcard rf
-            JOIN repeat_flashcard_flashcards rff ON rf.id = rff.repeat_flashcard_id
-            JOIN flashcard f ON rff.flashcards_id = f.id
-            JOIN card c2 ON c2.flashcard_id = f.id
-            WHERE rf.user_id = :userId
-        )
-        ORDER BY RANDOM()
-        LIMIT 50
-""", nativeQuery = true)
+                        SELECT c2.id
+                        FROM repeat_flashcard rf
+                        JOIN repeat_flashcard_flashcards rff ON rf.id = rff.repeat_flashcard_id
+                        JOIN flashcard f ON rff.flashcards_id = f.id
+                        JOIN card c2 ON c2.flashcard_id = f.id
+                        WHERE rf.user_id = :userId
+                    )
+                    ORDER BY RANDOM()
+                    LIMIT 50
+            """, nativeQuery = true)
     List<Card> getUserRepeatCardsAndMyCards(@Param("userId") Long userId); // todo test edilecek
 }
