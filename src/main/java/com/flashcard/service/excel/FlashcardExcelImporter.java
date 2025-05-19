@@ -59,6 +59,21 @@ public class FlashcardExcelImporter {
         Map<String, List<ExcelCardDTO>> groupedBySubject = dtoList.stream()
                 .collect(Collectors.groupingBy(ExcelCardDTO::getSubject));
 
+        Map<String, Integer> topicIndexes = dtoList.stream()
+                .collect(Collectors.toMap(
+                        ExcelCardDTO::getSubject,
+                        ExcelCardDTO::getTopicIndex,
+                        (existing, replacement) -> existing // aynı subject varsa ilkini koru
+                ));
+
+        Map<String, Integer> flashcardIndexes = dtoList.stream()
+                .collect(Collectors.toMap(
+                        ExcelCardDTO::getSubject,
+                        ExcelCardDTO::getFlashcardIndex,
+                        (existing, replacement) -> existing // aynı subject varsa ilkini koru
+                ));
+
+
         for (Map.Entry<String, List<ExcelCardDTO>> entry : groupedBySubject.entrySet()) {// konulara göre grupladık
             String subject = entry.getKey();
 
@@ -71,6 +86,7 @@ public class FlashcardExcelImporter {
                 topic = new Topic();
                 topic.setLesson(lesson);
                 topic.setSubject(subject);
+                topic.setIndex(topicIndexes.get(subject));
                 topic = topicRepository.save(topic);
             }
 
@@ -87,6 +103,7 @@ public class FlashcardExcelImporter {
                     flashcard = new Flashcard();
                     flashcard.setCardName(flashCardName);
                     flashcard.setTopic(topic);
+                    flashcard.setIndex(flashcardIndexes.get(flashCardName));
 
                     flashcard = flashCardRepository.save(flashcard);
                 } else {
@@ -120,6 +137,7 @@ public class FlashcardExcelImporter {
                     card.setFlashcard(flashcard);
                     card.setFrontFace(dto.getFrontFace());
                     card.setBackFace(dto.getBackFace());
+                    card.setIndex(dto.getCardIndex());
 
                     cards.add(card);
                 }
@@ -197,7 +215,6 @@ public class FlashcardExcelImporter {
         int numberOfSheets = workbook.getNumberOfSheets();
         for (int i = 0; i < numberOfSheets; i++) {
             Sheet sheet = workbook.getSheetAt(i);
-            HashMap<String, ImageInfo> stringImageInfoHashMap = readImagesWithDetails(sheet);
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) {
                     continue;
@@ -211,15 +228,21 @@ public class FlashcardExcelImporter {
                         switch (cell.getColumnIndex()) {
                             case 0 -> // konu
                                     cardDTO.setSubject(getStringCell(cell, "konu"));
-                            case 1 -> // flashcard
+                            case 1 -> // konu index
+                                    cardDTO.setTopicIndex(getCellValueAsInteger(cell, "konuIndex"));
+                            case 2 -> // flashcard
                                     cardDTO.setFlashcardName(getStringCell(cell, "flashcard"));
-                            case 2 -> // ön yüz sütunu
+                            case 3 -> // flashcard
+                                    cardDTO.setFlashcardIndex(getCellValueAsInteger(cell, "flashcardIndex"));
+                            case 4 -> // flashcard
+                                    cardDTO.setCardIndex(getCellValueAsInteger(cell, "cardIndex"));
+                            case 5 -> // ön yüz sütunu
                                     cardDTO.setFrontFace(getStringCell(cell, "ön yüz"));
-                            case 3 -> // arka yüz sütunu
+                            case 6 -> // arka yüz sütunu
                                     cardDTO.setBackFace(getStringCell(cell, "arka yüz"));
-                            case 4 -> // ön resim sütunu
+                            case 7 -> // ön resim sütunu
                                     cardDTO.setFrontImage(getImageFromCell(cell, cell.getRowIndex() + " ön resim", workbook));
-                            case 5 -> // arka resim sütunu
+                            case 8 -> // arka resim sütunu
                                     cardDTO.setBackImage(getImageFromCell(cell, cell.getRowIndex() + " arka resim", workbook));
                             default -> {
                                 return Collections.emptyList();
@@ -295,6 +318,48 @@ public class FlashcardExcelImporter {
                     throw new InvalidCellException(columnName, "Unsupported cell type", null);
             }
             return cellValue;
+        } catch (Exception e) {
+            throw new InvalidCellException(columnName, cell.toString(), e);
+        }
+    }
+
+    public static Integer getCellValueAsInteger(Cell cell, String columnName) {
+        try {
+            if (cell == null) {
+                return null;
+            }
+
+            switch (cell.getCellType()) {
+                case STRING:
+                    try {
+                        return Integer.parseInt(cell.getStringCellValue().trim());
+                    } catch (NumberFormatException e) {
+                        System.err.println("String değeri Long'a çevrilemedi: " + cell.getStringCellValue());
+                        return null;
+                    }
+
+                case NUMERIC:
+                    return (int) cell.getNumericCellValue(); // ondalık sayı varsa kesilir
+
+                case FORMULA:
+                    // Formül sonucu sayı ise
+                    if (cell.getCachedFormulaResultType() == CellType.NUMERIC) {
+                        return (int) cell.getNumericCellValue();
+                    } else if (cell.getCachedFormulaResultType() == CellType.STRING) {
+                        try {
+                            return Integer.parseInt(cell.getStringCellValue().trim());
+                        } catch (NumberFormatException e) {
+                            System.err.println("Formül sonucu Long'a çevrilemedi: " + cell.getStringCellValue());
+                            return null;
+                        }
+                    }
+                    break;
+
+                default:
+                    return null;
+            }
+
+            return null;
         } catch (Exception e) {
             throw new InvalidCellException(columnName, cell.toString(), e);
         }

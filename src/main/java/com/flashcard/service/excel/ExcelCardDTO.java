@@ -14,4 +14,7 @@ public class ExcelCardDTO {
     private String backFace;//arka yüz
     private MultipartFile frontImage;//ön resim
     private MultipartFile backImage;//arka resim
+    private Integer cardIndex;
+    private Integer flashcardIndex;
+    private Integer topicIndex;
 }
