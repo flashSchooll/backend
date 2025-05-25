@@ -112,6 +112,10 @@ public class FlashcardExcelImporter {
                     flashcard = flashCardRepository.save(flashcard);
                 } else {
                     flashcard = optionalFlashcard.get();
+                    if (flashcard.getIndex() == null) {
+                        flashcard.setIndex(flashcardIndexes.get(flashCardName));
+                        flashcard = flashCardRepository.save(flashcard);
+                    }
                 }
 
                 Set<Card> cards = new HashSet<>();
