@@ -68,7 +68,7 @@ public class FlashcardExcelImporter {
 
         Map<String, Integer> flashcardIndexes = dtoList.stream()
                 .collect(Collectors.toMap(
-                        ExcelCardDTO::getSubject,
+                        ExcelCardDTO::getFlashcardName,
                         ExcelCardDTO::getFlashcardIndex,
                         (existing, replacement) -> existing // aynı subject varsa ilkini koru
                 ));
@@ -150,7 +150,7 @@ public class FlashcardExcelImporter {
 
             }
         }
-        userCardPercentageService.updateCardCount(lesson);
+
     }
 
     @Getter
@@ -188,7 +188,6 @@ public class FlashcardExcelImporter {
                 }
             }
         }
-
 
         return imageInfoMap;
     }

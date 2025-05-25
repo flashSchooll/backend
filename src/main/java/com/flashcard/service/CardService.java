@@ -166,14 +166,10 @@ public class CardService {
                 .map(flashcard -> flashcard.getId()) // Her bir Flashcard nesnesinin ID'sini alıyoruz
                 .collect(Collectors.toList()); // Akışı bir listeye topluyoruz
 
-        List<Card> cardList = cardRepository.findByFlashcardIn(flashcards); // todo sorguya bakılacak çok fazla istek atıyor
-
         // İki listeyi birleştir
         List<Card> combinedCards = new ArrayList<>();
         combinedCards.addAll(myCards);
         //     combinedCards.addAll(cardList);
-
-        List<Card> lastCombinedCards = cardRepository.findCombinedCards(user);
 
         if (!combinedCards.isEmpty()) {
             // Rastgele 100 kart seç
@@ -206,8 +202,8 @@ public class CardService {
 
         User user = authService.getCurrentUser();
         Branch branch = user.getBranch();
-        int totalCountAyt = cardRepository.countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranch(YKS.AYT, branch);
-        int totalCountTyt = cardRepository.countByFlashcardTopicLessonYks(YKS.TYT);
+        int totalCountAyt = cardRepository.countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranchAndFlashcardCanBePublishTrue(YKS.AYT, branch);
+        int totalCountTyt = cardRepository.countByFlashcardTopicLessonYksAndFlashcardCanBePublishTrue(YKS.TYT);
         int seenCard = userSeenCardRepository.countByUser(user);
 
         int totalCard = totalCountAyt + totalCountTyt;

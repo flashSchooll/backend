@@ -11,6 +11,7 @@ import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.security.services.AuthService;
 import com.flashcard.service.excel.FlashcardExcelImporter;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -101,13 +102,13 @@ public class FlashCardService {
 
     public List<FlashcardUserResponse> getAllUser(Long topicId) {
         Objects.requireNonNull(topicId);
-        User user=authService.getCurrentUser();
+        User user = authService.getCurrentUser();
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
 
-        List<Object[]> result=flashCardRepository.findFlashcardsWithCountByTopic(topic);
+        List<Object[]> result = flashCardRepository.findFlashcardsWithCountByTopic(topic);
 
         Map<Flashcard, Long> flashcardLongMap = new HashMap<>();
 
@@ -117,16 +118,16 @@ public class FlashCardService {
             flashcardLongMap.put(flashcard, count);
         }
 
-     // List<UserSeenCard> seenCards = userSeenCardService.getAllSeenCardsByTopic(topicId);
+        // List<UserSeenCard> seenCards = userSeenCardService.getAllSeenCardsByTopic(topicId);
 //
-     // List<Long> flashcards = seenCards.stream()
-     //         .map(UserSeenCard::getCard)
-     //         .map(Card::getFlashcard)
-     //         .map(Flashcard::getId)
-     //         .distinct()
-     //         .toList();
+        // List<Long> flashcards = seenCards.stream()
+        //         .map(UserSeenCard::getCard)
+        //         .map(Card::getFlashcard)
+        //         .map(Flashcard::getId)
+        //         .distinct()
+        //         .toList();
 
-        List<Long> flashcardIds=userSeenCardService.findFlashcardIdsByTopic(user,topicId);
+        List<Long> flashcardIds = userSeenCardService.findFlashcardIdsByTopic(user, topicId);
 
         return flashCardRepository.findByTopic(topic)
                 .stream()
@@ -154,5 +155,16 @@ public class FlashCardService {
             log.error("Ders eklenirken hata oldu : {}", lessonId);
             throw new IOException(e);
         }
+    }
+
+    @Transactional
+    public void publish(Long flashcardId) {
+        Flashcard flashcard = flashCardRepository.findById(flashcardId)
+                .orElseThrow(() -> new EntityNotFoundException(Constants.FLASHCARD_NOT_FOUND));
+
+        flashcard.setCanBePublish(true);
+        flashCardRepository.save(flashcard);
+
+        userCardPercentageService.updateCardCount(flashcard.getTopic().getLesson());
     }
 }

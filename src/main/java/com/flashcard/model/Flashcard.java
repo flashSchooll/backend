@@ -37,4 +37,5 @@ public class Flashcard {// flashcard bilgisini tutar
 
     private Integer index;
 
+    private Boolean canBePublish = false;
 }

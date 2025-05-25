@@ -84,7 +84,7 @@ public class TopicService {
 
         Map<Topic, Long> counts = new HashMap<>();
         for (Topic t : topics) {
-            long count = cardRepository.countByFlashcardTopic(t);
+            long count = cardRepository.countByFlashcardTopicAndFlashcardCanBePublishTrue(t);
             counts.put(t, count);
         }
 

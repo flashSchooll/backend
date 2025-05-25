@@ -28,7 +28,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     int countByFlashcard(Flashcard flashcard);
 
-    @Query("SELECT COUNT(c) FROM Card c WHERE c.flashcard.topic.lesson = :lesson")
+    @Query("SELECT COUNT(c) FROM Card c WHERE c.flashcard.topic.lesson = :lesson and c.flashcard.canBePublish = true")
     int countByFlashcardTopicLesson(@Param("lesson") Lesson lesson);
 
     @Query("SELECT c FROM Card c WHERE c.flashcard.topic.lesson = :lesson")
@@ -38,7 +38,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findByTopic(Topic topic);
 
 
-    int countByFlashcardTopicLessonYks(YKS yks);
+    int countByFlashcardTopicLessonYksAndFlashcardCanBePublishTrue(YKS yks);
 
 
     //  @Query(value = """
@@ -74,6 +74,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             "JOIN FETCH f.topic t " +           // Topic'i hemen çek
             "JOIN FETCH t.lesson l " +          // Lesson'ı hemen çek
             "WHERE l.branch IS NULL OR l.branch = :branch " +
+            "AND f.canBePublish = true " +
             "ORDER BY RANDOM() " +
             "LIMIT 70")
     List<Card> findRandomCardsByBranch(@Param("branch") Branch branch);//todo düzgün çalışmıyor
@@ -81,15 +82,16 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("SELECT DISTINCT c FROM Card c JOIN FETCH c.flashcard f WHERE f.id IN :flashcardIds")
     List<Card> findByFlashcardIn(List<Long> flashcardIds);
 
-    Long countByFlashcardTopic(Topic topic);
+    Long countByFlashcardTopicAndFlashcardCanBePublishTrue(Topic topic);
 
-    int countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranch(YKS yks, Branch branch);
+    int countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranchAndFlashcardCanBePublishTrue(YKS yks, Branch branch);
 
     @Query("SELECT c FROM Card c " +
             "JOIN FETCH c.flashcard f " +
             "JOIN FETCH f.topic t " +
             "JOIN FETCH t.lesson l " +
-            "WHERE l.yks = :yks")
+            "WHERE l.yks = :yks " +
+            "AND f.canBePublish = true")
     List<Card> findByFlashcardTopicLessonYks(@Param("yks") YKS yks);
 
     @Query("SELECT c FROM Card c " +
@@ -97,17 +99,18 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             "JOIN FETCH f.topic t " +
             "JOIN FETCH t.lesson l " +
             "WHERE l.yks = :yks " +
-            "and l.branch = :branch")
+            "AND l.branch = :branch " +
+            "AND f.canBePublish = true")
     List<Card> findByFlashcardTopicLessonYksBranch(YKS yks, Branch branch);
 
-    @Query("""
-                SELECT c FROM Card c
-                WHERE c IN (SELECT mc.card FROM MyCard mc WHERE mc.user = :user)
-                OR c IN (SELECT usc.card FROM UserSeenCard usc WHERE usc.user = :user)
-                ORDER BY RANDOM()
-                LIMIT 100
-            """)
-    List<Card> findCombinedCards(User user);
+ //  @Query("""
+ //              SELECT c FROM Card c
+ //              WHERE c IN (SELECT mc.card FROM MyCard mc WHERE mc.user = :user)
+ //              OR c IN (SELECT usc.card FROM UserSeenCard usc WHERE usc.user = :user)
+ //              ORDER BY RANDOM()
+ //              LIMIT 100
+ //          """)
+ //  List<Card> findCombinedCards(User user);
 
 
     @Query(value = """

@@ -20,12 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/flashcard/admin")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class FlashCardAdminController {
 
     private final FlashCardService flashCardService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FlashcardResponse> save(@RequestBody FlashcardSaveRequest tytFlashcardSaveRequest) {
 
         Flashcard response = flashCardService.save(tytFlashcardSaveRequest);
@@ -36,7 +36,6 @@ public class FlashCardAdminController {
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FlashcardResponse> update(@RequestBody FlashcardUpdateRequest tytFlashcardUpdateRequest) {
 
         Flashcard response = flashCardService.update(tytFlashcardUpdateRequest);
@@ -47,7 +46,6 @@ public class FlashCardAdminController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> delete(@PathVariable Long id) {
 
         flashCardService.delete(id);
@@ -56,7 +54,6 @@ public class FlashCardAdminController {
     }
 
     @GetMapping("/get-all")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<FlashcardResponse>> getAll(@RequestParam(required = false) Long topicId,
                                                           @PageableDefault(sort = "cardName", direction = Sort.Direction.DESC) Pageable pageable) {
 
@@ -72,12 +69,18 @@ public class FlashCardAdminController {
     }
 
     @PostMapping("/import-excel")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> importExcel(@RequestBody MultipartFile file,
                                               @RequestParam Long lessonId) throws Exception {
 
         flashCardService.importExcel(lessonId, file);
 
         return ResponseEntity.ok(Constants.EXCEL_SUCCESSFULLY_IMPORTED);
+    }
+
+    @PutMapping("/publish/{flashcardId}")
+    public ResponseEntity<Object> publish(@PathVariable("flashcardId") Long flashcardId) {
+        flashCardService.publish(flashcardId);
+
+        return ResponseEntity.ok("Başarıyla yayınlandı");
     }
 }
