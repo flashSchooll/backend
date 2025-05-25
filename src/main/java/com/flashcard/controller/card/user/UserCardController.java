@@ -62,7 +62,7 @@ public class UserCardController {
 
     @GetMapping("/explore/me")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<CardResponse>> explore() {
+    public ResponseEntity<List<CardResponse>> exploreForMe() {
 
         List<Card> response = cardService.getRandomCardsFromUserCollection();
 
@@ -78,7 +78,7 @@ public class UserCardController {
 
     @GetMapping("/explore")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<CardResponse>> exploreForMe() {
+    public ResponseEntity<List<CardResponse>> explore() {
 
         User user = authService.getCurrentUser();
 
@@ -86,6 +86,21 @@ public class UserCardController {
 
         List<Card> response = cardService.explore(branch);
         Collections.shuffle(response);
+
+        List<CardResponse> tytCardResponses = response.stream().map(CardResponse::new).toList();
+
+        return ResponseEntity.ok(tytCardResponses);
+    }
+
+    @GetMapping("/explore-retry")      // eğer kullanıcı listeyi bitirirse buna istek atacak
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<CardResponse>> exploreRetry() {
+
+        User user = authService.getCurrentUser();
+
+        Branch branch = user.getBranch();
+
+        List<Card> response = cardService.exploreWithoutCache(branch);
 
         List<CardResponse> tytCardResponses = response.stream().map(CardResponse::new).toList();
 

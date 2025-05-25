@@ -69,12 +69,11 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     //          ORDER BY RANDOM()
     //          LIMIT 100
     //          """, nativeQuery = true)
-    @Query("SELECT c " +
-            "FROM Card c " +
-            "JOIN Flashcard f ON c.flashcard.id = f.id " +
-            "JOIN Topic t ON f.topic.id = t.id " +
-            "JOIN Lesson l ON t.lesson.id = l.id " +
-            "WHERE l.branch is null or l.branch = :branch " +
+    @Query("SELECT  c FROM Card c " +
+            "JOIN FETCH c.flashcard f " +       // Flashcard'ı hemen çek
+            "JOIN FETCH f.topic t " +           // Topic'i hemen çek
+            "JOIN FETCH t.lesson l " +          // Lesson'ı hemen çek
+            "WHERE l.branch IS NULL OR l.branch = :branch " +
             "ORDER BY RANDOM() " +
             "LIMIT 70")
     List<Card> findRandomCardsByBranch(@Param("branch") Branch branch);//todo düzgün çalışmıyor

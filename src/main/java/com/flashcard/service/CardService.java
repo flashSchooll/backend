@@ -197,6 +197,11 @@ public class CardService {
         return cardRepository.findRandomCardsByBranch(branch);
     }
 
+    public List<Card> exploreWithoutCache(Branch branch) {
+
+        return cardRepository.findRandomCardsByBranch(branch);
+    }
+
     public UserCardStatisticResponse getUserCardStatistic() {
 
         User user = authService.getCurrentUser();

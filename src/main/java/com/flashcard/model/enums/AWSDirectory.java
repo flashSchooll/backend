@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum AWSDirectory {
     CARDS("cards/"),
     LESSONS("lessons/"),
-    USERS("users/");
+    USERS("users/"),
+    PODCAST("podcast/");
 
     public final String path;
 }

@@ -57,6 +57,21 @@ public class S3StorageService {
 
     }
 
+    public String uploadFile(File file, AWSDirectory awsDirectory) {
+
+        String filename = UUID.randomUUID() + ".png";
+
+        s3Client.putObject(new PutObjectRequest(bucketName, awsDirectory.path + filename, file));
+
+        boolean isDeleted = file.delete();
+        if (!isDeleted) {
+            log.warn(String.format("%s silinemedi", file.getName()));
+        }
+
+        return baseUrl + awsDirectory.path + filename;
+
+    }
+
     public byte[] downloadFile(String filename) {
         S3Object s3Object = s3Client.getObject(bucketName, filename);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
