@@ -82,6 +82,10 @@ public class FlashcardExcelImporter {
             Topic topic;
             if (optionalTYTTopic.isPresent()) {
                 topic = optionalTYTTopic.get();
+                if (topic.getIndex() == null) {
+                    topic.setIndex(topicIndexes.get(subject));
+                    topic = topicRepository.save(topic);
+                }
             } else {
                 topic = new Topic();
                 topic.setLesson(lesson);
