@@ -108,6 +108,7 @@ public class FlashcardExcelImporter {
                     flashcard.setCardName(flashCardName);
                     flashcard.setTopic(topic);
                     flashcard.setIndex(flashcardIndexes.get(flashCardName));
+                    flashcard.setCanBePublish(false);
 
                     flashcard = flashCardRepository.save(flashcard);
                 } else {

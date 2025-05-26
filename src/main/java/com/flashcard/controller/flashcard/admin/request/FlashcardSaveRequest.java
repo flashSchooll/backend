@@ -17,4 +17,5 @@ public class FlashcardSaveRequest {
     @Size(max = 256)
     private String cardName;
 
+    private Integer index;
 }

@@ -53,6 +53,8 @@ public class FlashCardService {
         Flashcard flashcard = new Flashcard();
         flashcard.setTopic(topic);
         flashcard.setCardName(flashcardSaveRequest.getCardName());
+        flashcard.setCanBePublish(false);
+        flashcard.setIndex(flashcardSaveRequest.getIndex());
 
         return flashCardRepository.save(flashcard);
     }
