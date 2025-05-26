@@ -1,6 +1,7 @@
 package com.flashcard.controller.flashcard.admin;
 
 import com.flashcard.constants.Constants;
+import com.flashcard.controller.flashcard.admin.request.AdminFlashcardPublishRequest;
 import com.flashcard.controller.flashcard.admin.request.FlashcardSaveRequest;
 import com.flashcard.controller.flashcard.admin.request.FlashcardUpdateRequest;
 import com.flashcard.controller.flashcard.admin.response.FlashcardResponse;
@@ -80,6 +81,20 @@ public class FlashCardAdminController {
     @PutMapping("/publish/{flashcardId}")
     public ResponseEntity<Object> publish(@PathVariable("flashcardId") Long flashcardId) {
         flashCardService.publish(flashcardId);
+
+        return ResponseEntity.ok("Başarıyla yayınlandı");
+    }
+
+    @PutMapping("/publish")
+    public ResponseEntity<Object> publish(@RequestBody AdminFlashcardPublishRequest request) {
+        flashCardService.publish(request.getFlashcardIds());
+
+        return ResponseEntity.ok("Başarıyla yayınlandı");
+    }
+
+    @PutMapping("/publish-all")
+    public ResponseEntity<Object> publishAll() {
+        flashCardService.publishAll();
 
         return ResponseEntity.ok("Başarıyla yayınlandı");
     }

@@ -14,6 +14,7 @@ public class FlashcardUserResponse {
     private final String cardName;
     private final Integer cardCount;
     private final boolean isSeen;
+    private final Integer index;
 
     public FlashcardUserResponse(Flashcard flashcard, Integer count, boolean seen) {
 
@@ -23,5 +24,6 @@ public class FlashcardUserResponse {
         this.cardName = flashcard.getCardName();
         this.cardCount = count;
         this.isSeen = seen;
+        this.index = flashcard.getIndex();
     }
 }

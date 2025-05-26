@@ -1,7 +1,6 @@
 package com.flashcard.service.excel;
 
 import com.flashcard.constants.Constants;
-import com.flashcard.exception.BadRequestException;
 import com.flashcard.exception.BusinessException;
 import com.flashcard.model.*;
 import com.flashcard.model.enums.AWSDirectory;
@@ -11,7 +10,6 @@ import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.S3StorageService;
-import com.flashcard.service.UserCardPercentageService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -45,7 +43,6 @@ public class FlashcardExcelImporter {
     private final FlashCardRepository flashCardRepository;
     private final CardRepository cardRepository;
     private static List<XSSFPictureData> pictures;
-    private final UserCardPercentageService userCardPercentageService;
     private final S3StorageService s3StorageService;
 
     @Transactional
@@ -151,9 +148,9 @@ public class FlashcardExcelImporter {
                     cards.add(card);
                 }
 
-                if (cards.size() < 4) {
-                    throw new BadRequestException("Bir flashcard taki kart sayısı 4 ten az olamaz");
-                }
+             //  if (cards.size() < 4) {
+             //      throw new BadRequestException("Bir flashcard taki kart sayısı 4 ten az olamaz");
+             //  }
 
                 cardRepository.saveAll(cards);
 

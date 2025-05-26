@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -22,7 +23,7 @@ public class TopicUserController {
     public ResponseEntity<List<TopicUserResponse>> getAll(@PathVariable Long lessonId) {
 
         List<TopicUserResponse> response = topicService.getAllByLesson(lessonId);
-
+        response.sort(Comparator.comparingInt(TopicUserResponse::getIndex));
         return ResponseEntity.ok(response);
     }
 

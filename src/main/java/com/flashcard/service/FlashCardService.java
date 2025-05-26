@@ -169,4 +169,27 @@ public class FlashCardService {
 
         userCardPercentageService.updateCardCount(flashcard.getTopic().getLesson());
     }
+
+    @Transactional
+    public void publish(List<Long> flashcardIdList) {
+        List<Flashcard> flashcardList = flashCardRepository.findByIdIn(flashcardIdList);
+
+        for (Flashcard flashcard : flashcardList) {
+            flashcard.setCanBePublish(true);
+            flashCardRepository.save(flashcard);
+
+            userCardPercentageService.updateCardCount(flashcard.getTopic().getLesson());
+        }
+    }
+
+    @Transactional
+    public void publishAll() {
+        List<Flashcard> flashcards = flashCardRepository.findAll();
+        for (Flashcard flashcard : flashcards) {
+            flashcard.setCanBePublish(true);
+            flashCardRepository.save(flashcard);
+
+            userCardPercentageService.updateCardCount(flashcard.getTopic().getLesson());
+        }
+    }
 }

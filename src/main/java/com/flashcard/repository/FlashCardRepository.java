@@ -33,4 +33,6 @@ public interface FlashCardRepository extends JpaRepository<Flashcard, Long> {
             "WHERE f.topic = :topic " +
             "GROUP BY f")
     List<Object[]> findFlashcardsWithCountByTopic(Topic topic);
+
+    List<Flashcard> findByIdIn(List<Long> flashcardList);
 }

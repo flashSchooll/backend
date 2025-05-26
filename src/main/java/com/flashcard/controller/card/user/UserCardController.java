@@ -2,6 +2,7 @@ package com.flashcard.controller.card.user;
 
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.card.admin.response.CardResponse;
+import com.flashcard.controller.flashcard.user.response.FlashcardUserResponse;
 import com.flashcard.model.Card;
 import com.flashcard.model.Flashcard;
 import com.flashcard.model.MyCard;
@@ -17,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -44,8 +46,8 @@ public class UserCardController {
         List<Card> response = cardService.getAll(flashcard);
         List<MyCard> myCards = myCardsService.getAll(user.getId(), flashcard);
 
-        List<CardResponse> cardResponses = response.stream().map(card -> new CardResponse(card, myCards)).toList();
-
+        List<CardResponse> cardResponses = new java.util.ArrayList<>(response.stream().map(card -> new CardResponse(card, myCards)).toList());
+        cardResponses.sort(Comparator.comparingInt(CardResponse::getIndex));
         return ResponseEntity.ok(cardResponses);
     }
 
