@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class FlashcardUserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<List<FlashcardUserResponse>> getAll(@PathVariable Long topicId) {
 
-        List<FlashcardUserResponse> response = flashCardService.getAllUser(topicId);
+        List<FlashcardUserResponse> response = new ArrayList<>(flashCardService.getAllUser(topicId));
         response.sort(Comparator.comparingInt(FlashcardUserResponse::getIndex));
         return ResponseEntity.ok(response);
     }

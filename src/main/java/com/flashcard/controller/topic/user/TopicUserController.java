@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class TopicUserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<List<TopicUserResponse>> getAll(@PathVariable Long lessonId) {
 
-        List<TopicUserResponse> response = topicService.getAllByLesson(lessonId);
+        List<TopicUserResponse> response = new ArrayList<>(topicService.getAllByLesson(lessonId));
         response.sort(Comparator.comparingInt(TopicUserResponse::getIndex));
         return ResponseEntity.ok(response);
     }
