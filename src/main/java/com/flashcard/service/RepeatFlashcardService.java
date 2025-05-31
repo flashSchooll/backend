@@ -95,7 +95,7 @@ public class RepeatFlashcardService {
 
         User user = authService.getCurrentUser();
         Optional<RepeatFlashcard> optionalRepeatFlashcard = repeatFlashcardRepository.findByUserAndTopic(user, topic);
-        List<Flashcard> flashcards = flashCardRepository.findByTopic(topic);
+        List<Flashcard> flashcards = flashCardRepository.findByTopicAndCanBePublishTrue(topic);
         Set<Flashcard> flashcardSet = new HashSet<>(flashcards);
 
         RepeatFlashcard repeatFlashcard = optionalRepeatFlashcard

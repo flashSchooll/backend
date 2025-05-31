@@ -13,9 +13,9 @@ import java.util.Optional;
 
 public interface FlashCardRepository extends JpaRepository<Flashcard, Long> {
 
-    Page<Flashcard> findByTopic(Topic topic, Pageable pageable);
+    Page<Flashcard> findByTopicAndCanBePublishTrue(Topic topic, Pageable pageable);
 
-    List<Flashcard> findByTopic(Topic topic);
+    List<Flashcard> findByTopicAndCanBePublishTrue(Topic topic);
 
     boolean existsByCardName(String cardName);
 
@@ -31,8 +31,11 @@ public interface FlashCardRepository extends JpaRepository<Flashcard, Long> {
             "FROM Flashcard f " +
             "LEFT JOIN Card c ON c.flashcard.id = f.id " +
             "WHERE f.topic = :topic " +
+            "AND f.canBePublish = true " +
             "GROUP BY f")
     List<Object[]> findFlashcardsWithCountByTopic(Topic topic);
 
     List<Flashcard> findByIdIn(List<Long> flashcardList);
+
+    List<Flashcard> findByCanBePublishFalse();
 }

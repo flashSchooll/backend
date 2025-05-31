@@ -94,7 +94,7 @@ public class FlashCardService {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        return flashCardRepository.findByTopic(topic, pageable);
+        return flashCardRepository.findByTopicAndCanBePublishTrue(topic, pageable);
     }
 
     public Page<Flashcard> getAll(Pageable pageable) {
@@ -131,7 +131,7 @@ public class FlashCardService {
 
         List<Long> flashcardIds = userSeenCardService.findFlashcardIdsByTopic(user, topicId);
 
-        return flashCardRepository.findByTopic(topic)
+        return flashCardRepository.findByTopicAndCanBePublishTrue(topic)
                 .stream()
                 .map(flashcard ->
                         new FlashcardUserResponse(
@@ -164,17 +164,7 @@ public class FlashCardService {
         Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new EntityNotFoundException(Constants.FLASHCARD_NOT_FOUND));
 
-        flashcard.setCanBePublish(true);
-        flashCardRepository.save(flashcard);
-
-        userCardPercentageService.updateCardCount(flashcard.getTopic().getLesson());
-    }
-
-    @Transactional
-    public void publish(List<Long> flashcardIdList) {
-        List<Flashcard> flashcardList = flashCardRepository.findByIdIn(flashcardIdList);
-
-        for (Flashcard flashcard : flashcardList) {
+        if (Boolean.FALSE.equals(flashcard.getCanBePublish())) {
             flashcard.setCanBePublish(true);
             flashCardRepository.save(flashcard);
 
@@ -183,8 +173,22 @@ public class FlashCardService {
     }
 
     @Transactional
+    public void publish(List<Long> flashcardIdList) {
+        List<Flashcard> flashcardList = flashCardRepository.findByIdIn(flashcardIdList);
+
+        for (Flashcard flashcard : flashcardList) {
+            if (Boolean.FALSE.equals(flashcard.getCanBePublish())) {
+                flashcard.setCanBePublish(true);
+                flashCardRepository.save(flashcard);
+
+                userCardPercentageService.updateCardCount(flashcard.getTopic().getLesson());
+            }
+        }
+    }
+
+    @Transactional
     public void publishAll() {
-        List<Flashcard> flashcards = flashCardRepository.findAll();
+        List<Flashcard> flashcards = flashCardRepository.findByCanBePublishFalse();
         for (Flashcard flashcard : flashcards) {
             flashcard.setCanBePublish(true);
             flashCardRepository.save(flashcard);
