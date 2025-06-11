@@ -2,7 +2,6 @@ package com.flashcard.controller.card.user;
 
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.card.admin.response.CardResponse;
-import com.flashcard.controller.flashcard.user.response.FlashcardUserResponse;
 import com.flashcard.model.Card;
 import com.flashcard.model.Flashcard;
 import com.flashcard.model.MyCard;

@@ -1,7 +1,6 @@
 package com.flashcard.controller.lesson.user.response;
 
 import com.flashcard.model.UserCardPercentage;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,6 @@ public class TYTLessonCardSeenCountResponse {
     private final String lesson;
     private final Integer totalCard;
     private final Integer completedCard;
-  //  private final byte[] icon;
     private final String path;
 
     public TYTLessonCardSeenCountResponse(UserCardPercentage userCardPercentage) {
@@ -21,7 +19,6 @@ public class TYTLessonCardSeenCountResponse {
         this.lesson = userCardPercentage.getLesson().getYksLesson().label;
         this.totalCard = userCardPercentage.getTotalCard();
         this.completedCard = userCardPercentage.getCompletedCard();
-     //   this.icon = userCardPercentage.getLesson().getIcon();
         this.path = userCardPercentage.getLesson().getPath();
     }
 

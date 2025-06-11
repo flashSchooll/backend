@@ -10,7 +10,6 @@ public class UserDTO {
     private final String username;
     private final String userSurname;
     private final String email;
-    //  private final byte[] profilePhoto;
     private final Integer star;
     private final Integer rosette;
     private final Branch branch;
@@ -20,7 +19,6 @@ public class UserDTO {
         this.username = user.getUserName();
         this.userSurname = user.getUserSurname();
         this.email = user.getEmail();
-        //   this.profilePhoto = user.getProfilePhoto();
         this.star = user.getStar();
         this.rosette = user.getRosette();
         this.branch = user.getBranch();

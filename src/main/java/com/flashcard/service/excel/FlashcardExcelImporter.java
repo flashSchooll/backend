@@ -159,54 +159,6 @@ public class FlashcardExcelImporter {
 
     }
 
-    @Getter
-    @Setter
-    class ImageInfo {
-        private int row;
-        private int column;
-        private byte[] imageData;
-        private String imageFormat;
-        private String cellReference;
-
-        // Getters and setters
-        // ... (implement as needed)
-    }
-
-    public HashMap<String, ImageInfo> readImagesWithDetails(Sheet sheet) {
-        HashMap<String, ImageInfo> imageInfoMap = new HashMap<>();
-
-        XSSFDrawing drawing = (XSSFDrawing) sheet.getDrawingPatriarch();
-
-        if (drawing != null) {
-            for (XSSFShape shape : drawing.getShapes()) {
-                if (shape instanceof XSSFPicture) {
-                    XSSFPicture picture = (XSSFPicture) shape;
-                    XSSFClientAnchor anchor = (XSSFClientAnchor) picture.getAnchor();
-
-                    ImageInfo info = new ImageInfo();
-                    info.setRow(anchor.getRow1());
-                    info.setColumn(anchor.getCol1());
-                    info.setImageData(picture.getPictureData().getData());
-                    info.setImageFormat(getImageFormat(picture.getPictureData()));
-                    info.setCellReference(getCellReference(anchor.getRow1(), anchor.getCol1()));
-
-                    imageInfoMap.put(getCellReference(anchor.getRow1(), anchor.getCol1()), info);
-                }
-            }
-        }
-
-        return imageInfoMap;
-    }
-
-    private String getCellReference(int row1, int col1) {
-        return CellReference.convertNumToColString(col1) + (row1 + 1);
-    }
-
-    private String getImageFormat(XSSFPictureData pictureData) {
-        String format = pictureData.suggestFileExtension();
-        return format != null ? format : "unknown";
-    }
-
     private List<ExcelCardDTO> getExcelDataFomExcel(MultipartFile file) throws IOException {
 
         XSSFWorkbook workbook;
@@ -281,14 +233,11 @@ public class FlashcardExcelImporter {
 
             if (!pictures.isEmpty()) {
                 byte[] picture = pictures.get(0).getData();
-                //   CustomMultipartFile file = new CustomMultipartFile(picture,"filename","image/jpeg");
 
                 pictures.remove(0);
                 return new CustomMultipartFile(picture, " file.getOriginalFilename()", "image/jpeg");
             }
             return null;
-
-            //  return picture;
 
         } catch (Exception e) {
             // Hata durumunda özel exception fırlat
@@ -310,8 +259,6 @@ public class FlashcardExcelImporter {
                 case NUMERIC:
                     // Numeric değeri String'e çevir
                     cellValue = String.valueOf(cell.getNumericCellValue());
-                    // Eğer tam sayı istiyorsanız alternatif olarak:
-                    // cellValue = String.format("%.0f", cell.getNumericCellValue());
                     break;
                 case BOOLEAN:
                     cellValue = String.valueOf(cell.getBooleanCellValue());

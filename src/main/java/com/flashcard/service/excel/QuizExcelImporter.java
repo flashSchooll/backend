@@ -174,8 +174,6 @@ public class QuizExcelImporter {
                         cellValue = cell.getLocalDateTimeCellValue().toString();
                     } else {
                         cellValue = String.valueOf(cell.getNumericCellValue());
-                        // Ondalık kısmı kaldırmak isterseniz:
-                        // cellValue = String.valueOf((int) cell.getNumericCellValue());
                     }
                     break;
                 default:

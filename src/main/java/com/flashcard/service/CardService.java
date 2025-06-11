@@ -58,7 +58,6 @@ public class CardService {
         }
 
         // Görselleri işleyip listeye ekle
-        // List<ImageData> imageDataList = createImageDataList(tytCardSaveRequest);
         String frontPath = null;
         String backPath = null;
 
@@ -77,7 +76,6 @@ public class CardService {
         card.setFrontFace(cardSaveRequest.getFrontFace());
         card.setFrontPhotoPath(frontPath);
         card.setBackPhotoPath(backPath);
-        //  tytCard.setImageData(imageDataList);
 
         // TYTCard'ı veritabanına kaydet
         return cardRepository.save(card);
@@ -163,7 +161,7 @@ public class CardService {
         List<Long> flashcards = repeatFlashcardRepository.findByUserWithTopicAndLesson(user).stream()
                 .map(repeatFlashcard -> repeatFlashcard.getFlashcards()) // RepeatFlashcard nesnesinden flashcards listesini alıyoruz
                 .flatMap(List::stream) // List içindeki tüm Flashcard'ları tek bir akışa düzleştiriyoruz
-                .map(flashcard -> flashcard.getId()) // Her bir Flashcard nesnesinin ID'sini alıyoruz
+                .map(Flashcard::getId) // Her bir Flashcard nesnesinin ID'sini alıyoruz
                 .collect(Collectors.toList()); // Akışı bir listeye topluyoruz
 
         // İki listeyi birleştir
@@ -246,8 +244,6 @@ public class CardService {
         User user = authService.getCurrentUser();
 
         List<Card> allCards = cardRepository.getUserRepeatCardsAndMyCards(user.getId());
-        // Random seçim için kartları karıştır
-        //  Collections.shuffle(allCards);  // todo random çalışmazsa bakılacak
 
         return allCards.stream()
                 .limit(Math.min(50, allCards.size()))

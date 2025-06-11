@@ -68,7 +68,6 @@ public class AuthService {
         user.setBranch(signUpRequest.getBranch());
         user.setTarget(100);
 
-        //  Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
         Role userRole = roleRepository.findByName(ERole.ROLE_USER)

@@ -74,7 +74,7 @@ public class TopicService {
     }
 
     @Cacheable(value = "lessonTopic", key = "#lessonId")
-    public List<TopicUserResponse> getAllByLesson(Long lessonId) {//todo buraya bakılacak
+    public List<TopicUserResponse> getAllByLesson(Long lessonId) {
         Objects.requireNonNull(lessonId);
 
         Lesson tytLesson = lessonRepository.findById(lessonId)

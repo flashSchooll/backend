@@ -157,7 +157,7 @@ public class UserCardPercentageService {
     }
 
     @Transactional
-    protected void saveForLesson(Lesson lesson) {
+    public void saveForLesson(Lesson lesson) {
 
         long countCard = cardRepository.countByFlashcardTopicLesson(lesson);
 

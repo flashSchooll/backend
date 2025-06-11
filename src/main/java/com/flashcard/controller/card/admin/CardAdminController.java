@@ -84,7 +84,7 @@ public class CardAdminController {
     @GetMapping("/get-all/{flashcardId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<CardResponse>> getAll(@PathVariable Long flashcardId,
-                                                     @PageableDefault(sort = "cardName", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                     @PageableDefault(sort = "index", direction = Sort.Direction.DESC) Pageable pageable) {
         Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         Page<Card> response = cardService.getAll(flashcard, pageable);

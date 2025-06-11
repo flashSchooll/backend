@@ -120,15 +120,6 @@ public class FlashCardService {
             flashcardLongMap.put(flashcard, count);
         }
 
-        // List<UserSeenCard> seenCards = userSeenCardService.getAllSeenCardsByTopic(topicId);
-//
-        // List<Long> flashcards = seenCards.stream()
-        //         .map(UserSeenCard::getCard)
-        //         .map(Card::getFlashcard)
-        //         .map(Flashcard::getId)
-        //         .distinct()
-        //         .toList();
-
         List<Long> flashcardIds = userSeenCardService.findFlashcardIdsByTopic(user, topicId);
 
         return flashCardRepository.findByTopicAndCanBePublishTrue(topic)

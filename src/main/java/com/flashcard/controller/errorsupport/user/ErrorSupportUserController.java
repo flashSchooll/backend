@@ -1,7 +1,6 @@
 package com.flashcard.controller.errorsupport.user;
 
 import com.flashcard.controller.errorsupport.user.request.ErrorSupportSaveRequest;
-import com.flashcard.model.ErrorSupport;
 import com.flashcard.service.ErrorSupportService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
