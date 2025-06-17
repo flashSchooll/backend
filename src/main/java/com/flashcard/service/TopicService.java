@@ -6,6 +6,7 @@ import com.flashcard.controller.topic.admin.request.TopicUpdateRequest;
 import com.flashcard.controller.topic.user.response.TopicUserResponse;
 import com.flashcard.model.Lesson;
 import com.flashcard.model.Topic;
+import com.flashcard.model.enums.YKSLesson;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.TopicRepository;
@@ -96,5 +97,10 @@ public class TopicService {
 
     public Page<Topic> getAll(Pageable pageable) {
         return topicRepository.findAll(pageable);
+    }
+
+    public Page<Topic> getBySearch(Long lessonId,   YKSLesson yksLesson, Pageable pageable) {
+        String yksLessonStr = (yksLesson != null) ? yksLesson.toString() : null;
+        return topicRepository.getBySearch(lessonId,   yksLesson, pageable);
     }
 }

@@ -6,6 +6,7 @@ import com.flashcard.controller.topic.admin.request.TopicSaveRequest;
 import com.flashcard.controller.topic.admin.request.TopicUpdateRequest;
 import com.flashcard.controller.topic.admin.response.TopicAdminResponse;
 import com.flashcard.model.Topic;
+import com.flashcard.model.enums.YKSLesson;
 import com.flashcard.service.TopicService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -60,15 +61,19 @@ public class TopicAdminController {
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<TopicAdminResponse>> getAll(@RequestParam(required = false) Long lessonId,
-                                                           @PageableDefault(sort = "subject", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                           //  @RequestParam(required = false) String search,
+                                                           @RequestParam(required = false) YKSLesson yksLesson,
+                                                           @PageableDefault Pageable pageable) {
 
         Page<Topic> tytTopics;
 
-        if (lessonId == null) {
-            tytTopics = topicService.getAll(pageable);
-        } else {
-            tytTopics = topicService.getAllWithLesson(lessonId, pageable);
-        }
+        //  if (lessonId == null) {
+        //      tytTopics = topicService.getAll(pageable);
+        //  } else {
+        //      tytTopics = topicService.getAllWithLesson(lessonId, pageable);
+        //  }
+
+        tytTopics = topicService.getBySearch(lessonId, yksLesson, pageable);
 
         Page<TopicAdminResponse> response = tytTopics.map(TopicAdminResponse::new);
 

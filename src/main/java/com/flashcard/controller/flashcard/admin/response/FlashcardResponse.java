@@ -12,12 +12,14 @@ public class FlashcardResponse {
     private final String topic;
     private final String cardName;
     private final Boolean seen;
+    private final String lesson;
 
     public FlashcardResponse(Flashcard flashcard) {
         this.id = flashcard.getId();
         this.topic = flashcard.getTopic().getSubject();
         this.cardName = flashcard.getCardName();
         this.seen = false;
+        this.lesson = flashcard.getTopic().getLesson().getYksLesson().label;
     }
 
     public FlashcardResponse(Flashcard flashcard, List<Long> flashcardIds) {
@@ -25,5 +27,6 @@ public class FlashcardResponse {
         this.topic = flashcard.getTopic().getSubject();
         this.cardName = flashcard.getCardName();
         this.seen = flashcardIds.contains(flashcard.getId());
+        this.lesson = flashcard.getTopic().getLesson().getYksLesson().label;
     }
 }

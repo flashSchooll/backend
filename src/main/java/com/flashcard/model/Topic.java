@@ -28,9 +28,9 @@ public class Topic {// derslere ait konu bilgilerini tutar
     @NotNull
     private Lesson lesson;
 
-    @Column(columnDefinition = "TEXT")
+    // @Column(columnDefinition = "TEXT")
     @NotBlank
     private String subject;
-    
+
     private Integer index;
 }
