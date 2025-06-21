@@ -32,8 +32,8 @@ public class CardAdminController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CardResponse> save(@RequestPart @Valid CardSaveRequest cardSaveRequest,
-                                             @RequestPart MultipartFile frontFile,
-                                             @RequestPart MultipartFile backFile) throws IOException {
+                                             @RequestPart(required = false) MultipartFile frontFile,
+                                             @RequestPart(required = false) MultipartFile backFile) throws IOException {
 
         Card cardResponse = cardService.save(cardSaveRequest, frontFile, backFile);
 
