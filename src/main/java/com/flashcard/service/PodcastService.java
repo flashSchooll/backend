@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class PodcastService {
     private final S3StorageService s3StorageService;
 
     @Transactional
-    public String savePodcast(MultipartFile file, Long topicId) throws IOException {
+    public String savePodcast(MultipartFile file, Long topicId, String title) throws IOException {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("file boş olamaz");
         }
@@ -34,8 +36,16 @@ public class PodcastService {
         Podcast podcast = new Podcast();
         podcast.setTopic(topic);
         podcast.setPath(path);
+        podcast.setTitle(title);
+
         podcastRepository.save(podcast);
 
         return path;
+    }
+
+    public List<Podcast> getByTopic(Long topicId) {
+        Objects.requireNonNull(topicId);
+
+        return podcastRepository.findByTopicId(topicId);
     }
 }

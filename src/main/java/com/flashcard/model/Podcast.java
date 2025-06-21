@@ -24,4 +24,7 @@ public class Podcast {
     @NotBlank
     private String path;
 
+    @NotNull
+    private String title;
+
 }
