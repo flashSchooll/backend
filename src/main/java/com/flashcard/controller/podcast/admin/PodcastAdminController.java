@@ -6,8 +6,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -17,10 +19,10 @@ import java.io.File;
 public class PodcastAdminController {
     private final PodcastService podcastService;
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // todo test edilecek çalışmıyor
-    ResponseEntity<String> upload(@RequestBody File file,
-                                  @RequestParam Long topicId)  {
-        String path = podcastService.savePodcast(file,topicId);
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file,
+                                         @RequestParam("topicId") Long topicId) throws IOException {
+        String path = podcastService.savePodcast(file, topicId);
         return ResponseEntity.ok(path);
     }
 }

@@ -45,7 +45,6 @@ public class S3StorageService {
         File convertedFile = convertMultipartFileToFile(multipartFile);
 
         String filename = UUID.randomUUID() + ".png";
-
         s3Client.putObject(new PutObjectRequest(bucketName, awsDirectory.path + filename, convertedFile));
 
         boolean isDeleted = convertedFile.delete();
@@ -55,6 +54,22 @@ public class S3StorageService {
 
         return baseUrl + awsDirectory.path + filename;
 
+    }
+
+    public String uploadFile(MultipartFile file, AWSDirectory awsDirectory, String lessonName) throws IOException {
+        StringBuilder filename = new StringBuilder(UUID.randomUUID() + ".mp3");
+        String awsBucketName = awsDirectory.path  + lessonName + "/";
+
+        File convertedFile = convertMultipartFileToFile(file);
+
+        s3Client.putObject(new PutObjectRequest(bucketName, awsBucketName + filename, convertedFile));
+
+        boolean isDeleted = convertedFile.delete();
+        if (!isDeleted) {
+            log.warn(String.format("%s silinemedi", file.getOriginalFilename()));
+        }
+
+        return baseUrl + awsBucketName + filename;
     }
 
     public String uploadFile(File file, AWSDirectory awsDirectory) {
