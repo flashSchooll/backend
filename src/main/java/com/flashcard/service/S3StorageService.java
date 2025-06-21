@@ -58,7 +58,7 @@ public class S3StorageService {
 
     public String uploadFile(MultipartFile file, AWSDirectory awsDirectory, String lessonName) throws IOException {
         StringBuilder filename = new StringBuilder(UUID.randomUUID() + ".mp3");
-        String awsBucketName = awsDirectory.path  + lessonName + "/";
+        String awsBucketName = awsDirectory.path + lessonName + "/";
 
         File convertedFile = convertMultipartFileToFile(file);
 
@@ -106,7 +106,7 @@ public class S3StorageService {
     }
 
 
-    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
+    public File convertMultipartFileToFile(MultipartFile file) throws IOException {
         File convertedFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
 
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {

@@ -27,4 +27,7 @@ public class Podcast {
     @NotNull
     private String title;
 
+    @NotNull
+    private Integer duration;
+
 }

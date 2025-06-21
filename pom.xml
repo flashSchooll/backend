@@ -32,7 +32,7 @@
         <spring-ai.version>1.0.0-M4</spring-ai.version>
     </properties>
     <repositories>
-      <repository>
+        <repository>
             <id>com.e-iceblue</id>
             <name>e-iceblue</name>
             <url>https://repo.e-iceblue.com/nexus/content/groups/public/</url>
@@ -202,7 +202,13 @@
             <groupId>e-iceblue</groupId>
             <artifactId>spire.xls</artifactId>
             <version>15.2.1</version>
-         </dependency>
+        </dependency>
+
+        <dependency>
+            <groupId>net.jthink</groupId>
+            <artifactId>jaudiotagger</artifactId>
+            <version>3.0.1</version>
+        </dependency>
 
     </dependencies>
 
