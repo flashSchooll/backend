@@ -20,17 +20,23 @@ public class PodcastUserController {
 
     @GetMapping("/{topicId}")
     public ResponseEntity<List<PodcastUserResponse>> getPodcastByTopicId(@PathVariable("topicId") Long topicId) {
-        List<Podcast> podcastList = podcastService.getByTopic(topicId);
-        List<PodcastUserResponse> podcastUserResponses = podcastList.stream().map(PodcastUserResponse::new).toList();
+        List<PodcastUserResponse> responses = podcastService.getByTopic(topicId);
 
-        return ResponseEntity.ok(podcastUserResponses);
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{podcastId}")
     public ResponseEntity<PodcastUserResponse> getPodcastById(@PathVariable("podcastId") Long podcastId) {
         Podcast podcast = podcastService.getById(podcastId);
-        PodcastUserResponse podcastUserResponses = new PodcastUserResponse(podcast);
+        PodcastUserResponse podcastUserResponses = new PodcastUserResponse(podcast,false);
 
         return ResponseEntity.ok(podcastUserResponses);
+    }
+
+    @PostMapping("/save/{podcastId}")
+    public ResponseEntity<String> savePodcast(@PathVariable Long podcastId) {
+        podcastService.saveForUser(podcastId);
+
+        return ResponseEntity.ok("Podcast Saved");
     }
 }

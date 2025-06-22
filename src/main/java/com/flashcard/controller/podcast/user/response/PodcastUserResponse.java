@@ -11,11 +11,14 @@ public class PodcastUserResponse {
     private final String title;
     private final Long topicId;
     private final Integer duration;
+    private final boolean seen; // Final olarak kalır ama constructor'da set edilir
 
-    public PodcastUserResponse(Podcast podcast) {
+    // Constructor'a seen parametresi eklendi
+    public PodcastUserResponse(Podcast podcast, boolean seen) {
         this.path = podcast.getPath();
         this.title = podcast.getTitle();
         this.topicId = podcast.getTopic().getId();
         this.duration = podcast.getDuration();
+        this.seen = seen; // Dışarıdan gelen seen değeri
     }
 }

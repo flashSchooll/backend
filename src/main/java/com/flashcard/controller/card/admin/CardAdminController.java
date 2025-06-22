@@ -58,8 +58,8 @@ public class CardAdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CardResponse> update(@PathVariable Long id,
                                                @RequestPart CardUpdateRequest cardUpdateRequest,
-                                               @RequestPart MultipartFile frontFile,
-                                               @RequestPart MultipartFile backFile) throws IOException {
+                                               @RequestPart(required = false) MultipartFile frontFile,
+                                               @RequestPart(required = false) MultipartFile backFile) throws IOException {
 
         Card response = cardService.update(cardUpdateRequest, id, frontFile, backFile);
 

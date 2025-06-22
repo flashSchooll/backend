@@ -1,10 +1,15 @@
 package com.flashcard.service;
 
+import com.flashcard.controller.podcast.user.response.PodcastUserResponse;
+import com.flashcard.model.MyPodcast;
 import com.flashcard.model.Podcast;
 import com.flashcard.model.Topic;
+import com.flashcard.model.User;
 import com.flashcard.model.enums.AWSDirectory;
+import com.flashcard.repository.MyPodcastRepository;
 import com.flashcard.repository.PodcastRepository;
 import com.flashcard.repository.TopicRepository;
+import com.flashcard.security.services.AuthService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +28,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +37,9 @@ public class PodcastService {
     private final PodcastRepository podcastRepository;
     private final TopicRepository topicRepository;
     private final S3StorageService s3StorageService;
+    private final AuthService authService;
+    private final MyPodcastRepository myPodcastRepository;
+
     private final Logger log = LoggerFactory.getLogger(PodcastService.class);
 
     @Transactional
@@ -81,10 +91,25 @@ public class PodcastService {
         }
     }
 
-    public List<Podcast> getByTopic(Long topicId) {
+    public List<PodcastUserResponse> getByTopic(Long topicId) {
         Objects.requireNonNull(topicId);
+        User user = authService.getCurrentUser();
 
-        return podcastRepository.findByTopicIdAndPublishedTrue(topicId);
+        List<Podcast> podcastList = podcastRepository.findByTopicIdAndPublishedTrue(topicId);
+        List<MyPodcast> myPodcastList = myPodcastRepository.findByUserAndPodcastTopicId(user, topicId);
+
+        // Kullanıcının dinlediği podcast'lerin ID'lerini bir Set'e al
+        Set<Long> seenPodcastIds = myPodcastList.stream()
+                .map(myPodcast -> myPodcast.getPodcast().getId())
+                .collect(Collectors.toSet());
+
+        // Podcast listesini dönüştürürken seen durumunu kontrol et
+        return podcastList.stream()
+                .map(podcast -> {
+                    boolean seen = seenPodcastIds.contains(podcast.getId());
+                    return new PodcastUserResponse(podcast, seen); // Güncellenmiş constructor
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -127,5 +152,21 @@ public class PodcastService {
     public Podcast getById(Long podcastId) {
         return podcastRepository.findByIdAndPublishedTrue(podcastId)
                 .orElseThrow(() -> new EntityNotFoundException("Podcast not found"));
+    }
+
+    @Transactional
+    public void saveForUser(Long podcastId) {
+        Objects.requireNonNull(podcastId);
+        User user = authService.getCurrentUser();
+        Podcast podcast = podcastRepository.findById(podcastId)
+                .orElseThrow(() -> new EntityNotFoundException("Podcast not found"));
+
+        MyPodcast myPodcast = MyPodcast.builder().podcast(podcast).user(user).build();
+
+        myPodcastRepository.save(myPodcast);
+    }
+
+    public List<Podcast> getByTopicByAdmin(Long topicId) {
+        return podcastRepository.findByTopicId(topicId);
     }
 }

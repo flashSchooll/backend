@@ -43,7 +43,7 @@ public class PodcastAdminController {
 
     @GetMapping("/get-all/{topicId}")
     public ResponseEntity<List<PodcastAdminResponse>> getAll(@PathVariable Long topicId) {
-        List<Podcast> podcastList = podcastService.getByTopic(topicId);
+        List<Podcast> podcastList = podcastService.getByTopicByAdmin(topicId);
         List<PodcastAdminResponse> responses = podcastList.stream().map(PodcastAdminResponse::new).toList();
 
         return ResponseEntity.ok(responses);
