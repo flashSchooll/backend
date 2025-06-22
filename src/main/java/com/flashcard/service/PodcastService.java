@@ -84,7 +84,7 @@ public class PodcastService {
     public List<Podcast> getByTopic(Long topicId) {
         Objects.requireNonNull(topicId);
 
-        return podcastRepository.findByTopicId(topicId);
+        return podcastRepository.findByTopicIdAndPublishedTrue(topicId);
     }
 
     @Transactional
@@ -122,5 +122,10 @@ public class PodcastService {
         s3StorageService.deleteFile(podcast.getPath());
 
         podcastRepository.delete(podcast);
+    }
+
+    public Podcast getById(Long podcastId) {
+        return podcastRepository.findByIdAndPublishedTrue(podcastId)
+                .orElseThrow(() -> new EntityNotFoundException("Podcast not found"));
     }
 }

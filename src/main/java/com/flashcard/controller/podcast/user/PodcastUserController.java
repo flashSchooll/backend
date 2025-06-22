@@ -13,7 +13,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/podcast/user")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('USER,ADMIN')")
 @RequiredArgsConstructor
 public class PodcastUserController {
     private final PodcastService podcastService;
@@ -22,6 +22,14 @@ public class PodcastUserController {
     public ResponseEntity<List<PodcastUserResponse>> getPodcastByTopicId(@PathVariable("topicId") Long topicId) {
         List<Podcast> podcastList = podcastService.getByTopic(topicId);
         List<PodcastUserResponse> podcastUserResponses = podcastList.stream().map(PodcastUserResponse::new).toList();
+
+        return ResponseEntity.ok(podcastUserResponses);
+    }
+
+    @GetMapping("/{podcastId}")
+    public ResponseEntity<PodcastUserResponse> getPodcastById(@PathVariable("podcastId") Long podcastId) {
+        Podcast podcast = podcastService.getById(podcastId);
+        PodcastUserResponse podcastUserResponses = new PodcastUserResponse(podcast);
 
         return ResponseEntity.ok(podcastUserResponses);
     }
