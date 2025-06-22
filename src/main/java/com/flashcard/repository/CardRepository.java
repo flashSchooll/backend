@@ -95,4 +95,10 @@ public interface CardRepository extends JpaRepository<Card, Long> {
                     LIMIT 50
             """, nativeQuery = true)
     List<Card> getUserRepeatCardsAndMyCards(@Param("userId") Long userId); // todo test edilecek
+
+    @Query("SELECT c.frontPhotoPath FROM Card c")
+    List<String> findAllFrontPath();
+
+    @Query("SELECT c.backPhotoPath FROM Card c")
+    List<String> findAllBackPath();
 }
