@@ -30,4 +30,6 @@ public class Podcast {
     @NotNull
     private Integer duration;
 
+    private boolean published = false;
+
 }

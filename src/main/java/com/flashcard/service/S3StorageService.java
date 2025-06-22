@@ -1,5 +1,6 @@
 package com.flashcard.service;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -101,7 +102,11 @@ public class S3StorageService {
 
     public void deleteFile(String filename) {
 
-        s3Client.deleteObject(bucketName, filename.substring(baseUrl.length()));
+        try {
+            s3Client.deleteObject(bucketName, filename.substring(baseUrl.length()));
+        } catch (SdkClientException e) {
+            log.error("Error deleting file from s3 {}", filename, e);
+        }
 
     }
 

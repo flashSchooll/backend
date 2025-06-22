@@ -86,4 +86,41 @@ public class PodcastService {
 
         return podcastRepository.findByTopicId(topicId);
     }
+
+    @Transactional
+    public void publish(Long podcastId) {
+        Objects.requireNonNull(podcastId);
+
+        Podcast podcast = podcastRepository.findById(podcastId)
+                .orElseThrow(() -> new EntityNotFoundException("Podcast not found"));
+        if (podcast.isPublished()) {
+            throw new IllegalArgumentException("Podcast is already published");
+        }
+        podcast.setPublished(true);
+
+        podcastRepository.save(podcast);
+    }
+
+    @Transactional
+    public void publishByTopic(Long topicId) {
+        Objects.requireNonNull(topicId);
+
+        List<Podcast> podcasts = podcastRepository.findByTopicId(topicId);
+
+        podcasts.forEach(podcast -> podcast.setPublished(true));
+
+        podcastRepository.saveAll(podcasts);
+    }
+
+    @Transactional
+    public void delete(Long podcastId) {
+        Objects.requireNonNull(podcastId);
+
+        Podcast podcast = podcastRepository.findById(podcastId)
+                .orElseThrow(() -> new EntityNotFoundException("Podcast not found"));
+
+        s3StorageService.deleteFile(podcast.getPath());
+
+        podcastRepository.delete(podcast);
+    }
 }
