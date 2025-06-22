@@ -24,13 +24,13 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api/card/admin")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class CardAdminController {
 
     private final CardService cardService;
     private final FlashCardRepository flashCardRepository;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CardResponse> save(@RequestPart @Valid CardSaveRequest cardSaveRequest,
                                              @RequestPart(required = false) MultipartFile frontFile,
                                              @RequestPart(required = false) MultipartFile backFile) throws IOException {
@@ -43,7 +43,6 @@ public class CardAdminController {
     }
 
     @PostMapping("/create-all/{flashcardId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> saveAll(@RequestBody @Valid CardSaveAllRequest request,
                                                       @PathVariable Long flashcardId) throws IOException {
 
@@ -55,7 +54,6 @@ public class CardAdminController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CardResponse> update(@PathVariable Long id,
                                                @RequestPart CardUpdateRequest cardUpdateRequest,
                                                @RequestPart(required = false) MultipartFile frontFile,
@@ -69,7 +67,6 @@ public class CardAdminController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
 
         cardService.delete(id);
@@ -77,8 +74,23 @@ public class CardAdminController {
         return ResponseEntity.ok("Card başarıyla silindi");
     }
 
+    @DeleteMapping("/front-path/{id}")
+    public ResponseEntity<String> deleteFrontPath(@PathVariable Long id) {
+
+        cardService.deleteFrontPath(id);
+
+        return ResponseEntity.ok("Resim başarıyla silindi");
+    }
+
+    @DeleteMapping("/back-path/{id}")
+    public ResponseEntity<String> deleteBackPath(@PathVariable Long id) {
+
+        cardService.deleteBackPath(id);
+
+        return ResponseEntity.ok("Resim başarıyla silindi");
+    }
+
     @GetMapping("/get-all/{flashcardId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CardResponse>> getAll(@PathVariable Long flashcardId) {
         Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));

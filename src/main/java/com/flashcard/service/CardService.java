@@ -250,4 +250,27 @@ public class CardService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void deleteFrontPath(Long id) {
+        Objects.requireNonNull(id);
+
+        Card card = cardRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
+
+        card.setFrontPhotoPath(null);
+
+        cardRepository.save(card);
+    }
+
+    @Transactional
+    public void deleteBackPath(Long id) {
+        Objects.requireNonNull(id);
+
+        Card card = cardRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
+
+        card.setBackPhotoPath(null);
+
+        cardRepository.save(card);
+    }
 }
