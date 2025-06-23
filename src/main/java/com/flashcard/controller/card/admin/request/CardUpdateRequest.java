@@ -1,6 +1,5 @@
 package com.flashcard.controller.card.admin.request;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,11 +9,9 @@ import lombok.Setter;
 public class CardUpdateRequest {
 
     @Size(max = 256)
-    @NotBlank
     private String frontFace;
 
     @Size(max = 256)
-    @NotBlank
     private String backFace;
 
 }
