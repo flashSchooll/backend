@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -96,8 +97,9 @@ public class CardAdminController {
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
         List<Card> response = cardService.getAll(flashcard);
 
-        List<CardResponse> cardResponses = response.stream().map(CardResponse::new).toList();
+        List<CardResponse> sortedCardResponses = new java.util.ArrayList<>(response.stream().map(CardResponse::new).toList());
+        sortedCardResponses.sort(Comparator.comparingInt(CardResponse::getIndex));
 
-        return ResponseEntity.ok(cardResponses);
+        return ResponseEntity.ok(sortedCardResponses);
     }
 }
