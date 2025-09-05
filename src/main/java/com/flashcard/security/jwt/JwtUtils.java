@@ -27,6 +27,7 @@ public class JwtUtils {
     public String generateJwtToken(Authentication authentication) {
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        // long jwtExpirationMs = j; // 24 hours in milliseconds // todo kaldırılacak
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getEmail()))

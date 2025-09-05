@@ -23,13 +23,21 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 
-        authService.register(signUpRequest, null);
+        //   authService.register(signUpRequest, null);
 
         return ResponseEntity.ok(Constants.USER_SUCCESSFULLY_SAVED);
     }
 
+    // @PostMapping("/signin")
+    // public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+//
+    //     JwtResponse jwtResponse = authService.signIn(loginRequest);
+//
+    //     return ResponseEntity.ok(jwtResponse);
+    // }
+
     @PostMapping("/signin")
-    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {  // todo daha sonra kaldırılacak
 
         JwtResponse jwtResponse = authService.signIn(loginRequest);
 
@@ -67,11 +75,10 @@ public class AuthController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> newPassword(@Valid @RequestBody NewPasswordRequest newPasswordRequest) {
 
-         authService.newPassword(newPasswordRequest);
+        authService.newPassword(newPasswordRequest);
 
         return ResponseEntity.ok("Şifre başarıyla oluşturuldu");
     }
-
 
 
 }
