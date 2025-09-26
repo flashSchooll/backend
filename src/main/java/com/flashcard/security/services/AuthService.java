@@ -109,7 +109,7 @@ public class AuthService {
 
         return new JwtResponse(jwt,
                 userDetails.getId(),
-                userDetails.getUsername(),
+                userDetails.getUsername(),// todo burası sorun olabilir
                 userDetails.getSurname(),
                 userDetails.getEmail(),
                 roles);
