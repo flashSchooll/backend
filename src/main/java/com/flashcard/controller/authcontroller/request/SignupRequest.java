@@ -1,7 +1,10 @@
 package com.flashcard.controller.authcontroller.request;
 
 import com.flashcard.model.enums.Branch;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +24,6 @@ public class SignupRequest {
 
     @NotBlank
     @Size(min = 8, max = 40)
-  //  @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$",message = "Lütfen Geçerli bir şifre giriniz")
     private String password;
 
     @NotBlank

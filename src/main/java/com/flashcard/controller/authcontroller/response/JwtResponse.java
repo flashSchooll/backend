@@ -1,5 +1,6 @@
 package com.flashcard.controller.authcontroller.response;
 
+import com.flashcard.model.enums.Branch;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,9 @@ public class JwtResponse {
     private String surname;
     private String email;
     private List<String> roles;
+    private Integer star = null;
+    private Integer rosette = null;
+    private Branch branch = null;
 
     public JwtResponse(String accessToken, Long id, String username, String surname, String email, List<String> roles) {
         this.token = accessToken;

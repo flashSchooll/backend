@@ -3,13 +3,19 @@ package com.flashcard.controller.authcontroller;
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.authcontroller.request.*;
 import com.flashcard.controller.authcontroller.response.JwtResponse;
+import com.flashcard.model.User;
+import com.flashcard.model.enums.Branch;
 import com.flashcard.payload.response.MessageResponse;
 import com.flashcard.security.services.AuthService;
+import com.flashcard.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -19,11 +25,15 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<Object> registerUser(
+            @RequestPart MultipartFile photo,
+            @Valid @RequestPart SignupRequest signUpRequest
+    ) throws IOException {
 
-        //   authService.register(signUpRequest, null);
+        authService.register(signUpRequest, photo);
 
         return ResponseEntity.ok(Constants.USER_SUCCESSFULLY_SAVED);
     }
@@ -40,7 +50,10 @@ public class AuthController {
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {  // todo daha sonra kaldırılacak
 
         JwtResponse jwtResponse = authService.signIn(loginRequest);
-
+        User user = userService.getUserById(jwtResponse.getId());
+        jwtResponse.setStar(user.getStar());
+        jwtResponse.setRosette(user.getRosette());
+        jwtResponse.setBranch(user.getBranch());
         return ResponseEntity.ok(jwtResponse);
     }
 

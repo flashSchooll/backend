@@ -21,10 +21,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.UUID;
@@ -40,6 +37,12 @@ public class S3StorageService {
     private String baseUrl;
 
     private final AmazonS3 s3Client;
+
+    private static final long MAX_FILE_SIZE_BYTES = 500 * 1024;
+    private static final float INITIAL_QUALITY = 0.7f;
+    private static final float QUALITY_STEP = 0.05f;
+    private static final float MIN_QUALITY = 0.1f;
+
 
     public String uploadFile(MultipartFile file, AWSDirectory awsDirectory) throws IOException {
         MultipartFile multipartFile = zipFile(file);
@@ -124,19 +127,20 @@ public class S3StorageService {
         return convertedFile;
     }
 
-    private MultipartFile zipFile(MultipartFile file) throws IOException {
-        // Dosyanın boyutunu kontrol et (500 KB'dan küçükse, işlem yapma)
-        if (file.getSize() < 500 * 1024) {
-            return file; // Eğer dosya 500 KB'dan küçükse, orijinal dosyayı geri döndür
+
+    public MultipartFile zipFile(MultipartFile file) throws IOException {
+        // 1. Boyut Kontrolü (Küçükse Sıkıştırma Yapma)
+        if (file.getSize() < MAX_FILE_SIZE_BYTES) {
+            return file;
         }
 
-        // Görüntüyü okuyun
+        // Görüntü okuma
         BufferedImage inputImage = ImageIO.read(file.getInputStream());
         if (inputImage == null) {
-            throw new IllegalArgumentException("Invalid image file");
+            throw new IllegalArgumentException("Invalid image file format or cannot be read.");
         }
 
-        // Resmi yeniden boyutlandır
+        // 2. Görüntüyü Yeniden Boyutlandır (İlk Sıkıştırma Adımı)
         int width = inputImage.getWidth() / 2;
         int height = inputImage.getHeight() / 2;
         BufferedImage outputImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -144,39 +148,105 @@ public class S3StorageService {
         g2d.drawImage(inputImage, 0, 0, width, height, null);
         g2d.dispose();
 
-        // JPEG formatında sıkıştırma için writer alın
+        // 3. ImageWriter Hazırlığı
         Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
         if (!writers.hasNext()) {
-            throw new UnsupportedOperationException("JPEG writer not available");
+            throw new UnsupportedOperationException("JPEG writer not available on this system.");
         }
         ImageWriter writer = writers.next();
+
+        // writer'ı kullanmak için ByteArrayOutputStream ve ImageOutputStream oluşturulur
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
         writer.setOutput(ios);
 
+        // 4. Sıkıştırma Parametrelerini Ayarlama
         ImageWriteParam param = writer.getDefaultWriteParam();
         if (param.canWriteCompressed()) {
             param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            param.setCompressionQuality(0.7f); // Başlangıç kalitesi
+            param.setCompressionQuality(INITIAL_QUALITY);
         }
 
-        writer.write(null, new IIOImage(outputImage, null, null), param);
-        writer.dispose();
-        ios.close();
-        byte[] imageData = baos.toByteArray();
+        byte[] imageData;
+        float currentQuality = INITIAL_QUALITY;
 
-        // Dosya boyutunu kontrol et ve kaliteyi azalt
-        while (imageData.length > 500 * 1024) { // 500 KB civarına küçült
-            baos.reset();
-            param.setCompressionQuality(param.getCompressionQuality() - 0.05f); // Her seferinde kaliteyi biraz azalt
-            if (param.getCompressionQuality() <= 0.1f) {
-                throw new IOException("Cannot reduce image size below 500 KB");
+        try {
+            // 5. Kalite Kontrol Döngüsü
+            while (true) {
+                baos.reset(); // Önceki denemenin verisini temizle
+
+                // Kalite ayarını yap
+                param.setCompressionQuality(currentQuality);
+
+                // Resmi sıkıştırıp hafızaya yaz
+                writer.write(null, new IIOImage(outputImage, null, null), param);
+
+                imageData = baos.toByteArray();
+
+                // Boyut kontrolü
+                if (imageData.length <= MAX_FILE_SIZE_BYTES) {
+                    break; // Boyut hedefimize ulaştık, döngüyü kır.
+                }
+
+                // Kaliteyi düşür ve tekrar dene
+                currentQuality -= QUALITY_STEP;
+
+                // Eğer minimum kaliteye ulaşıldıysa ve hala büyükse hata fırlat
+                if (currentQuality <= MIN_QUALITY) {
+                    throw new IOException("Cannot reduce image size below " + (MAX_FILE_SIZE_BYTES / 1024) + " KB even at minimum quality (" + MIN_QUALITY + ").");
+                }
             }
-            writer.write(null, new IIOImage(outputImage, null, null), param);
-            imageData = baos.toByteArray();
+        } finally {
+            // 6. Kaynakları Serbest Bırak (Döngüden sonra)
+            writer.dispose(); // <-- Hatanın düzeltildiği yer
+            ios.close();
+            baos.close();
         }
 
+        // 7. Yeni MultipartFile oluştur
         return new CustomMultipartFile(imageData, file.getOriginalFilename(), "image/jpeg");
+    }
+
+    /**
+     * JPEG sıkıştırma işlemi bittikten sonra oluşan byte dizisinden
+     * MultipartFile arayüzünü uygulayan özel bir sınıf.
+     */
+    private static class CustomMultipartFile implements MultipartFile {
+        private final byte[] bytes;
+        private final String originalFilename;
+        private final String contentType;
+
+        public CustomMultipartFile(byte[] bytes, String originalFilename, String contentType) {
+            this.bytes = bytes;
+            this.originalFilename = originalFilename;
+            this.contentType = contentType;
+        }
+
+        @Override
+        public String getName() { return "file"; }
+
+        @Override
+        public String getOriginalFilename() { return originalFilename; }
+
+        @Override
+        public String getContentType() { return contentType; }
+
+        @Override
+        public boolean isEmpty() { return bytes == null || bytes.length == 0; }
+
+        @Override
+        public long getSize() { return bytes.length; }
+
+        @Override
+        public byte[] getBytes() { return bytes; }
+
+        @Override
+        public InputStream getInputStream() { return new ByteArrayInputStream(bytes); }
+
+        @Override
+        public void transferTo(java.io.File dest) throws IOException, IllegalStateException {
+            new java.io.FileOutputStream(dest).write(bytes);
+        }
     }
 
 }

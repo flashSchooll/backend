@@ -8,6 +8,7 @@ import com.flashcard.exception.ResourceNotFoundException;
 import com.flashcard.model.PasswordResetCode;
 import com.flashcard.model.Role;
 import com.flashcard.model.User;
+import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.model.enums.ERole;
 import com.flashcard.repository.EmailSender;
 import com.flashcard.repository.PasswordResetRepository;
@@ -16,6 +17,7 @@ import com.flashcard.repository.UserRepository;
 import com.flashcard.security.jwt.JwtUtils;
 import com.flashcard.service.EmailService;
 import com.flashcard.service.PasswordResetService;
+import com.flashcard.service.S3StorageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -43,12 +46,13 @@ public class AuthService {
     private final EmailSender emailSender;
     private final EmailService emailService;
     private final PasswordResetRepository passwordResetRepository;
+    private final S3StorageService s3StorageService;
 
     private static final Random random = new Random();
 
     @Transactional
     //  @CacheEvict(value = "users", key = "'allUsers'")
-    public void register(@Valid SignupRequest signUpRequest, MultipartFile file) {
+    public void register(@Valid SignupRequest signUpRequest, MultipartFile file) throws IOException {
 
         if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {
             throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXISTS, signUpRequest.getEmail()));
@@ -75,6 +79,15 @@ public class AuthService {
         roles.add(userRole);
 
         user.setRoles(roles);
+
+        if (file.getSize() > 5 * 1024 * 1024) {
+            throw new BadRequestException("Dosya boyutu 5 mb dan büyük olamaz");
+        }
+
+        String url = s3StorageService.uploadFile(file, AWSDirectory.USERS);
+
+        user.setPhotoPath(url);
+
         userRepository.save(user);
     }
 
