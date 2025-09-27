@@ -4,10 +4,12 @@ import com.flashcard.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,4 +45,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE id = :id",
             nativeQuery = true)
     Long findOrderByUser(@Param("id") Long id);
+
+    @Modifying
+    @Query("""
+        UPDATE User u
+        SET u.series = 0
+        WHERE u.id NOT IN (
+            SELECT us.user.id FROM UserSeries us WHERE us.date = :yesterday
+        )
+    """)
+    int resetSeriesForInactiveUsers(@Param("yesterday") LocalDate yesterday);
 }

@@ -67,6 +67,7 @@ public class User {// kullanıcı bilgisini tutar
 
     private String photoPath;
 
+    private Integer series = 0;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -119,5 +120,9 @@ public class User {// kullanıcı bilgisini tutar
 
     public String getUserNameAndSurname() {
         return userName + " " + userSurname;
+    }
+
+    public void updateSeriesCount() {
+        this.series = this.series + 1;
     }
 }

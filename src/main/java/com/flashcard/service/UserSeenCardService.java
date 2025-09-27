@@ -32,6 +32,7 @@ public class UserSeenCardService {
     private final UserCardPercentageService userCardPercentageService;
     private final TopicRepository topicRepository;
     private final DailyTargetService dailyTargetService;
+    private final UserSeriesService userSeriesService;
 
     @Transactional
     public List<UserSeenCard> save(@Valid UserSeenCardSaveRequest userCardSeenSaveRequest) {
@@ -75,7 +76,7 @@ public class UserSeenCardService {
 
             user.raiseRosette();
             user.raiseStar(userCardSeenSaveRequest.getUserCardSeenRequestList().size());
-
+            userSeriesService.save(user);// her gün için seri sayısını artır
             userCardPercentageService.updatePercentage(user, flashcard, userCardSeenSaveRequest.getUserCardSeenRequestList().size());
         }
 
@@ -127,8 +128,8 @@ public class UserSeenCardService {
         return userSeenCardRepository.findByUserAndCardFlashcardTopic(user, topic);
     }
 
-    public List<Long> findFlashcardIdsByTopic(User user,Long topicId) {
+    public List<Long> findFlashcardIdsByTopic(User user, Long topicId) {
 
-        return userSeenCardRepository.findByUserAndCardFlashcardTopic(user,topicId);
+        return userSeenCardRepository.findByUserAndCardFlashcardTopic(user, topicId);
     }
 }
