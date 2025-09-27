@@ -43,7 +43,7 @@ public class PodcastService {
     private final Logger log = LoggerFactory.getLogger(PodcastService.class);
 
     @Transactional
-    public String savePodcast(MultipartFile file, Long topicId, String title) throws IOException {
+    public String savePodcast(MultipartFile file, MultipartFile photo, Long topicId, String title) throws IOException {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("file boş olamaz");
         }
@@ -52,6 +52,7 @@ public class PodcastService {
                 .orElseThrow(() -> new EntityNotFoundException("Topic not found"));
 
         String path = s3StorageService.uploadFile(file, AWSDirectory.PODCAST, topic.getLesson().getYksLesson().name());
+        String photoPath = s3StorageService.uploadFile(photo, AWSDirectory.PODCAST);
 
         Integer duration = getMp3DurationInSeconds(file);
 
@@ -60,6 +61,7 @@ public class PodcastService {
         podcast.setPath(path);
         podcast.setTitle(title);
         podcast.setDuration(duration);
+        podcast.setPhotoPath(photoPath);
 
         podcastRepository.save(podcast);
 

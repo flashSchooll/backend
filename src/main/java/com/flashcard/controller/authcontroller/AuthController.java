@@ -54,6 +54,7 @@ public class AuthController {
         jwtResponse.setStar(user.getStar());
         jwtResponse.setRosette(user.getRosette());
         jwtResponse.setBranch(user.getBranch());
+        jwtResponse.setSeries(user.getSeries());
         return ResponseEntity.ok(jwtResponse);
     }
 

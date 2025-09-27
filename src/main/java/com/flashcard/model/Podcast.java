@@ -24,6 +24,9 @@ public class Podcast {
     @NotBlank
     private String path;
 
+    @NotBlank
+    private String photoPath;
+
     @NotNull
     private String title;
 

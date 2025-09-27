@@ -20,6 +20,7 @@ public class JwtResponse {
     private Integer star = null;
     private Integer rosette = null;
     private Branch branch = null;
+    private Integer series = null;
 
     public JwtResponse(String accessToken, Long id, String username, String surname, String email, List<String> roles) {
         this.token = accessToken;

@@ -24,8 +24,9 @@ public class PodcastAdminController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> upload(@RequestPart MultipartFile file,
+                                         @RequestPart MultipartFile photo,
                                          @RequestPart PodcastSaveRequest request) throws IOException {
-        String path = podcastService.savePodcast(file, request.getTopicId(), request.getTitle());
+        String path = podcastService.savePodcast(file, photo, request.getTopicId(), request.getTitle());
         return ResponseEntity.ok(path);
     }
 
