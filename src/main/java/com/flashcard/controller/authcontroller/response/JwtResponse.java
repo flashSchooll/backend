@@ -21,6 +21,7 @@ public class JwtResponse {
     private Integer rosette = null;
     private Branch branch = null;
     private Integer series = null;
+    private String photoPath = null;
 
     public JwtResponse(String accessToken, Long id, String username, String surname, String email, List<String> roles) {
         this.token = accessToken;

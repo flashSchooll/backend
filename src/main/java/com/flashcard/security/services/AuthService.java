@@ -79,14 +79,15 @@ public class AuthService {
         roles.add(userRole);
 
         user.setRoles(roles);
+        if (!file.isEmpty()) {
+            if (file.getSize() > 5 * 1024 * 1024) {
+                throw new BadRequestException("Dosya boyutu 5 mb dan büyük olamaz");
+            }
 
-        if (file.getSize() > 5 * 1024 * 1024) {
-            throw new BadRequestException("Dosya boyutu 5 mb dan büyük olamaz");
+            String url = s3StorageService.uploadFile(file, AWSDirectory.USERS);
+
+            user.setPhotoPath(url);
         }
-
-        String url = s3StorageService.uploadFile(file, AWSDirectory.USERS);
-
-        user.setPhotoPath(url);
 
         userRepository.save(user);
     }

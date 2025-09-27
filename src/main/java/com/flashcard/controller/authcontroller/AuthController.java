@@ -29,7 +29,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(
-            @RequestPart MultipartFile photo,
+            @RequestPart(required = false) MultipartFile photo,
             @Valid @RequestPart SignupRequest signUpRequest
     ) throws IOException {
 
@@ -55,6 +55,7 @@ public class AuthController {
         jwtResponse.setRosette(user.getRosette());
         jwtResponse.setBranch(user.getBranch());
         jwtResponse.setSeries(user.getSeries());
+        jwtResponse.setPhotoPath(user.getPhotoPath());
         return ResponseEntity.ok(jwtResponse);
     }
 
