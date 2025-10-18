@@ -12,7 +12,9 @@ import com.flashcard.repository.MyCardsRepository;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,7 +78,7 @@ public class MyCardsService {
         return myCardsRepository.findByUser(user, difficultyLevel);
     }
 
-    @Cacheable(value = "myCards", key = "{#userId,#flashcard.id}")
+   // @Cacheable(value = "myCards", key = "{#userId,#flashcard.id}")
     public List<Long> getAll(Long userId,Flashcard flashcard) {
 
         List<Card> cards = cardRepository.findCardsWithFlashcard(flashcard);
