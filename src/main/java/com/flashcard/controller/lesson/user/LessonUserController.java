@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -28,7 +29,10 @@ public class LessonUserController {
         User user = authService.getCurrentUser();
         List<UserCardPercentage> userCardPercentageList = userCardPercentageService.getTyt(user);
 
-        return userCardPercentageList.stream().map(TYTLessonCardSeenCountResponse::new).toList();
+        return userCardPercentageList.stream()
+                .sorted(Comparator.comparing(u -> u.getLesson().getIndex(), Comparator.nullsLast(Long::compareTo)))
+                .map(TYTLessonCardSeenCountResponse::new)
+                .toList();
     }
 
     @GetMapping("/ayt/get-all")

@@ -45,4 +45,6 @@ public class Lesson {//ders bilgisini tutar
     @NotBlank
     private String path;
 
+    private Long index;
+
 }
