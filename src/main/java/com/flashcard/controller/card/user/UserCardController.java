@@ -43,7 +43,7 @@ public class UserCardController {
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
         List<Card> response = cardService.getAll(flashcard);
-        List<MyCard> myCards = myCardsService.getAll(user.getId(), flashcard);
+        List<Long> myCards = myCardsService.getAll(user.getId(), flashcard);
 
         List<CardResponse> cardResponses = new java.util.ArrayList<>(response.stream().map(card -> new CardResponse(card, myCards)).toList());
         cardResponses.sort(Comparator.comparingInt(CardResponse::getIndex));

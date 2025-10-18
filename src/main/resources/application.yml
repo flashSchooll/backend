@@ -89,8 +89,8 @@ supabase:
 cloud:
   aws:
     credentials:
-      access-key: AKIAZ5TC5E2FRZOHIFNO
-      secret-key: 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
+      access-key: AKIAZ5TC5E2FUKITOOO5
+      secret-key: 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
     region:
       static: eu-north-1
     stack:

@@ -77,7 +77,7 @@ public class MyCardsService {
     }
 
     @Cacheable(value = "myCards", key = "{#userId,#flashcard.id}")
-    public List<MyCard> getAll(Long userId,Flashcard flashcard) {
+    public List<Long> getAll(Long userId,Flashcard flashcard) {
 
         List<Card> cards = cardRepository.findCardsWithFlashcard(flashcard);
 

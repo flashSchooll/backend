@@ -39,18 +39,15 @@ public class CardResponse {
         this.index = card.getIndex();
     }
 
-    public CardResponse(Card card, List<MyCard> myCards) {
-        MyCard myCard = myCards.stream()
-                .filter(cards -> Objects.equals(cards.getCard().getId(), card.getId()))
-                .findAny().orElse(null);
+    public CardResponse(Card card, List<Long> myCards) {
 
         this.id = card.getId();
         this.flashcardId = card.getFlashcard().getId();
         this.flashcardName = card.getFlashcard().getCardName();
         this.frontFace = card.getFrontFace();
         this.backFace = card.getBackFace();
-        this.difficultyLevel = myCard != null ? myCard.getDifficultyLevel() : null;
-        this.isSaved = myCard != null;
+        this.difficultyLevel = null;
+        this.isSaved = myCards.contains(card.getId());
         this.lesson = card.getFlashcard().getTopic().getLesson().getYksLesson().label;
         this.yks = card.getFlashcard().getTopic().getLesson().getYks().name();
         this.frontPhotoPath = card.getFrontPhotoPath();

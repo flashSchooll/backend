@@ -27,5 +27,6 @@ public interface MyCardsRepository extends JpaRepository<MyCard, Long> {
 
     List<MyCard> findByUserAndCardIn(User user, List<Card> cards);
 
-    List<MyCard> findByUserIdAndCardIn(Long userId, List<Card> cards);
+    @Query("select m.card.id from MyCard m  where m.user.id = :userId and m.card in :cards")
+    List<Long> findByUserIdAndCardIn(Long userId, List<Card> cards);
 }
