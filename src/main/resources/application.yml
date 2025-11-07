@@ -17,7 +17,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-      time_zone: Europe/Istanbul
   servlet:
     multipart:
       enabled: true

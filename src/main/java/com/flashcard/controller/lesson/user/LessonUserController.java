@@ -1,9 +1,12 @@
 package com.flashcard.controller.lesson.user;
 
+import com.flashcard.controller.lesson.user.response.LessonListResponse;
 import com.flashcard.controller.lesson.user.response.TYTLessonCardSeenCountResponse;
+import com.flashcard.model.Lesson;
 import com.flashcard.model.User;
 import com.flashcard.model.UserCardPercentage;
 import com.flashcard.security.services.AuthService;
+import com.flashcard.service.LessonService;
 import com.flashcard.service.UserCardPercentageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,7 @@ public class LessonUserController {
 
     private final UserCardPercentageService userCardPercentageService;
     private final AuthService authService;
+    private final LessonService lessonService;
 
     @GetMapping("/tyt/get-all")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -44,4 +48,15 @@ public class LessonUserController {
 
         return userCardPercentageList.stream().map(TYTLessonCardSeenCountResponse::new).toList();
     }
+
+    @GetMapping("/list")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public List<LessonListResponse> getLessonList(){
+        List<Lesson> lessons=lessonService.getAll();
+
+        return lessons.stream().map(LessonListResponse::new).toList();
+    }
+
+
 }

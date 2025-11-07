@@ -6,6 +6,7 @@ import com.flashcard.controller.statistic.response.UserRosetteStatistic;
 import com.flashcard.controller.statistic.response.UserStatisticAllResponse;
 import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
 import com.flashcard.model.DailyTarget;
+import com.flashcard.model.enums.YKS;
 import com.flashcard.service.CardService;
 import com.flashcard.service.DailyTargetService;
 import com.flashcard.service.UserService;
@@ -14,10 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,8 +44,10 @@ public class UserStatisticController {
 
     @GetMapping("/card")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<UserCardStatisticResponse> getCards() {
-        UserCardStatisticResponse response = cardService.getUserCardStatistic();
+    public ResponseEntity<UserCardStatisticResponse> getCards(
+            @RequestParam YKS yks
+    ) {
+        UserCardStatisticResponse response = cardService.getUserCardStatistic(yks);
 
         return ResponseEntity.ok(response);
     }

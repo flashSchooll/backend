@@ -3,6 +3,7 @@ package com.flashcard.service;
 import com.flashcard.model.DailyTarget;
 import com.flashcard.model.MonthDailyTarget;
 import com.flashcard.model.User;
+import com.flashcard.model.enums.YKS;
 import com.flashcard.repository.DailyTargetRepository;
 import com.flashcard.repository.MonthDailyTargetRepository;
 import com.flashcard.security.services.AuthService;
@@ -73,6 +74,21 @@ public class DailyTargetService {
     }
 
     public List<DailyTarget> getWeeklyTargets() {
+
+        LocalDate today = LocalDate.now();
+
+        LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
+
+        User user = authService.getCurrentUser();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(startOfWeek.format(formatter));
+        LocalDate endDate = LocalDate.parse(today.format(formatter));
+
+        return dailyTargetRepository.findByUserAndStartDateAndEndDate(user, startDate, endDate);
+    }
+
+    public List<DailyTarget> getWeeklyTargets(YKS yks) {
 
         LocalDate today = LocalDate.now();
 

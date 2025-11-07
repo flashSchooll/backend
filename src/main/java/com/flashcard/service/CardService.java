@@ -217,6 +217,35 @@ public class CardService {
                 .build();
     }
 
+    public UserCardStatisticResponse getUserCardStatistic(YKS yks) {
+
+        User user = authService.getCurrentUser();
+        Branch branch = user.getBranch();
+
+        int totalCount = 0;
+
+        int seenCard;
+        if (yks == YKS.AYT) {
+            totalCount = cardRepository.countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranchAndFlashcardCanBePublishTrue(YKS.AYT, branch);
+            seenCard = userSeenCardRepository.countByUserAndCardFlashcardTopicLessonYks(user, yks);
+        } else {
+            totalCount = cardRepository.countByFlashcardTopicLessonYksAndFlashcardCanBePublishTrue(YKS.TYT);
+            seenCard = userSeenCardRepository.countByUserAndCardFlashcardTopicLessonYks(user, yks);
+        }
+
+        int totalCard = totalCount;
+        int unseenCard = totalCard - seenCard;
+        double percentage = (double) seenCard / totalCard;
+
+        return UserCardStatisticResponse
+                .builder()
+                .seenCard(seenCard)
+                .percentage(percentage)
+                .totalCard(totalCard)
+                .unseenCard(unseenCard)
+                .build();
+    }
+
     public List<UserStatisticLessonResponse> getUserStatisticByLesson() {
 
         User user = authService.getCurrentUser();

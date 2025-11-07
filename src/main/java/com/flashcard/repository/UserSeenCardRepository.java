@@ -1,6 +1,7 @@
 package com.flashcard.repository;
 
 import com.flashcard.model.*;
+import com.flashcard.model.enums.YKS;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -49,4 +50,5 @@ public interface UserSeenCardRepository extends JpaRepository<UserSeenCard, Long
     List<Long> findByUserAndCardFlashcardTopic(@Param("user") User user, @Param("topicId") Long topicId);
 
 
+    int countByUserAndCardFlashcardTopicLessonYks(User user, YKS yks);
 }
