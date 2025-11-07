@@ -10,10 +10,12 @@ public class LessonListResponse {
     private final Long id;
     private final String lesson;
     private final String icon;
+    private final String yks;
 
     public LessonListResponse(Lesson lesson) {
         this.id = lesson.getId();
         this.lesson = lesson.getYksLesson().label;
         this.icon = lesson.getPath();
+        this.yks = lesson.getYks().name();
     }
 }
