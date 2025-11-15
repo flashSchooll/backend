@@ -37,4 +37,5 @@ public class SignupRequest {
 
     private Branch branch;
 
+    private String avatar;
 }

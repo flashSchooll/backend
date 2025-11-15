@@ -9,7 +9,8 @@ public enum AWSDirectory {
     CARDS("cards/"),
     LESSONS("lessons/"),
     USERS("users/"),
-    PODCAST("podcast/");
+    PODCAST("podcast/"),
+    AVATAR("avatar/");
 
     public final String path;
 }
