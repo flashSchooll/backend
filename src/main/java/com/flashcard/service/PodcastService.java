@@ -9,6 +9,7 @@ import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.repository.MyPodcastRepository;
 import com.flashcard.repository.PodcastRepository;
 import com.flashcard.repository.TopicRepository;
+import com.flashcard.repository.UserSeenPodcastRepository;
 import com.flashcard.security.services.AuthService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -39,6 +41,7 @@ public class PodcastService {
     private final S3StorageService s3StorageService;
     private final AuthService authService;
     private final MyPodcastRepository myPodcastRepository;
+    private final UserSeenPodcastRepository userSeenPodcastRepository;
 
     private final Logger log = LoggerFactory.getLogger(PodcastService.class);
 
@@ -98,12 +101,10 @@ public class PodcastService {
         User user = authService.getCurrentUser();
 
         List<Podcast> podcastList = podcastRepository.findByTopicIdAndPublishedTrue(topicId);
-        List<MyPodcast> myPodcastList = myPodcastRepository.findByUserAndPodcastTopicId(user, topicId);
+        List<Long> myPodcastList = userSeenPodcastRepository.findByUserAndPodcastTopicId(user, topicId);
 
         // Kullanıcının dinlediği podcast'lerin ID'lerini bir Set'e al
-        Set<Long> seenPodcastIds = myPodcastList.stream()
-                .map(myPodcast -> myPodcast.getPodcast().getId())
-                .collect(Collectors.toSet());
+        Set<Long> seenPodcastIds = new HashSet<>(myPodcastList);
 
         // Podcast listesini dönüştürürken seen durumunu kontrol et
         return podcastList.stream()
@@ -156,17 +157,7 @@ public class PodcastService {
                 .orElseThrow(() -> new EntityNotFoundException("Podcast not found"));
     }
 
-    @Transactional
-    public void saveForUser(Long podcastId) {
-        Objects.requireNonNull(podcastId);
-        User user = authService.getCurrentUser();
-        Podcast podcast = podcastRepository.findById(podcastId)
-                .orElseThrow(() -> new EntityNotFoundException("Podcast not found"));
 
-        MyPodcast myPodcast = MyPodcast.builder().podcast(podcast).user(user).build();
-
-        myPodcastRepository.save(myPodcast);
-    }
 
     public List<Podcast> getByTopicByAdmin(Long topicId) {
         return podcastRepository.findByTopicId(topicId);

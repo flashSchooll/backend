@@ -4,18 +4,19 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-@Entity(name = "MyPodcast")
-@Table(name = "my_podcast")
+@Entity(name = "UserSeenPodcast")
+@Table(name = "user_seen_podcast")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MyPodcast { // kaydetiğim podcastler
+public class UserSeenPodcast { // kullanıcının dinlediği podcastler
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
 
     @ManyToOne
     @NotNull
@@ -24,5 +25,4 @@ public class MyPodcast { // kaydetiğim podcastler
     @ManyToOne
     @NotNull
     private Podcast podcast;
-
 }

@@ -33,10 +33,4 @@ public class PodcastUserController {
         return ResponseEntity.ok(podcastUserResponses);
     }
 
-    @PostMapping("/save/{podcastId}")
-    public ResponseEntity<String> savePodcast(@PathVariable Long podcastId) {
-        podcastService.saveForUser(podcastId);
-
-        return ResponseEntity.ok("Podcast Saved");
-    }
 }
