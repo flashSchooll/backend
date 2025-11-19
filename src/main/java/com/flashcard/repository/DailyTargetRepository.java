@@ -37,4 +37,7 @@ public interface DailyTargetRepository extends JpaRepository<DailyTarget, Long> 
             "AND d.user = :user " +
             "ORDER BY d.day")
     List<DailyTarget> findByUserAndStartDateAndEndDate(User user, LocalDate startDate, LocalDate endDate);
+
+    List<DailyTarget> findAllByUserAndDayBetween(User user, LocalDate start, LocalDate end);
+
 }

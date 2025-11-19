@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RepeatTopicRepository extends JpaRepository<RepeatTopic, String> {
-    boolean existsByUserAntTopicId(User user, Long topicId);
+    boolean existsByUserAndTopicId(User user, Long topicId);
 
     RepeatTopic findByUserAndTopicId(User user, Long topicId);
 

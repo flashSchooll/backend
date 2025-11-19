@@ -16,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -121,5 +123,19 @@ public class DailyTargetService {
 
             dailyTargetRepository.save(dailyTarget);
         }
+    }
+
+    public List<String> getWeekly() {
+        User user = authService.getCurrentUser();
+        LocalDate today = LocalDate.now();
+
+        LocalDate monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
+        List<DailyTarget> weeklyTargets = dailyTargetRepository
+                .findAllByUserAndDayBetween(user, monday, today);
+
+        return weeklyTargets.stream()
+                .map(dt -> dt.getDay().getDayOfWeek().name())
+                .collect(Collectors.toList());
     }
 }

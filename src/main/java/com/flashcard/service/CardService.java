@@ -151,40 +151,40 @@ public class CardService {
         return cardRepository.findByFlashcard(flashcard);
     }
 
- /*   public List<Card> exploreForMe() {//todo bakılacak
+    /*   public List<Card> exploreForMe() {//todo bakılacak
 
-        User user = authService.getCurrentUser();
-        // RepeatFlashcard ve UserSeenCard tablolarından kartları al
-        List<Card> myCards = myCardsRepository.findByUser(user).stream().map(MyCard::getCard).toList();
+           User user = authService.getCurrentUser();
+           // RepeatFlashcard ve UserSeenCard tablolarından kartları al
+           List<Card> myCards = myCardsRepository.findByUser(user).stream().map(MyCard::getCard).toList();
 
 
-        List<Long> flashcards = repeatFlashcardRepository.findByUserWithTopicAndLesson(user).stream()
-                .map(repeatFlashcard -> repeatFlashcard.getFlashcards()) // RepeatFlashcard nesnesinden flashcards listesini alıyoruz
-                .flatMap(List::stream) // List içindeki tüm Flashcard'ları tek bir akışa düzleştiriyoruz
-                .map(Flashcard::getId) // Her bir Flashcard nesnesinin ID'sini alıyoruz
-                .collect(Collectors.toList()); // Akışı bir listeye topluyoruz
+           List<Long> flashcards = repeatFlashcardRepository.findByUserWithTopicAndLesson(user).stream()
+                   .map(repeatFlashcard -> repeatFlashcard.getFlashcards()) // RepeatFlashcard nesnesinden flashcards listesini alıyoruz
+                   .flatMap(List::stream) // List içindeki tüm Flashcard'ları tek bir akışa düzleştiriyoruz
+                   .map(Flashcard::getId) // Her bir Flashcard nesnesinin ID'sini alıyoruz
+                   .collect(Collectors.toList()); // Akışı bir listeye topluyoruz
 
-        // İki listeyi birleştir
-        List<Card> combinedCards = new ArrayList<>();
-        combinedCards.addAll(myCards);
-        //     combinedCards.addAll(cardList);
+           // İki listeyi birleştir
+           List<Card> combinedCards = new ArrayList<>();
+           combinedCards.addAll(myCards);
+           //     combinedCards.addAll(cardList);
 
-        if (!combinedCards.isEmpty()) {
-            // Rastgele 100 kart seç
-            Collections.shuffle(combinedCards);
-            return combinedCards.stream().limit(100).toList();
-        } else {
-            List<Card> userSeenCards = new ArrayList<>(userSeenCardRepository.findByUser(user).stream()
-                    .map(UserSeenCard::getCard)
-                    .toList());
+           if (!combinedCards.isEmpty()) {
+               // Rastgele 100 kart seç
+               Collections.shuffle(combinedCards);
+               return combinedCards.stream().limit(100).toList();
+           } else {
+               List<Card> userSeenCards = new ArrayList<>(userSeenCardRepository.findByUser(user).stream()
+                       .map(UserSeenCard::getCard)
+                       .toList());
 
-            Collections.shuffle(userSeenCards);
+               Collections.shuffle(userSeenCards);
 
-            return userSeenCards.stream().limit(100).toList();
-        }
+               return userSeenCards.stream().limit(100).toList();
+           }
 
-    }
-  */
+       }
+     */
     @Cacheable(value = "cardsCache", key = "#branch", unless = "#branch == null")
     public List<Card> explore(Branch branch) {
 
@@ -244,6 +244,20 @@ public class CardService {
                 .totalCard(totalCard)
                 .unseenCard(unseenCard)
                 .build();
+    }
+
+    public List<UserStatisticLessonResponse> getUserStatisticByLesson(YKS yks) {
+
+        User user = authService.getCurrentUser();
+
+        List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUser(user, yks);
+
+        return percentageList.stream().map(
+                        l -> new UserStatisticLessonResponse(
+                                l.getLesson().getYksLesson().label,
+                                (long) l.getCompletedCard(),
+                                (l.getCompletedCard() / (double) l.getTotalCard())))
+                .toList();
     }
 
     public List<UserStatisticLessonResponse> getUserStatisticByLesson() {

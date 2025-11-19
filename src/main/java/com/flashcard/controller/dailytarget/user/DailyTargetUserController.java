@@ -54,5 +54,11 @@ public class DailyTargetUserController {
         return ResponseEntity.ok(responseList);
     }
 
+    @GetMapping("/weekly")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<String>> getWeeklySeries(){
+        List<String> weeklyList=dailyTargetService.getWeekly();
 
+        return ResponseEntity.ok(weeklyList);
+    }
 }

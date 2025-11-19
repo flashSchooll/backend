@@ -4,14 +4,15 @@ import com.flashcard.model.RepeatTopic;
 import com.flashcard.model.Topic;
 import com.flashcard.model.User;
 import com.flashcard.repository.RepeatTopicRepository;
-import com.flashcard.repository.TopicRepository;
 import com.flashcard.security.services.AuthService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 @RequiredArgsConstructor
 public class RepeatTopicService {
 
@@ -23,7 +24,7 @@ public class RepeatTopicService {
     public RepeatTopic save(Long topicId, LocalDateTime repeatTime) {
         User user = authService.getCurrentUser();
 
-        boolean isExists = repeatTopicRepository.existsByUserAntTopicId(user, topicId);
+        boolean isExists = repeatTopicRepository.existsByUserAndTopicId(user, topicId);
 
         RepeatTopic repeatTopic;
         if (isExists) {

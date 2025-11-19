@@ -17,6 +17,10 @@ import java.util.Optional;
 
 public interface UserCardPercentageRepository extends JpaRepository<UserCardPercentage, Long> {
 
+    @Query("SELECT ucp FROM UserCardPercentage ucp JOIN ucp.user u WHERE u = :user and ucp.lesson.yks= :yks")
+    @EntityGraph(attributePaths = {"lesson"})
+    List<UserCardPercentage> findByUser(User user,YKS yks);
+
     @Query("SELECT ucp FROM UserCardPercentage ucp JOIN ucp.user u WHERE u = :user")
     @EntityGraph(attributePaths = {"lesson"})
     List<UserCardPercentage> findByUser(User user);

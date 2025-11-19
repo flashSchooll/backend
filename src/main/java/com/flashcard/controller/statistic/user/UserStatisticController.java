@@ -52,11 +52,20 @@ public class UserStatisticController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/lesson")
+    @GetMapping("/lesson/ayt")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<UserStatisticLessonResponse>> getCardsByLesson() {
+    public ResponseEntity<List<UserStatisticLessonResponse>> getCardsByLessonAyt() {
 
-        List<UserStatisticLessonResponse> response = cardService.getUserStatisticByLesson();
+        List<UserStatisticLessonResponse> response = cardService.getUserStatisticByLesson(YKS.AYT);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/lesson/tyt")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<UserStatisticLessonResponse>> getCardsByLessonTyt() {
+
+        List<UserStatisticLessonResponse> response = cardService.getUserStatisticByLesson(YKS.TYT);
 
         return ResponseEntity.ok(response);
     }
