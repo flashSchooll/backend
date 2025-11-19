@@ -78,14 +78,23 @@ public class UserStatisticController {
         return ResponseEntity.ok(allResponse);
     }
 
-    @GetMapping("/rosette")
+    @GetMapping("/rosette/monthly")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<UserRosetteStatistic>> getByRosette() {
+    public ResponseEntity<List<UserRosetteStatistic>> getByRosetteMonthly() {
 
         List<UserRosetteStatistic> response = userService.getUsersStatisticList();
 
         return ResponseEntity.ok(response);
     }
 
+
+    @GetMapping("/rosette/weekly")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<UserRosetteStatistic>> getByRosetteWeekly() {
+
+        List<UserRosetteStatistic> response = userService.getUsersStatisticListWeekly();
+
+        return ResponseEntity.ok(response);
+    }
 
 }

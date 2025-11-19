@@ -151,7 +151,7 @@ public class CardService {
         return cardRepository.findByFlashcard(flashcard);
     }
 
-    public List<Card> exploreForMe() {//todo bakılacak
+ /*   public List<Card> exploreForMe() {//todo bakılacak
 
         User user = authService.getCurrentUser();
         // RepeatFlashcard ve UserSeenCard tablolarından kartları al
@@ -184,7 +184,7 @@ public class CardService {
         }
 
     }
-
+  */
     @Cacheable(value = "cardsCache", key = "#branch", unless = "#branch == null")
     public List<Card> explore(Branch branch) {
 

@@ -1,5 +1,6 @@
 package com.flashcard.repository;
 
+import com.flashcard.model.Flashcard;
 import com.flashcard.model.RepeatFlashcard;
 import com.flashcard.model.Topic;
 import com.flashcard.model.User;
@@ -15,12 +16,9 @@ import java.util.Optional;
 @Repository
 public interface RepeatFlashcardRepository extends JpaRepository<RepeatFlashcard, Long> {
 
-    @Query("SELECT rf FROM RepeatFlashcard rf " +
-            "JOIN FETCH rf.topic t " +
-            "JOIN FETCH t.lesson l " +
-            "WHERE rf.user = :user")
+    @Query("SELECT rf FROM RepeatFlashcard rf  WHERE rf.user = :user")
     @EntityGraph(attributePaths = {"flashcards"})
     List<RepeatFlashcard> findByUserWithTopicAndLesson(User user);
 
-    Optional<RepeatFlashcard> findByUserAndTopic(@NotNull User user, Topic topic);
+    Optional<RepeatFlashcard> findByUserAndFlashcard(@NotNull User user, Flashcard flashcard);
 }

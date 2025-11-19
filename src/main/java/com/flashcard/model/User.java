@@ -56,6 +56,8 @@ public class User {// kullanıcı bilgisini tutar
 
     private Integer star;
 
+    private Integer weeklyStar;
+
     private Integer rosette;
 
     private byte[] profilePhoto;
@@ -107,13 +109,15 @@ public class User {// kullanıcı bilgisini tutar
 
 
     public void raiseStar(int addedStar) {
-        int alreadyStar = getStar();
+        Integer alreadyStar = getStar();
+        Integer alreadyWeeklyStar = getWeeklyStar();
 
         this.setStar(alreadyStar + addedStar);
+        this.setWeeklyStar(alreadyWeeklyStar + addedStar);
     }
 
     public void raiseRosette() {
-        int alreadyRosette = getRosette();
+        Integer alreadyRosette = getRosette();
 
         this.setRosette(alreadyRosette + 1);
     }

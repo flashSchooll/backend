@@ -99,8 +99,13 @@ public class TopicService {
         return topicRepository.findAll(pageable);
     }
 
-    public Page<Topic> getBySearch(Long lessonId,   YKSLesson yksLesson, Pageable pageable) {
+    public Page<Topic> getBySearch(Long lessonId, YKSLesson yksLesson, Pageable pageable) {
         String yksLessonStr = (yksLesson != null) ? yksLesson.toString() : null;
-        return topicRepository.getBySearch(lessonId,   yksLesson, pageable);
+        return topicRepository.getBySearch(lessonId, yksLesson, pageable);
+    }
+
+    public Topic getById(Long id) {
+        return topicRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
     }
 }

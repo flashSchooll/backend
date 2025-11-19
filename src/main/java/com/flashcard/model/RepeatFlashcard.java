@@ -31,10 +31,7 @@ public class RepeatFlashcard {// tekrar kartlarım bilgisi tutar
     private User user;
 
     @ManyToOne
-    private Topic topic;
-
-    @ManyToMany
-    private List<Flashcard> flashcards;
+    private Flashcard flashcard;
 
     private LocalDateTime repeatTime;
 

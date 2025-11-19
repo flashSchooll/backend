@@ -14,9 +14,9 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/repeat-topic")
+@RequestMapping("/api/repeat-flashcard")
 @RequiredArgsConstructor
-public class RepeatTopicController {
+public class RepeatFlashcardController {
 
     private final RepeatFlashcardService repeatFlashcardService;
 
@@ -26,17 +26,6 @@ public class RepeatTopicController {
                                                         @RequestParam LocalDateTime repeatTime) {
 
         RepeatFlashcard repeatFlashcard = repeatFlashcardService.save(flashcardId, repeatTime);
-        RepeatFlashcardResponse response = new RepeatFlashcardResponse(repeatFlashcard, null);
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/topic")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<RepeatFlashcardResponse> saveByTopic(@RequestParam Long topicId,
-                                                               @RequestParam LocalDateTime repeatTime) {
-
-        RepeatFlashcard repeatFlashcard = repeatFlashcardService.saveByTopic(topicId, repeatTime);
-
         RepeatFlashcardResponse response = new RepeatFlashcardResponse(repeatFlashcard, null);
         return ResponseEntity.ok(response);
     }

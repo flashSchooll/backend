@@ -4,7 +4,6 @@ import com.flashcard.constants.Constants;
 import com.flashcard.controller.repeatflashcard.response.RepeatFlashcardResponse;
 import com.flashcard.model.Flashcard;
 import com.flashcard.model.RepeatFlashcard;
-import com.flashcard.model.Topic;
 import com.flashcard.model.User;
 import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.RepeatFlashcardRepository;
@@ -36,26 +35,16 @@ public class RepeatFlashcardService {
         Flashcard flashcard = flashCardRepository.findById(flashcardId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.FLASHCARD_NOT_FOUND));
 
-        Optional<RepeatFlashcard> optionalRepeatFlashcard = repeatFlashcardRepository.findByUserAndTopic(user, flashcard.getTopic());
+        Optional<RepeatFlashcard> optionalRepeatFlashcard = repeatFlashcardRepository.findByUserAndFlashcard(user, flashcard);
 
         RepeatFlashcard repeatFlashcard;
 
         if (optionalRepeatFlashcard.isPresent()) {
-            repeatFlashcard = optionalRepeatFlashcard.get();
-
-            List<Long> flashcardIds = repeatFlashcard.getFlashcards().stream().map(Flashcard::getId).toList();
-
-            if (!flashcardIds.contains(flashcard.getId())) {
-                List<Flashcard> flashcards = repeatFlashcard.getFlashcards();
-                flashcards.add(flashcard);
-                repeatFlashcard.setFlashcards(flashcards);
-            }
-
+            throw new IllegalArgumentException("Flashcard zaten kayıtta");
         } else {
             repeatFlashcard = new RepeatFlashcard();
             repeatFlashcard.setUser(user);
-            repeatFlashcard.setFlashcards(List.of(flashcard));
-            repeatFlashcard.setTopic(flashcard.getTopic());
+            repeatFlashcard.setFlashcard(flashcard);
             repeatFlashcard.setRepeatTime(repeatTime);
         }
 
@@ -77,7 +66,7 @@ public class RepeatFlashcardService {
 
         List<RepeatFlashcard> repeatFlashcards = repeatFlashcardRepository.findByUserWithTopicAndLesson(user);
 
-        List<Long> ids=userSeenCardRepository.findByUserWithAllData(user);
+        List<Long> ids = userSeenCardRepository.findByUserWithAllData(user);
 
         return repeatFlashcards
                 .stream()
@@ -86,32 +75,4 @@ public class RepeatFlashcardService {
                 .toList();
     }
 
-    @Transactional
-    public RepeatFlashcard saveByTopic(Long topicId, LocalDateTime repeatTime) {
-        Objects.requireNonNull(topicId);
-
-        Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
-
-        User user = authService.getCurrentUser();
-        Optional<RepeatFlashcard> optionalRepeatFlashcard = repeatFlashcardRepository.findByUserAndTopic(user, topic);
-        List<Flashcard> flashcards = flashCardRepository.findByTopicAndCanBePublishTrue(topic);
-        Set<Flashcard> flashcardSet = new HashSet<>(flashcards);
-
-        RepeatFlashcard repeatFlashcard = optionalRepeatFlashcard
-                .map(existingRepeatFlashcard -> {
-                    existingRepeatFlashcard.setFlashcards(new ArrayList<>(flashcardSet)); // Düzeltme burada
-                    return existingRepeatFlashcard;
-                })
-                .orElseGet(() -> {
-                    RepeatFlashcard newRepeatFlashcard = new RepeatFlashcard();
-                    newRepeatFlashcard.setUser(user);
-                    newRepeatFlashcard.setFlashcards(new ArrayList<>(flashcardSet)); // Düzeltme burada
-                    newRepeatFlashcard.setTopic(topic);
-                    newRepeatFlashcard.setRepeatTime(repeatTime);
-                    return newRepeatFlashcard;
-                });
-
-        return repeatFlashcardRepository.save(repeatFlashcard);
-    }
 }

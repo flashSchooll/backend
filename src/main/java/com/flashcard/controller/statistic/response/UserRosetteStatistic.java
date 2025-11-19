@@ -12,6 +12,7 @@ public class UserRosetteStatistic {
     public final String userName;
     public final String userSurname;
     public final long star;
+    public final long weeklyStar;
     public final long rosette;
     public final long order;
     public final boolean me;

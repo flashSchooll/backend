@@ -88,7 +88,7 @@ public class AuthService {
 
             user.setPhotoPath(url);
         }
-        if (signUpRequest.getAvatar() != null) {
+        if (signUpRequest.getAvatar() != null && file == null) {
             user.setPhotoPath(signUpRequest.getAvatar());
         }
 

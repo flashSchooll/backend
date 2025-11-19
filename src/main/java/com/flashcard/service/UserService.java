@@ -10,6 +10,7 @@ import com.flashcard.model.dto.UserDTO;
 import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.ERole;
+import com.flashcard.model.enums.YKS;
 import com.flashcard.repository.RoleRepository;
 import com.flashcard.repository.UserRepository;
 import com.flashcard.security.services.AuthService;
@@ -163,6 +164,50 @@ public class UserService {
         });
         if (!userExist) {
             long order = userRepository.findOrderByUser(user.getId());
+
+            UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
+                    .userName(user.getUserName())
+                    .userSurname(user.getUserSurname())
+                    .id(user.getId())
+                    .star(user.getStar())
+                    .rosette(user.getRosette())
+                    .order(order)
+                    .me(true)
+                    .build();
+
+            statistics.add(userStatistic);
+        }
+
+        return statistics;
+    }
+
+    public List<UserRosetteStatistic> getUsersStatisticListWeekly() {
+
+        User user = authService.getCurrentUser();
+
+        List<User> users = userRepository.findByStarWeekly();
+
+        boolean userExist = users.stream().anyMatch(u -> Objects.equals(u.getId(), user.getId()));
+
+        List<UserRosetteStatistic> statistics = new ArrayList<>();
+
+        users.forEach(u -> {
+            UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
+                    .userName(u.getUserName())
+                    .userSurname(u.getUserSurname().charAt(0) + ".")
+                    .photoPath(u.getPhotoPath())
+                    .id(u.getId())
+                    .star(u.getStar())
+                    .weeklyStar(u.getWeeklyStar())
+                    .rosette(u.getRosette())
+                    .order(statistics.size())
+                    .me(Objects.equals(u.getId(), user.getId()))
+                    .build();
+
+            statistics.add(userStatistic);
+        });
+        if (!userExist) {
+            long order = userRepository.findOrderByUserWeekly(user.getId());
 
             UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
                     .userName(user.getUserName())

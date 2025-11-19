@@ -55,4 +55,25 @@ public interface UserRepository extends JpaRepository<User, Long> {
         )
     """)
     int resetSeriesForInactiveUsers(@Param("yesterday") LocalDate yesterday);
+
+    @Query("select u from User u order by u.weeklyStar desc,u.rosette desc limit 20")
+    List<User> findByStarWeekly();
+
+    @Query(value = "WITH RankedUsers AS (" +
+            "SELECT " +
+            "u.id AS id, " +
+            "u.star AS star, " +
+            "u.rosette AS rosette, " +
+            "ROW_NUMBER() OVER (ORDER BY u.weekly_star DESC, u.rosette DESC,u.user_name) AS rank " +
+            "FROM users u" +
+            ") " +
+            "SELECT " +
+            "rank " +
+            "FROM RankedUsers " +
+            "WHERE id = :id",
+            nativeQuery = true)
+    long findOrderByUserWeekly(Long id);
+
+    @Query("UPDATE User SET weeklyStar = 0")
+    void updateWeeklyStar();
 }
