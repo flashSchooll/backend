@@ -1,6 +1,7 @@
 package com.flashcard.model;
 
 
+import com.flashcard.model.enums.YKS;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -41,9 +42,22 @@ public class DailyTarget {// günlük hedef bilgisini tutar
     @NotNull
     private Integer made;
 
+    @NotNull
+    private Integer madeTyt = 0;
 
-    public void updateMade(int made) {
+    @NotNull
+    private Integer madeAyt = 0;
+
+
+    public void updateMade(int made, YKS yks) {
+        if (yks == YKS.TYT) {
+            this.madeTyt = getMadeTyt() + made;
+        } else if (yks == YKS.AYT) {
+            this.madeAyt = getMadeTyt() + made;
+        }
 
         this.made = getMade() + made;
     }
+
+
 }

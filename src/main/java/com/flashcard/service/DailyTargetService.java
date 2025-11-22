@@ -105,9 +105,9 @@ public class DailyTargetService {
         return dailyTargetRepository.findByUserAndStartDateAndEndDate(user, startDate, endDate);
     }
 
-    public void updateDailyTarget(int cardCount) {
+    public void updateDailyTarget(int cardCount,YKS yks) {
         DailyTarget dailyTarget = getTarget();
-        dailyTarget.updateMade(cardCount);
+        dailyTarget.updateMade(cardCount,yks);
 
         dailyTargetRepository.save(dailyTarget);
     }

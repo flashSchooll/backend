@@ -34,10 +34,10 @@ public class UserStatisticController {
 
     @GetMapping("/weekly")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<DailyTargetStatisticResponse>> getWeekly() {
+    public ResponseEntity<List<DailyTargetStatisticResponse>> getWeekly(@RequestParam YKS yks) {
         List<DailyTarget> dailyTargets = dailyTargetService.getWeeklyTargets();
 
-        List<DailyTargetStatisticResponse> response = dailyTargets.stream().map(DailyTargetStatisticResponse::new).toList();
+        List<DailyTargetStatisticResponse> response = dailyTargets.stream().map(target -> new DailyTargetStatisticResponse(target, yks)).toList();
 
         return ResponseEntity.ok(response);
     }

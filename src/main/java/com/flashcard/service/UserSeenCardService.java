@@ -82,7 +82,7 @@ public class UserSeenCardService {
 
         int cardCount = userCardSeenSaveRequest.getUserCardSeenRequestList().size();
 
-        dailyTargetService.updateDailyTarget(cardCount);
+        dailyTargetService.updateDailyTarget(cardCount,flashcard.getTopic().getLesson().getYks());
 
         return seenCards;
     }

@@ -1,6 +1,7 @@
 package com.flashcard.controller.dailytarget.response;
 
 import com.flashcard.model.DailyTarget;
+import com.flashcard.model.enums.YKS;
 import lombok.Getter;
 
 import java.time.DayOfWeek;
@@ -17,5 +18,16 @@ public class DailyTargetStatisticResponse {
         this.percent = dailyTarget.getMade();
         this.day = dailyTarget.getDay();
         this.dayOfWeek = dailyTarget.getDay().getDayOfWeek();
+    }
+
+    public DailyTargetStatisticResponse(DailyTarget dailyTarget, YKS yks) {
+        if (yks == YKS.AYT) {
+            this.percent = dailyTarget.getMadeAyt();
+        } else {
+            this.percent = dailyTarget.getMadeTyt();
+        }
+        this.day = dailyTarget.getDay();
+        this.dayOfWeek = dailyTarget.getDay().getDayOfWeek();
+
     }
 }
