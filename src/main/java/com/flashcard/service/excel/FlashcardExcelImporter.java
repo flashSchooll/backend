@@ -81,6 +81,7 @@ public class FlashcardExcelImporter {
                 topic = optionalTYTTopic.get();
                 if (topic.getIndex() == null) {
                     topic.setIndex(topicIndexes.get(subject));
+                    topic.updateCardCount(entry.getValue().size());
                     topic = topicRepository.save(topic);
                 }
             } else {
@@ -88,6 +89,7 @@ public class FlashcardExcelImporter {
                 topic.setLesson(lesson);
                 topic.setSubject(subject);
                 topic.setIndex(topicIndexes.get(subject));
+                topic.setCardCount(entry.getValue().size());
                 topic = topicRepository.save(topic);
             }
 
@@ -106,12 +108,17 @@ public class FlashcardExcelImporter {
                     flashcard.setTopic(topic);
                     flashcard.setIndex(flashcardIndexes.get(flashCardName));
                     flashcard.setCanBePublish(false);
+                    flashcard.updateCardCount(entryFlash.getValue().size());
 
                     flashcard = flashCardRepository.save(flashcard);
                 } else {
                     flashcard = optionalFlashcard.get();
                     if (flashcard.getIndex() == null) {
                         flashcard.setIndex(flashcardIndexes.get(flashCardName));
+                        flashcard.updateCardCount(entryFlash.getValue().size());
+                        flashcard = flashCardRepository.save(flashcard);
+                    }else{
+                        flashcard.updateCardCount(entryFlash.getValue().size());
                         flashcard = flashCardRepository.save(flashcard);
                     }
                 }

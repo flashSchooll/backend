@@ -55,6 +55,7 @@ public class FlashCardService {
         flashcard.setCardName(flashcardSaveRequest.getCardName());
         flashcard.setCanBePublish(false);
         flashcard.setIndex(flashcardSaveRequest.getIndex());
+        flashcard.setCardCount(0);
 
         return flashCardRepository.save(flashcard);
     }
@@ -160,6 +161,9 @@ public class FlashCardService {
             flashCardRepository.save(flashcard);
 
             userCardPercentageService.updateCardCount(flashcard.getTopic().getLesson());
+
+            Topic topic=flashcard.getTopic();
+            topic.updateCardCount(flashcard.getCardCount());
         }
     }
 

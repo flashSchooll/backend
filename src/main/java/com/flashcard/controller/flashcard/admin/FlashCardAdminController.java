@@ -37,9 +37,9 @@ public class FlashCardAdminController {
     }
 
     @PutMapping
-    public ResponseEntity<FlashcardResponse> update(@RequestBody FlashcardUpdateRequest tytFlashcardUpdateRequest) {
+    public ResponseEntity<FlashcardResponse> update(@RequestBody FlashcardUpdateRequest flashcardUpdateRequest) {
 
-        Flashcard response = flashCardService.update(tytFlashcardUpdateRequest);
+        Flashcard response = flashCardService.update(flashcardUpdateRequest);
 
         FlashcardResponse flashcardResponse = new FlashcardResponse(response);
 

@@ -30,7 +30,7 @@ public class RepeatFlashcard {// tekrar kartlarım bilgisi tutar
     @NotNull
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Flashcard flashcard;
 
     private LocalDateTime repeatTime;

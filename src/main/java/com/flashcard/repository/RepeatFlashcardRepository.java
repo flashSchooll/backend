@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,9 +17,15 @@ import java.util.Optional;
 @Repository
 public interface RepeatFlashcardRepository extends JpaRepository<RepeatFlashcard, Long> {
 
-    @Query("SELECT rf FROM RepeatFlashcard rf  WHERE rf.user = :user")
-    @EntityGraph(attributePaths = {"flashcards"})
-    List<RepeatFlashcard> findByUserWithTopicAndLesson(User user);
+    @Query("""
+    SELECT rf FROM RepeatFlashcard rf
+    JOIN FETCH rf.flashcard f
+    JOIN FETCH f.topic t
+    JOIN FETCH t.lesson l
+    WHERE rf.user = :user
+    """)
+    List<RepeatFlashcard> findByUserWithTopicAndLesson(@Param("user") User user);
+
 
     Optional<RepeatFlashcard> findByUserAndFlashcard(@NotNull User user, Flashcard flashcard);
 }

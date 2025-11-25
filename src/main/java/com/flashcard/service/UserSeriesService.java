@@ -30,4 +30,10 @@ public class UserSeriesService {
             userRepository.save(user);
         }
     }
+
+    @Transactional
+    public void resetSeries(User user) {
+        user.setSeries(1);
+        userRepository.save(user);
+    }
 }

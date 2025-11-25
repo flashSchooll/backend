@@ -28,6 +28,7 @@ public class DailyTargetService {
     private final DailyTargetRepository dailyTargetRepository;
     private final AuthService authService;
     private final MonthDailyTargetRepository monthDailyTargetRepository;
+    private final UserSeriesService userSeriesService;
 
     @Transactional
     public DailyTarget createTarget() {
@@ -39,7 +40,17 @@ public class DailyTargetService {
         dailyTarget.setDay(LocalDate.now());
         dailyTarget.setTarget(user.getTarget());
 
-        return dailyTargetRepository.save(dailyTarget);
+
+        dailyTarget = dailyTargetRepository.save(dailyTarget);
+
+        Optional<DailyTarget> dailyTargetOptional = dailyTargetRepository.findByUserAndDay(user, LocalDate.now().minusDays(1));
+        if (dailyTargetOptional.isPresent()) {
+            userSeriesService.save(user);// her gün için seri sayısını artır
+        }else {
+            userSeriesService.resetSeries(user); // seriyi sıfırla
+        }
+        
+        return dailyTarget;
     }
 
     public DailyTarget getTarget() {
@@ -105,9 +116,9 @@ public class DailyTargetService {
         return dailyTargetRepository.findByUserAndStartDateAndEndDate(user, startDate, endDate);
     }
 
-    public void updateDailyTarget(int cardCount,YKS yks) {
+    public void updateDailyTarget(int cardCount, YKS yks) {
         DailyTarget dailyTarget = getTarget();
-        dailyTarget.updateMade(cardCount,yks);
+        dailyTarget.updateMade(cardCount, yks);
 
         dailyTargetRepository.save(dailyTarget);
     }

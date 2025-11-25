@@ -18,7 +18,7 @@ import java.util.List;
 public class PodcastUserController {
     private final PodcastService podcastService;
 
-    @GetMapping("/{topicId}")
+    @GetMapping("/topic/{topicId}")
     public ResponseEntity<List<PodcastUserResponse>> getPodcastByTopicId(@PathVariable("topicId") Long topicId) {
         List<PodcastUserResponse> responses = podcastService.getByTopic(topicId);
 

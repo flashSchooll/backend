@@ -37,5 +37,15 @@ public class Flashcard {// flashcard bilgisini tutar
 
     private Integer index;
 
+    private Integer cardCount;
+
     private Boolean canBePublish;
+
+    public void updateCardCount(Integer newCardCount) {
+        int oldCardCount = getCardCount();
+
+        if (newCardCount != null && newCardCount > 0) {
+            setCardCount(oldCardCount + newCardCount);
+        }
+    }
 }

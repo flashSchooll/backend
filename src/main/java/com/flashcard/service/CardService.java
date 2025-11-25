@@ -41,6 +41,7 @@ public class CardService {
     private final MyCardsRepository myCardsRepository;
     private final UserCardPercentageRepository userCardPercentageRepository;
     private final S3StorageService s3StorageService;
+    private final TopicRepository topicRepository;
 
     @Transactional
     public Card save(CardSaveRequest cardSaveRequest, MultipartFile frontFile, MultipartFile backFile) throws IOException {
@@ -78,7 +79,16 @@ public class CardService {
         card.setBackPhotoPath(backPath);
 
         // TYTCard'ı veritabanına kaydet
-        return cardRepository.save(card);
+        card = cardRepository.save(card);
+
+        flashcard.updateCardCount(1);
+        flashCardRepository.save(flashcard);
+
+        Topic topic = flashcard.getTopic();
+        topic.updateCardCount(1);
+        topicRepository.save(topic);
+
+        return card;
     }
 
     @Transactional
@@ -117,6 +127,14 @@ public class CardService {
         Card card = cardRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.CARD_NOT_FOUND));
 
+        Flashcard flashcard = card.getFlashcard();
+        flashcard.updateCardCount(-1);
+        flashCardRepository.save(flashcard);
+
+        Topic topic = flashcard.getTopic();
+        topic.updateCardCount(-1);
+        topicRepository.save(topic);
+
         cardRepository.delete(card);
     }
 
@@ -147,6 +165,13 @@ public class CardService {
             CardService proxy = applicationContext.getBean(CardService.class);
             //   proxy.save(saveRequest);  todo
         }
+
+        flashcard.updateCardCount(request.getCardSaveRequests().size());
+        flashCardRepository.save(flashcard);
+
+        Topic topic = flashcard.getTopic();
+        topic.updateCardCount(request.getCardSaveRequests().size());
+        topicRepository.save(topic);
 
         return cardRepository.findByFlashcard(flashcard);
     }

@@ -33,4 +33,14 @@ public class Topic {// derslere ait konu bilgilerini tutar
     private String subject;
 
     private Integer index;
+
+    private Integer cardCount;
+
+    public void updateCardCount(Integer newCardCount) {
+        int oldCardCount = getCardCount();
+
+        if (newCardCount != null && newCardCount > 0) {
+            setCardCount(oldCardCount + newCardCount);
+        }
+    }
 }

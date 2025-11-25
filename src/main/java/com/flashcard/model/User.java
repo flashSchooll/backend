@@ -69,7 +69,7 @@ public class User {// kullanıcı bilgisini tutar
 
     private String photoPath;
 
-    private Integer series = 0;
+    private Integer series = 0; // todo seri kırılınca sıfır olmalı bakılacak
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

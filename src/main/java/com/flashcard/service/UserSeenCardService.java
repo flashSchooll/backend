@@ -76,7 +76,7 @@ public class UserSeenCardService {
 
             user.raiseRosette();
             user.raiseStar(userCardSeenSaveRequest.getUserCardSeenRequestList().size());
-            userSeriesService.save(user);// her gün için seri sayısını artır
+
             userCardPercentageService.updatePercentage(user, flashcard, userCardSeenSaveRequest.getUserCardSeenRequestList().size());
         }
 
