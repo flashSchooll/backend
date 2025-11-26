@@ -13,6 +13,7 @@ public class PodcastUserResponse {
     private final Integer duration;
     private final boolean seen; // Final olarak kalır ama constructor'da set edilir
     private final String photoPath;
+    private final Long podcastId;
 
     // Constructor'a seen parametresi eklendi
     public PodcastUserResponse(Podcast podcast, boolean seen) {
@@ -22,5 +23,6 @@ public class PodcastUserResponse {
         this.duration = podcast.getDuration();
         this.seen = seen; // Dışarıdan gelen seen değeri
         this.photoPath = podcast.getPhotoPath();
+        this.podcastId = podcast.getId();
     }
 }
