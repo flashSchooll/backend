@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -56,7 +57,10 @@ public class OwnerCardController {
 
         List<OwnerCard> ownerCards = ownerCardService.getByOwnerFlashcard(ownerFlashcardId);
 
-        List<OwnerCardResponse> responses = ownerCards.stream().map(OwnerCardResponse::new).toList();
+        List<OwnerCardResponse> responses = ownerCards.stream()
+                .map(OwnerCardResponse::new)
+                .sorted(Comparator.comparing(OwnerCardResponse::getCreatedDate).reversed())
+                .toList();
 
         return ResponseEntity.ok(responses);
     }

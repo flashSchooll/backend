@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity(name = "OwnerCard")
 @Table(name = "owner_card",
         indexes = {
@@ -34,4 +36,6 @@ public class OwnerCard {
     @NotBlank
     @Size(max = 512)
     private String backFace;
+
+    private LocalDateTime createdDate;
 }

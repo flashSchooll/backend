@@ -36,6 +36,4 @@ public class SignupRequest {
     private Boolean userAgreement;
 
     private Branch branch;
-
-    private String avatar;
 }

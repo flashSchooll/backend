@@ -4,6 +4,8 @@ import com.flashcard.service.OwnerCard;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 public class OwnerCardResponse {
@@ -14,9 +16,12 @@ public class OwnerCardResponse {
 
     private final String backFace;
 
+    private final LocalDateTime createdDate;
+
     public OwnerCardResponse(OwnerCard ownerCard) {
         this.id = ownerCard.getId();
         this.frontFace = ownerCard.getFrontFace();
         this.backFace = ownerCard.getBackFace();
+        this.createdDate = ownerCard.getCreatedDate();
     }
 }
