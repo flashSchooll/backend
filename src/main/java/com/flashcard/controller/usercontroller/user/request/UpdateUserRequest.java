@@ -26,4 +26,6 @@ public class UpdateUserRequest {
 
     private Branch branch;
 
+    private String avatar;
+
 }

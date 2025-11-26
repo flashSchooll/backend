@@ -87,6 +87,7 @@ public class UserService {
         user.setUserSurname(authService.userNameSaveFormat(updateUserRequest.getUserSurname()));
         user.setEmail(updateUserRequest.getEmail());
         user.setBranch(updateUserRequest.getBranch());
+        user.setPhotoPath(updateUserRequest.getAvatar());
 
         return userRepository.save(user);
     }
