@@ -13,6 +13,7 @@ import java.util.List;
 public class RepeatFlashcardResponse {
 
     private final Long id;
+    private final Long flashcardId;
     private final String topic;
     private final String lesson;
     private final Long topicId;
@@ -26,6 +27,7 @@ public class RepeatFlashcardResponse {
 
     public RepeatFlashcardResponse(RepeatFlashcard repeatFlashcard, List<Long> flashcardIds) {
         this.id = repeatFlashcard.getId();
+        this.flashcardId = repeatFlashcard.getFlashcard().getId();
         this.topic = repeatFlashcard.getFlashcard().getTopic().getSubject();
         this.lesson = repeatFlashcard.getFlashcard().getTopic().getLesson().getYksLesson().label;
         this.topicId = repeatFlashcard.getFlashcard().getTopic().getId();
