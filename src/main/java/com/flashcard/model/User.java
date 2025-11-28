@@ -1,14 +1,13 @@
 package com.flashcard.model;
 
 import com.flashcard.model.enums.Branch;
+import com.flashcard.model.enums.Provider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,9 +15,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Builder
 @Setter
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "User")
 @Table(name = "users",
         uniqueConstraints = {
@@ -37,7 +38,6 @@ public class User {// kullanıcı bilgisini tutar
     @Size(max = 30)
     private String userName;
 
-    @NotBlank
     @Size(max = 30)
     private String userSurname;
 
@@ -48,24 +48,27 @@ public class User {// kullanıcı bilgisini tutar
 
     private String password;
 
-    @NotNull
-    private Boolean userAgreement;
+    @Enumerated(EnumType.STRING)
+    private Provider provider; // google, facebook gibi sosyal girişler için
 
     @NotNull
-    private LocalDateTime createdDate;
+    private Boolean userAgreement = false;
 
-    private Integer star;
+    @NotNull
+    private LocalDateTime createdDate = LocalDateTime.now();
 
-    private Integer weeklyStar;
+    private Integer star = 0;
 
-    private Integer rosette;
+    private Integer weeklyStar = 0;
+
+    private Integer rosette = 0;
 
     private byte[] profilePhoto;
 
     @Enumerated(EnumType.STRING)
     private Branch branch;
 
-    private Integer target;
+    private Integer target = 100;
 
     private String photoPath;
 

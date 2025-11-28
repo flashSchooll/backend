@@ -42,6 +42,19 @@ spring:
             enable: true
   jackson:
     time-zone: Europe/Istanbul
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 440255479092-ugbb4o44j84fjjepdl97dr7c7qo5fjms.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+            redirect-uri: http://localhost:8081/login/oauth2/code/google
+
 # App Properties
 management: #actuator
   endpoints:

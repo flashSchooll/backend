@@ -12,9 +12,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.ui.Model;
 import java.io.IOException;
 
 
@@ -97,4 +99,10 @@ public class AuthController {
     }
 
 
+    @GetMapping("/user")
+    public String user(@AuthenticationPrincipal OAuth2User principal, Model model) {
+        model.addAttribute("name", principal.getAttribute("name"));
+        model.addAttribute("email", principal.getAttribute("email"));
+        return "user";
+    }
 }

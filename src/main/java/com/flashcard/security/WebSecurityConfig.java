@@ -38,6 +38,9 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     @Autowired
     AuthEntryPointJwt unauthorizedHandler;
 
+    @Autowired
+    OAuth2SuccessHandler oAuth2SuccessHandler;
+
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
@@ -67,18 +70,45 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Önemli: corsConfigurationSource bean'ini referans alıyor
-                .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeRequests(auth ->
-                        auth.requestMatchers("/api/auth/**", "/api/test/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/favicon.ico").permitAll()
-                                .requestMatchers("/actuator/**").hasRole("ADMIN")
-                                .anyRequest().authenticated()
+                /* 1) CORS & CSRF */
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+
+                /* 2) Hataları yakala */
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
+
+                /* 3) JWT ile stateless çalışmaya devam */
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                /* 4) Yetkilendirme */
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/test/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/favicon.ico",
+                                "/oauth2/**",
+                                "/login/**",          // <--- EKLEME: Login ve hata sayfasına izin ver
+                                "/login/oauth2/code/**"
+                        ).permitAll()
+                        .requestMatchers("/actuator/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
+
+                /* 5) OAuth2 Login */
+                .oauth2Login(oauth2 -> oauth2
+                        // Giriş başlatma URL'i (Default: /oauth2/authorization/google)
+                        // Redirect URL'i (Default: /login/oauth2/code/google)
+                        .successHandler(oAuth2SuccessHandler)
+                        .failureUrl("/login?error=true")
                 );
 
+        /* 6) Filtreler */
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
