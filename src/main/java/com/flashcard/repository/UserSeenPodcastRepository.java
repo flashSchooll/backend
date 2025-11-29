@@ -20,4 +20,9 @@ public interface UserSeenPodcastRepository extends JpaRepository<UserSeenPodcast
     @Query("SELECT usp.podcast.id FROM UserSeenPodcast usp " +
             "WHERE usp.user = :user AND usp.podcast.topic.id = :topicId")
     List<Long> findByUserAndPodcastTopicId(User user, Long topicId);
+
+    @Query("SELECT usp.podcast.id FROM UserSeenPodcast usp WHERE usp.user = :user ")
+    List<Long> findIdsByUser(User user);
+
+
 }

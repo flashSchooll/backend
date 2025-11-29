@@ -6,6 +6,7 @@ import com.flashcard.model.Podcast;
 import com.flashcard.model.User;
 import com.flashcard.repository.MyPodcastRepository;
 import com.flashcard.repository.PodcastRepository;
+import com.flashcard.repository.UserSeenPodcastRepository;
 import com.flashcard.security.services.AuthService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class MyPodcastService {
     private final MyPodcastRepository myPodcastRepository;
     private final AuthService authService;
     private final PodcastRepository podcastRepository;
+    private final UserSeenPodcastRepository userSeenPodcastRepository;
 
     @Transactional
     public void saveForUser(Long podcastId) {
@@ -50,7 +52,11 @@ public class MyPodcastService {
         User user = authService.getCurrentUser();
 
         List<Podcast> podcasts = myPodcastRepository.findByUser(user);
+        List<Long> seenPodcastList = userSeenPodcastRepository.findIdsByUser(user);
 
-        return podcasts.stream().map(PodcastResponse::new).toList();
+        return podcasts.stream().map(podcast -> {
+            boolean isSeen = seenPodcastList.contains(podcast.getId());
+            return new PodcastResponse(podcast, isSeen, true);
+        }).toList();
     }
 }

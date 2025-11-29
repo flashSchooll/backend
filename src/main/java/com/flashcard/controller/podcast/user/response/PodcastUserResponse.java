@@ -15,6 +15,7 @@ public class PodcastUserResponse {
     private final String photoPath;
     private final Long podcastId;
     private final boolean isSaved;
+    private final String topicTitle;
 
     // Constructor'a seen parametresi eklendi
     public PodcastUserResponse(Podcast podcast, boolean seen, boolean isSaved) {
@@ -26,5 +27,6 @@ public class PodcastUserResponse {
         this.photoPath = podcast.getPhotoPath();
         this.podcastId = podcast.getId();
         this.isSaved = isSaved;
+        this.topicTitle = podcast.getTopic().getSubject();
     }
 }
