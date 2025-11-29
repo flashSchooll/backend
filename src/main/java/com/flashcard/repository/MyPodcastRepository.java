@@ -16,4 +16,9 @@ public interface MyPodcastRepository extends JpaRepository<MyPodcast, Long> {
 
     @Query("select p.podcast from MyPodcast p where p.user = :user")
     List<Podcast> findByUser(User user);
+
+    @Query("select p.podcast.id from MyPodcast p where p.user = :user")
+    List<Long> findSavedPodcastIdsByUser(User user);
+
+    boolean existsByUserAndPodcastId(User user, Long podcastId);
 }

@@ -101,16 +101,18 @@ public class PodcastService {
         User user = authService.getCurrentUser();
 
         List<Podcast> podcastList = podcastRepository.findByTopicIdAndPublishedTrue(topicId);
-        List<Long> myPodcastList = userSeenPodcastRepository.findByUserAndPodcastTopicId(user, topicId);
+        List<Long> seenPodcastList = userSeenPodcastRepository.findByUserAndPodcastTopicId(user, topicId);
+        List<Long> myPodcastList = myPodcastRepository.findSavedPodcastIdsByUser(user);
 
         // Kullanıcının dinlediği podcast'lerin ID'lerini bir Set'e al
-        Set<Long> seenPodcastIds = new HashSet<>(myPodcastList);
+        Set<Long> seenPodcastIds = new HashSet<>(seenPodcastList);
 
         // Podcast listesini dönüştürürken seen durumunu kontrol et
         return podcastList.stream()
                 .map(podcast -> {
                     boolean seen = seenPodcastIds.contains(podcast.getId());
-                    return new PodcastUserResponse(podcast, seen); // Güncellenmiş constructor
+                    boolean saved = myPodcastList.contains(podcast.getId());
+                    return new PodcastUserResponse(podcast, seen, saved); // Güncellenmiş constructor
                 })
                 .collect(Collectors.toList());
     }
@@ -152,11 +154,15 @@ public class PodcastService {
         podcastRepository.delete(podcast);
     }
 
-    public Podcast getById(Long podcastId) {
-        return podcastRepository.findByIdAndPublishedTrue(podcastId)
+    public PodcastUserResponse getById(Long podcastId) {
+        Podcast podcast = podcastRepository.findByIdAndPublishedTrue(podcastId)
                 .orElseThrow(() -> new EntityNotFoundException("Podcast not found"));
-    }
+        User user = authService.getCurrentUser();
+        boolean seen = userSeenPodcastRepository.existsByUserAndPodcastId(user, podcastId);
+        boolean isSaved = myPodcastRepository.existsByUserAndPodcastId(user, podcastId);
 
+        return new PodcastUserResponse(podcast, seen, isSaved);
+    }
 
 
     public List<Podcast> getByTopicByAdmin(Long topicId) {

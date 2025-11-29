@@ -101,4 +101,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query("SELECT c.backPhotoPath FROM Card c")
     List<String> findAllBackPath();
+
+    int countByFlashcardTopic(Topic topic);
 }

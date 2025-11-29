@@ -102,4 +102,10 @@ public class CardAdminController {
 
         return ResponseEntity.ok(sortedCardResponses);
     }
+
+    @PostMapping("/update-card-count")
+    public ResponseEntity<String> updateCardCount() {
+        cardService.updateCardCountForAllFlashcards();
+        return ResponseEntity.ok("Card count updated for all flashcards.");
+    }
 }

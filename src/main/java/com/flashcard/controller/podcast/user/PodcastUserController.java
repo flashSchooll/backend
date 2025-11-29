@@ -27,10 +27,9 @@ public class PodcastUserController {
 
     @GetMapping("/{podcastId}")
     public ResponseEntity<PodcastUserResponse> getPodcastById(@PathVariable("podcastId") Long podcastId) {
-        Podcast podcast = podcastService.getById(podcastId);
-        PodcastUserResponse podcastUserResponses = new PodcastUserResponse(podcast,false);
+        PodcastUserResponse podcast = podcastService.getById(podcastId);
 
-        return ResponseEntity.ok(podcastUserResponses);
+        return ResponseEntity.ok(podcast);
     }
 
 }
