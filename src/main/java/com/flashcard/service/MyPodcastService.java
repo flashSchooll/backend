@@ -8,6 +8,7 @@ import com.flashcard.repository.MyPodcastRepository;
 import com.flashcard.repository.PodcastRepository;
 import com.flashcard.repository.UserSeenPodcastRepository;
 import com.flashcard.security.services.AuthService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -32,9 +34,15 @@ public class MyPodcastService {
         Podcast podcast = podcastRepository.findById(podcastId)
                 .orElseThrow(() -> new EntityNotFoundException("Podcast not found"));
 
-        MyPodcast myPodcast = MyPodcast.builder().podcast(podcast).user(user).build();
+        Optional<MyPodcast> myPodcast = myPodcastRepository.findByUserAndPodcastId(user, podcastId);
 
-        myPodcastRepository.save(myPodcast);
+        if (myPodcast.isPresent()) {
+            throw new EntityExistsException("Podcast already exists");
+        }
+
+        MyPodcast newMyPodcast = MyPodcast.builder().podcast(podcast).user(user).build();
+
+        myPodcastRepository.save(newMyPodcast);
     }
 
     @Transactional
