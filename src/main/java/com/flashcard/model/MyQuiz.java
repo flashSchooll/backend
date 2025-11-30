@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity(name = "MyQuiz")
 @Table(name = "my_quiz",
@@ -20,8 +22,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE my_quiz SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class MyQuiz {// Quiz kaydet
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,4 +40,6 @@ public class MyQuiz {// Quiz kaydet
 
     @Enumerated(value = EnumType.STRING)
     private QuizOption option;
+
+    private boolean deleted = false;
 }

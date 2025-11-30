@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 @Table(name = "error_support")
 @Getter
 @Setter
+@SQLDelete(sql = "UPDATE error_support SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class ErrorSupport {
 
     @Id
@@ -36,4 +40,6 @@ public class ErrorSupport {
     private LocalDateTime createdDate = LocalDateTime.now();
 
     private LocalDateTime solvedDate;
+
+    private boolean deleted = false;
 }

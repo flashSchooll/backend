@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +24,8 @@ import java.util.Set;
         uniqueConstraints = {
                 @UniqueConstraint(name = "user_card_user_lesson", columnNames = {"user", "lesson"})
         })
+@SQLDelete(sql = "UPDATE user_card_percentage SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class UserCardPercentage {// kullanıcı kart tamamlama yüzdesini tutar
 
     @Id
@@ -41,6 +45,8 @@ public class UserCardPercentage {// kullanıcı kart tamamlama yüzdesini tutar
     private Integer totalCard;
 
     private Integer completedCard;
+
+    private boolean deleted = false;
 
     public void increaseCompletedCard(Integer amount) {
         this.completedCard = getCompletedCard() + amount;

@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity(name = "ImageData")
 @Table(name = "image_data")
@@ -14,6 +16,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE image_data SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class ImageData {// card larda bulunan ön ve arka yüz resimlerini tutar
 
     @Id
@@ -25,18 +29,5 @@ public class ImageData {// card larda bulunan ön ve arka yüz resimlerini tutar
     @Enumerated(EnumType.STRING)
     private CardFace face;
 
-
-    public ImageData getFrontData() {
-        if (this.getFace().equals(CardFace.FRONT)) {
-            return this;
-        }
-        return null;
-    }
-
-    public ImageData getBackData() {
-        if (this.getFace().equals(CardFace.BACK)) {
-            return this;
-        }
-        return null;
-    }
+    private boolean deleted = false;
 }

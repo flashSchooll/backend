@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 
@@ -13,6 +15,8 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Entity(name = "UserSeries")
 @Table(name = "user_series")
+@SQLDelete(sql = "UPDATE user_series SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class UserSeries {
 
     @Id
@@ -24,4 +28,6 @@ public class UserSeries {
 
     @NotNull
     private LocalDate date;
+
+    private boolean deleted = false;
 }

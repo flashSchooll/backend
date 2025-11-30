@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.List;
 
@@ -25,6 +27,8 @@ import java.util.List;
 )
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE card SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Card {// kart bilgisini tutar
 
     @Id
@@ -52,4 +56,5 @@ public class Card {// kart bilgisini tutar
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ImageData> imageData;
 
+    private boolean deleted = false;
 }

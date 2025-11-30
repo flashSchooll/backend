@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity(name = "Quiz")
 @Table(name = "quiz")
@@ -17,6 +19,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE quiz SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Quiz {
 
     @Id
@@ -49,4 +53,6 @@ public class Quiz {
     @Enumerated(value = EnumType.STRING)
     @NotNull
     private QuizType type;
+
+    private boolean deleted = false;
 }

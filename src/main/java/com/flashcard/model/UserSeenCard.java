@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.Duration;
 
@@ -29,6 +31,8 @@ import java.time.Duration;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE user_seen_card SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class UserSeenCard {// kullanıcının bitirmiş olduğu kart bilgilerini tutar
 
     @Id
@@ -46,4 +50,6 @@ public class UserSeenCard {// kullanıcının bitirmiş olduğu kart bilgilerini
     private Boolean stateOfKnowledge;
 
     private Duration duration;
+
+    private boolean deleted = false;
 }

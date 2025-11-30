@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ import java.util.Set;
         indexes = {
                 @Index(name = "idx_users_email", columnList = "email")
         })
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class User {// kullanıcı bilgisini tutar
 
     @Id
@@ -73,6 +77,8 @@ public class User {// kullanıcı bilgisini tutar
     private String photoPath;
 
     private Integer series = 0; // todo seri kırılınca sıfır olmalı bakılacak
+
+    private boolean deleted = false;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

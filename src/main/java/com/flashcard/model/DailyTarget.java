@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 
@@ -23,6 +25,8 @@ import java.time.LocalDate;
         uniqueConstraints = {
                 @UniqueConstraint(name = "daily_target_user_day", columnNames = {"user", "day"})
         })
+@SQLDelete(sql = "UPDATE daily_target SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class DailyTarget {// günlük hedef bilgisini tutar
 
     @Id
@@ -48,6 +52,7 @@ public class DailyTarget {// günlük hedef bilgisini tutar
     @NotNull
     private Integer madeAyt = 0;
 
+    private boolean deleted = false;
 
     public void updateMade(int made, YKS yks) {
         if (yks == YKS.TYT) {

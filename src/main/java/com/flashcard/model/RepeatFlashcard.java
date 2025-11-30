@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +22,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE repeat_flashcard SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class RepeatFlashcard {// tekrar kartlarım bilgisi tutar
 
     @Id
@@ -35,4 +39,5 @@ public class RepeatFlashcard {// tekrar kartlarım bilgisi tutar
 
     private LocalDateTime repeatTime;
 
+    private boolean deleted = false;
 }

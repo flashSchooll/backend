@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity(name = "Flashcard")
 @Table(name = "flashcard",
@@ -21,6 +23,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE flashcard SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Flashcard {// flashcard bilgisini tutar
 
     @Id
@@ -40,6 +44,8 @@ public class Flashcard {// flashcard bilgisini tutar
     private Integer cardCount;
 
     private Boolean canBePublish;
+
+    private boolean deleted = false;
 
     public void updateCardCount(Integer newCardCount) {
         int oldCardCount = getCardCount();

@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity(name = "MyCard")
 @Table(name = "my_card",
@@ -21,6 +23,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE my_card SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class MyCard {// kartlarım bilgisini tutar
 
     @Id
@@ -37,4 +41,6 @@ public class MyCard {// kartlarım bilgisini tutar
 
     @Enumerated(value = EnumType.STRING)
     private DifficultyLevel difficultyLevel;
+
+    private boolean deleted = false;
 }

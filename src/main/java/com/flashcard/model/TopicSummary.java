@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity(name = "TopicSummary")
 @Table(name = "topic_summary",
@@ -19,6 +21,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE topic_summary SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class TopicSummary {// konu özetleri bilgisini tutar
 
     @Id
@@ -32,4 +36,6 @@ public class TopicSummary {// konu özetleri bilgisini tutar
     @NotBlank
     @Size(min = 0, max = 1024)
     private String summary;
+
+    private boolean deleted = false;
 }

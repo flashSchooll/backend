@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity(name = "Podcast")
 @Table(name = "podcast")
@@ -11,6 +13,8 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE podcast SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Podcast {
 
     @Id
@@ -35,4 +39,5 @@ public class Podcast {
 
     private boolean published = false;
 
+    private boolean deleted = false;
 }

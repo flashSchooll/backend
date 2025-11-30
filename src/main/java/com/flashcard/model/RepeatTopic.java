@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +17,8 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE repeat_topic SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class RepeatTopic {
 
     @Id
@@ -30,4 +34,6 @@ public class RepeatTopic {
     private Topic topic;
 
     private LocalDateTime repeatTime;
+
+    private boolean deleted = false;
 }

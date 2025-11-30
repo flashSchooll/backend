@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity(name = "Topic")
 @Table(name = "topic",
@@ -18,6 +20,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE topic SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Topic {// derslere ait konu bilgilerini tutar
 
     @Id
@@ -35,6 +39,8 @@ public class Topic {// derslere ait konu bilgilerini tutar
     private Integer index;
 
     private Integer cardCount;
+
+    private boolean deleted = false;
 
     public void updateCardCount(Integer newCardCount) {
         int oldCardCount = getCardCount();

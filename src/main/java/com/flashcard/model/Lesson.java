@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity(name = "Lesson")
 @Table(name = "lesson",
@@ -22,6 +24,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE lesson SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Lesson {//ders bilgisini tutar
 
     @Id
@@ -39,7 +43,6 @@ public class Lesson {//ders bilgisini tutar
     @NotNull()
     private YKS yks;
 
-
     private byte[] icon;
 
     @NotBlank
@@ -47,4 +50,5 @@ public class Lesson {//ders bilgisini tutar
 
     private Long index;
 
+    private boolean deleted = false;
 }
