@@ -15,6 +15,7 @@ public class UserDTO {
     private final Branch branch;
     private final String photoPath;
     private final Integer series;
+    private final Integer targetSeries;
 
     public UserDTO(User user) {
         this.id = user.getId();
@@ -25,6 +26,7 @@ public class UserDTO {
         this.rosette = user.getRosette();
         this.branch = user.getBranch();
         this.photoPath = user.getPhotoPath();
-        this.series=user.getSeries();
+        this.series = user.getSeries();
+        this.targetSeries = user.getTargetSeries();
     }
 }

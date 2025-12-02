@@ -59,6 +59,7 @@ public class AuthController {
         jwtResponse.setSeries(user.getSeries());
         jwtResponse.setPhotoPath(user.getPhotoPath());
         jwtResponse.setUsername(user.getUserName());
+        jwtResponse.setTargetSeries(user.getTargetSeries());
         return ResponseEntity.ok(jwtResponse);
     }
 
