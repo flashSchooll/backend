@@ -3,7 +3,7 @@ package com.flashcard.controller.ownercard;
 import com.flashcard.controller.ownercard.request.OwnerCardSaveRequest;
 import com.flashcard.controller.ownercard.request.OwnerCardUpdateRequest;
 import com.flashcard.controller.ownercard.response.OwnerCardResponse;
-import com.flashcard.service.OwnerCard;
+import com.flashcard.model.OwnerCard;
 import com.flashcard.service.OwnerCardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

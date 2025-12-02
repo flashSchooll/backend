@@ -65,6 +65,8 @@ public class PodcastService {
         podcast.setTitle(title);
         podcast.setDuration(duration);
         podcast.setPhotoPath(photoPath);
+        podcast.setPublished(false);
+        podcast.setDeleted(false);
 
         podcastRepository.save(podcast);
 

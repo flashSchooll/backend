@@ -71,6 +71,7 @@ public class AuthService {
         user.setUserAgreement(signUpRequest.getUserAgreement());
         user.setBranch(signUpRequest.getBranch());
         user.setTarget(100);
+        user.setDeleted(false);
 
         Set<Role> roles = new HashSet<>();
 

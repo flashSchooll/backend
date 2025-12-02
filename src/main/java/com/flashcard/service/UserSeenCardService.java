@@ -67,6 +67,7 @@ public class UserSeenCardService {
                 userSeenCard.setStateOfKnowledge(request.getStateOfKnowledge());
                 userSeenCard.setDuration(duration);
                 userSeenCard.setCard(card);
+                userSeenCard.setDeleted(false);
 
                 cardList.add(userSeenCard);
             }

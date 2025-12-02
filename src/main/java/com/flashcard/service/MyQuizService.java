@@ -36,6 +36,7 @@ public class MyQuizService {
         myQuiz.setUser(user);
         myQuiz.setOption(quizSaveRequest.getOption());
         myQuiz.setQuiz(quiz);
+        myQuiz.setDeleted(false);
 
         myQuizRepository.save(myQuiz);
     }

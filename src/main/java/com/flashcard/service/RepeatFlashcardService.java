@@ -46,6 +46,7 @@ public class RepeatFlashcardService {
             repeatFlashcard.setUser(user);
             repeatFlashcard.setFlashcard(flashcard);
             repeatFlashcard.setRepeatTime(repeatTime);
+            repeatFlashcard.setDeleted(false);
         }
 
         return repeatFlashcardRepository.save(repeatFlashcard);

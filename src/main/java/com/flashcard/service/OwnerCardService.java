@@ -2,6 +2,7 @@ package com.flashcard.service;
 
 import com.flashcard.controller.ownercard.request.OwnerCardSaveRequest;
 import com.flashcard.controller.ownercard.request.OwnerCardUpdateRequest;
+import com.flashcard.model.OwnerCard;
 import com.flashcard.model.OwnerFlashcard;
 import com.flashcard.repository.OwnerCardRepository;
 import com.flashcard.repository.OwnerFlashcardRepository;
@@ -36,6 +37,7 @@ public class OwnerCardService {
         ownerCard.setOwnerFlashcard(ownerFlashcard);
         ownerCard.setFrontFace(request.getFrontFace());
         ownerCard.setBackFace(request.getBackFace());
+        ownerCard.setDeleted(false);
 
         return ownerCardRepository.save(ownerCard);
     }

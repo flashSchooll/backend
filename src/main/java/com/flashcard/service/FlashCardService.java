@@ -56,6 +56,7 @@ public class FlashCardService {
         flashcard.setCanBePublish(false);
         flashcard.setIndex(flashcardSaveRequest.getIndex());
         flashcard.setCardCount(0);
+        flashcard.setDeleted(false);
 
         return flashCardRepository.save(flashcard);
     }

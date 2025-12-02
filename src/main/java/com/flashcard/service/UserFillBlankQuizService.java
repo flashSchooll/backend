@@ -49,6 +49,7 @@ public class UserFillBlankQuizService {
             quiz.setTopic(topic);
             quiz.setTitle(title);
             quiz.setKnown(known);
+            quiz.setDeleted(false);
 
             userFillBlankQuizRepository.save(quiz);
 

@@ -1,6 +1,5 @@
-package com.flashcard.service;
+package com.flashcard.model;
 
-import com.flashcard.model.OwnerFlashcard;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -8,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,8 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE owner_card SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class OwnerCard {
 
     @Id
@@ -38,4 +41,6 @@ public class OwnerCard {
     private String backFace;
 
     private LocalDateTime createdDate;
+
+    private boolean deleted = false;
 }

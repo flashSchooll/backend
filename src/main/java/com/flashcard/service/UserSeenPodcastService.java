@@ -37,6 +37,7 @@ public class UserSeenPodcastService {
         userSeenPodcast.setId(UUID.randomUUID().toString());
         userSeenPodcast.setUser(currentUser);
         userSeenPodcast.setPodcast(podcast);
+        userSeenPodcast.setDeleted(false);
 
         userSeenPodcastRepository.save(userSeenPodcast);
     }
