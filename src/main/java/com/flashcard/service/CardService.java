@@ -77,6 +77,7 @@ public class CardService {
         card.setFrontFace(cardSaveRequest.getFrontFace());
         card.setFrontPhotoPath(frontPath);
         card.setBackPhotoPath(backPath);
+        card.setDeleted(false);
 
         // TYTCard'ı veritabanına kaydet
         card = cardRepository.save(card);

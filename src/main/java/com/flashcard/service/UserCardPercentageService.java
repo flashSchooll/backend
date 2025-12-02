@@ -74,6 +74,7 @@ public class UserCardPercentageService {
                     percentage.setCompletedCard(0);
                     percentage.setLesson(lesson);
                     percentage.setTotalCard(cardCount);
+                    percentage.setDeleted(false);
                     return percentage;
                 }).toList();
 
@@ -173,6 +174,7 @@ public class UserCardPercentageService {
             cardPercentage.setCompletedCard(0);
             cardPercentage.setLesson(lesson);
             cardPercentage.setTotalCard((int) countCard);
+            cardPercentage.setDeleted(false);
 
             percentages.add(cardPercentage);
         }

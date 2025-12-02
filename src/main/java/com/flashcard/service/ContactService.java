@@ -30,6 +30,7 @@ public class ContactService {
         contactMessage.setUser(user);
         contactMessage.setMessage(request.getMessage());
         contactMessage.setTopic(request.getTopic());
+        contactMessage.setDeleted(false);
 
         return contactRepository.save(contactMessage);
     }

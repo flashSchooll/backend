@@ -30,6 +30,7 @@ public class OwnerFlashcardService {
         ownerFlashcard.setName(request.getName());
         ownerFlashcard.setLesson(request.getYksLesson());
         ownerFlashcard.setUser(user);
+        ownerFlashcard.setDeleted(false);
 
         return ownerFlashcardRepository.save(ownerFlashcard);
     }

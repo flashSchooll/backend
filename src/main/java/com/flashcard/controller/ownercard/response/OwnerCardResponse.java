@@ -1,6 +1,6 @@
 package com.flashcard.controller.ownercard.response;
 
-import com.flashcard.service.OwnerCard;
+import com.flashcard.model.OwnerCard;
 import lombok.Getter;
 import lombok.Setter;
 

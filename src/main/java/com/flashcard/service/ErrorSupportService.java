@@ -36,6 +36,7 @@ public class ErrorSupportService {
         support.setCard(card);
         support.setUser(currentUser);
         support.setErrorMessage(errorSupport.errorMessage());
+        support.setDeleted(false);
 
         errorSupportRepository.save(support);
     }

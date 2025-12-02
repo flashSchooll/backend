@@ -40,7 +40,7 @@ public class MyPodcastService {
             throw new EntityExistsException("Podcast already exists");
         }
 
-        MyPodcast newMyPodcast = MyPodcast.builder().podcast(podcast).user(user).build();
+        MyPodcast newMyPodcast = MyPodcast.builder().podcast(podcast).user(user).deleted(false).build();
 
         myPodcastRepository.save(newMyPodcast);
     }

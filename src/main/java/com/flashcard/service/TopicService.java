@@ -38,6 +38,7 @@ public class TopicService {
         Topic topic = new Topic();
         topic.setLesson(tytLesson);
         topic.setSubject(topicSaveRequest.getSubject());
+        topic.setDeleted(false);
 
         return topicRepository.save(topic);
     }

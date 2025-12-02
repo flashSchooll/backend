@@ -37,6 +37,7 @@ public class TopicSummaryService {
         TopicSummary summary = new TopicSummary();
         summary.setTopic(topic);
         summary.setSummary(request.getSummary());
+        summary.setDeleted(false);
 
         return topicSummaryRepository.save(summary);
     }

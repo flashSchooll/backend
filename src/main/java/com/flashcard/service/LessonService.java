@@ -42,6 +42,7 @@ public class LessonService {
         lesson.setBranch(yks.equals(YKS.TYT) ? null : branch);
         lesson.setYks(yks);
         lesson.setPath(path);
+        lesson.setDeleted(false);
 
         return lessonRepository.save(lesson);
     }

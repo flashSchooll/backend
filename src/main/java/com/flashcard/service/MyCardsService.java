@@ -50,6 +50,7 @@ public class MyCardsService {
         MyCard myCard = new MyCard();
         myCard.setCard(card);
         myCard.setUser(user);
+        myCard.setDeleted(false);
 
         myCardsRepository.save(myCard);
 

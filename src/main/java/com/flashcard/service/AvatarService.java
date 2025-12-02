@@ -29,6 +29,7 @@ public class AvatarService {
         Avatar avatar = new Avatar();
         avatar.setPath(path);
         avatar.setId(UUID.randomUUID().toString());
+        avatar.setDeleted(false);
 
         return new AvatarResponseDto(avatarRepository.save(avatar));
     }

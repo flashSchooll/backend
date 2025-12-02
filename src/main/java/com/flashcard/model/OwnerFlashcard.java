@@ -1,7 +1,6 @@
 package com.flashcard.model;
 
 import com.flashcard.model.enums.YKSLesson;
-import com.flashcard.service.OwnerCard;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

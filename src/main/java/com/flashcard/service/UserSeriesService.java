@@ -24,6 +24,7 @@ public class UserSeriesService {
             UserSeries userSeries = new UserSeries();
             userSeries.setUser(user);
             userSeries.setDate(LocalDate.now());
+            userSeries.setDeleted(false);
             userSeriesRepository.save(userSeries);
 
             user.updateSeriesCount();

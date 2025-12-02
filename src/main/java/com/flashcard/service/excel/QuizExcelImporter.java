@@ -57,6 +57,7 @@ public class QuizExcelImporter {
             quiz.setTopic(topic);
             quiz.setName(e.getName());
             quiz.setType(e.getType());
+            quiz.setDeleted(false);
 
             quizSet.add(quiz);
 

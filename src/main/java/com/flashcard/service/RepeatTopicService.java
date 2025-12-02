@@ -35,6 +35,7 @@ public class RepeatTopicService {
             repeatTopic.setUser(user);
             repeatTopic.setTopic(topic);
             repeatTopic.setRepeatTime(repeatTime);
+            repeatTopic.setDeleted(false);
 
             return repeatTopicRepository.save(repeatTopic);
         }

@@ -1,7 +1,7 @@
 package com.flashcard.repository;
 
 import com.flashcard.model.OwnerFlashcard;
-import com.flashcard.service.OwnerCard;
+import com.flashcard.model.OwnerCard;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
