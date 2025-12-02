@@ -74,6 +74,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             nativeQuery = true)
     long findOrderByUserWeekly(Long id);
 
+    @Modifying
     @Query("UPDATE User SET weeklyStar = 0")
     void updateWeeklyStar();
 }
