@@ -99,4 +99,14 @@ public class UserController {
 
         return ResponseEntity.ok(userDTO);
     }
+
+    @PutMapping("/update-target-series")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<UserDTO> updateTargetSeries(@RequestParam Integer target) {
+        User user = userService.updateTargetSeries(target);
+
+        UserDTO userDTO = new UserDTO(user);
+
+        return ResponseEntity.ok(userDTO);
+    }
 }

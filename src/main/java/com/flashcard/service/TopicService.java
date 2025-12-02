@@ -6,6 +6,7 @@ import com.flashcard.controller.topic.admin.request.TopicUpdateRequest;
 import com.flashcard.controller.topic.user.response.TopicUserResponse;
 import com.flashcard.model.Lesson;
 import com.flashcard.model.Topic;
+import com.flashcard.model.enums.YKS;
 import com.flashcard.model.enums.YKSLesson;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.LessonRepository;
@@ -108,5 +109,12 @@ public class TopicService {
     public Topic getById(Long id) {
         return topicRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
+    }
+
+    public List<String> getAllByYks(YKS yks) {
+        return topicRepository.findByLessonYks(yks)
+                .stream()
+                .map(topic -> topic.getSubject())
+                .toList();
     }
 }

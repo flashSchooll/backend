@@ -78,6 +78,8 @@ public class User {// kullanıcı bilgisini tutar
 
     private Integer series = 0; // todo seri kırılınca sıfır olmalı bakılacak
 
+    private Integer targetSeries = 0;
+
     private boolean deleted = false;
 
     @ManyToMany(fetch = FetchType.LAZY)

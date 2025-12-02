@@ -1,6 +1,7 @@
 package com.flashcard.controller.topic.user;
 
 import com.flashcard.controller.topic.user.response.TopicUserResponse;
+import com.flashcard.model.enums.YKS;
 import com.flashcard.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,4 +29,11 @@ public class TopicUserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/get-all")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<List<String>> getAllTyt(@RequestParam YKS yks) {
+
+        List<String> response = topicService.getAllByYks(yks);
+        return ResponseEntity.ok(response);
+    }
 }

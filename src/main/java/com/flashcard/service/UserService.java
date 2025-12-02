@@ -264,4 +264,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
+    public User updateTargetSeries(Integer target) {
+        Objects.requireNonNull(target);
+
+        User user = authService.getCurrentUser();
+
+        user.setTargetSeries(target);
+
+        return userRepository.save(user);
+    }
 }

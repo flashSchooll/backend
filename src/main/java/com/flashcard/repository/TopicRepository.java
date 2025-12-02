@@ -2,6 +2,7 @@ package com.flashcard.repository;
 
 import com.flashcard.model.Lesson;
 import com.flashcard.model.Topic;
+import com.flashcard.model.enums.YKS;
 import com.flashcard.model.enums.YKSLesson;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,5 +32,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
         //    @Param("query") String query,
             @Param("yksLesson") YKSLesson yksLesson,
             Pageable pageable);
+
+    List<Topic> findByLessonYks(YKS yks);
 }
 //  AND (:query IS NULL OR LOWER(t.subject) LIKE LOWER(CONCAT('%', :query, '%')))
