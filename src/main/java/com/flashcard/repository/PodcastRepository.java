@@ -1,5 +1,6 @@
 package com.flashcard.repository;
 
+import com.flashcard.controller.podcast.user.response.PodcastUserResponse;
 import com.flashcard.model.Podcast;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,6 @@ public interface PodcastRepository extends JpaRepository<Podcast, Long> {
 
     @Query("SELECT p.path FROM Podcast p")
     List<String> findAllPath();
+
+    List<Podcast> findByPublishedTrue();
 }

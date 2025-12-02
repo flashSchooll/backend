@@ -25,6 +25,13 @@ public class PodcastUserController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/get-all")
+    public ResponseEntity<List<PodcastUserResponse>> getPodcast() {
+        List<PodcastUserResponse> responses = podcastService.getAll();
+
+        return ResponseEntity.ok(responses);
+    }
+
     @GetMapping("/{podcastId}")
     public ResponseEntity<PodcastUserResponse> getPodcastById(@PathVariable("podcastId") Long podcastId) {
         PodcastUserResponse podcast = podcastService.getById(podcastId);

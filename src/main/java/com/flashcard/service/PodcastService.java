@@ -1,10 +1,7 @@
 package com.flashcard.service;
 
 import com.flashcard.controller.podcast.user.response.PodcastUserResponse;
-import com.flashcard.model.MyPodcast;
-import com.flashcard.model.Podcast;
-import com.flashcard.model.Topic;
-import com.flashcard.model.User;
+import com.flashcard.model.*;
 import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.repository.MyPodcastRepository;
 import com.flashcard.repository.PodcastRepository;
@@ -169,5 +166,24 @@ public class PodcastService {
 
     public List<Podcast> getByTopicByAdmin(Long topicId) {
         return podcastRepository.findByTopicId(topicId);
+    }
+
+    public List<PodcastUserResponse> getAll() {
+        User user = authService.getCurrentUser();
+        List<Podcast> podcastList = podcastRepository.findByPublishedTrue();
+        List<Long> seenPodcastList = userSeenPodcastRepository.findIdsByUser(user);
+        List<Long> myPodcastList = myPodcastRepository.findSavedPodcastIdsByUser(user);
+
+        // Kullanıcının dinlediği podcast'lerin ID'lerini bir Set'e al
+        Set<Long> seenPodcastIds = new HashSet<>(seenPodcastList);
+
+        // Podcast listesini dönüştürürken seen durumunu kontrol et
+        return podcastList.stream()
+                .map(podcast -> {
+                    boolean seen = seenPodcastIds.contains(podcast.getId());
+                    boolean saved = myPodcastList.contains(podcast.getId());
+                    return new PodcastUserResponse(podcast, seen, saved); // Güncellenmiş constructor
+                })
+                .collect(Collectors.toList());
     }
 }
