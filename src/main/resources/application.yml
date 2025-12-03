@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
   error:
     include-binding-errors: always
     include-message: always
@@ -7,9 +7,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://aws-0-eu-central-1.pooler.supabase.com:5432/postgres
-    username: postgres.wauruqdnimihwjwcmijg
-    password: woDloynssshhIIfv
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
@@ -30,10 +30,10 @@ spring:
       config:
         classpath: ehcache.xml
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: infostumy@gmail.com
-    password: ilebdcfoujfeitgq
+    host: ${SPRING_MAIL_HOST}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -72,9 +72,9 @@ management: #actuator
       enabled: true
   flashSchool:
     app:
-      jwtSecret: 5Xz3Pb8+fttP9V1phnx5hOqWzHj2fFg14jSt+zBQquOe2c0qGZ7m+NqzNH5sDhq1zqD1+8Am00uP7XujMxw5yDsg8Rh3yPppT2yAl4h0eEOB2LZZnLQDb3ZPz3Jt5g==
-      jwtExpirationMs: 2592000000
-      mailAddress: infostumy@gmail.com
+      jwtSecret: ${APP_JWT_SECRET}
+      jwtExpirationMs: ${APP_JWT_EXPIRATION:2592000000}
+      mailAddress: ${APP_MAIL_ADDRESS}
 
 logging:
   level:
@@ -110,6 +110,6 @@ cloud:
 
 application:
   bucket:
-    name: stumystorage
-    url: https://stumystorage.s3.eu-north-1.amazonaws.com/  # burada tutulacak
-    cdn: https://d2c7jt33cnh7in.cloudfront.net/             # buradan çekilecek
+    name: ${AWS_S3_BUCKET_NAME}
+    url: ${AWS_S3_BUCKET_URL}  # burada tutulacak
+    cdn: ${AWS_S3_BUCKET_CDN}          # buradan çekilecek
