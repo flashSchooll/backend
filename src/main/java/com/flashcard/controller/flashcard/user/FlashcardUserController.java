@@ -35,11 +35,9 @@ public class FlashcardUserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<List<FlashcardSearchResponse>> search(@RequestParam @NotBlank String search) {
 
-        List<Flashcard> flashcards = flashCardService.search(search);
+        List<FlashcardSearchResponse> flashcards = flashCardService.search(search);
 
-        List<FlashcardSearchResponse> response = flashcards.stream().map(FlashcardSearchResponse::new).toList();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(flashcards);
     }
 
 }

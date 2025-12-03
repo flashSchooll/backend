@@ -3,12 +3,14 @@ package com.flashcard.service;
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.flashcard.admin.request.FlashcardSaveRequest;
 import com.flashcard.controller.flashcard.admin.request.FlashcardUpdateRequest;
+import com.flashcard.controller.flashcard.user.response.FlashcardSearchResponse;
 import com.flashcard.controller.flashcard.user.response.FlashcardUserResponse;
 import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.*;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.TopicRepository;
+import com.flashcard.repository.UserSeenCardRepository;
 import com.flashcard.security.services.AuthService;
 import com.flashcard.service.excel.FlashcardExcelImporter;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,11 +32,11 @@ public class FlashCardService {
 
     private final FlashCardRepository flashCardRepository;
     private final TopicRepository topicRepository;
-    private final CardRepository cardRepository;
     private final FlashcardExcelImporter flashcardExcelImporter;
     private final UserSeenCardService userSeenCardService;
     private final UserCardPercentageService userCardPercentageService;
     private final AuthService authService;
+    private final UserSeenCardRepository userSeenCardRepository;
 
     @Transactional
     public Flashcard save(FlashcardSaveRequest flashcardSaveRequest) {
@@ -135,9 +137,16 @@ public class FlashCardService {
     }
 
     //  @Cacheable(value = "flashcardSearch", key = "#search")
-    public List<Flashcard> search(String search) {
+    public List<FlashcardSearchResponse> search(String search) {
+        User user = authService.getCurrentUser();
 
-        return flashCardRepository.search(search);
+        List<Flashcard> flashcards = flashCardRepository.search(search);
+
+        List<Long> flashcardIds = userSeenCardRepository.findByUserWithAllData(user);
+
+        return flashcards.stream()
+                .map(flashcard -> new FlashcardSearchResponse(flashcard, flashcardIds.contains(flashcard.getId())))
+                .toList();
     }
 
     @Transactional
@@ -163,7 +172,7 @@ public class FlashCardService {
 
             userCardPercentageService.updateCardCount(flashcard.getTopic().getLesson());
 
-            Topic topic=flashcard.getTopic();
+            Topic topic = flashcard.getTopic();
             topic.updateCardCount(flashcard.getCardCount());
         }
     }

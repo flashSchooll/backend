@@ -274,4 +274,16 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    @Transactional
+    public User updateStarAndRosette(Integer star) {
+
+        Objects.requireNonNull(star);
+
+        User user = authService.getCurrentUser();
+
+        user.raiseStar(star);
+        user.raiseRosette();
+        return userRepository.save(user);
+    }
 }

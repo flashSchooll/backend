@@ -13,12 +13,14 @@ public class FlashcardSearchResponse {
     private final String topic;
     private final Long topicId;
     private final String flashcardName;
+    private final boolean seen;
 
-    public FlashcardSearchResponse(Flashcard flashcard) {
+    public FlashcardSearchResponse(Flashcard flashcard,boolean seen) {
         this.lesson = flashcard.getTopic().getLesson().getYksLesson().label;
         this.flashcardId = flashcard.getId();
         this.topic = flashcard.getTopic().getSubject();
         this.topicId = flashcard.getTopic().getId();
         this.flashcardName = flashcard.getCardName();
+        this.seen = seen;
     }
 }

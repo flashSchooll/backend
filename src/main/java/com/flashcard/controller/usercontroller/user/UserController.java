@@ -109,4 +109,16 @@ public class UserController {
 
         return ResponseEntity.ok(userDTO);
     }
+
+    @PutMapping("/update-star-rosette")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<UserDTO> updateStarAntRosette(@RequestParam Integer star) {
+        User user = userService.updateStarAndRosette(star);
+
+        UserDTO userDTO = new UserDTO(user);
+
+        return ResponseEntity.ok(userDTO);
+    }
+
+
 }
