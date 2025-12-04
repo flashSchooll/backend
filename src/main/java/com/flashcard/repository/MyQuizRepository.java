@@ -33,5 +33,5 @@ public interface MyQuizRepository extends JpaRepository<MyQuiz, Long> {
             "AND q.name = :name")
     List<MyQuiz> findByUserAndQuizNameWithFetch(User user, String name);
 
-    Optional<MyQuiz> findByQuizId(Long myQuizId);
+    Optional<MyQuiz> findByQuizIdAndUser(Long myQuizId, User user);
 }

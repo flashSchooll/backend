@@ -45,17 +45,13 @@ public class MyQuizService {
     public void deleteMyQuiz(Long quizId) {
 
         User user = authService.getCurrentUser();
-        MyQuiz myQuiz = myQuizRepository.findByQuizId(quizId)
+        MyQuiz myQuiz = myQuizRepository.findByQuizIdAndUser(quizId, user)
                 .orElseThrow(() -> new NoSuchElementException(Constants.MY_QUIZ_NOT_FOUND));
-
-        if (!Objects.equals(user.getId(), myQuiz.getUser().getId())) {
-            throw new IllegalArgumentException("Kullanıcı başkasının kayıtlı quiz bilgisini silemez");
-        }
 
         myQuizRepository.delete(myQuiz);
     }
 
-  //  @Cacheable(value = "myQuizes", key = "#userId")
+    //  @Cacheable(value = "myQuizes", key = "#userId")
     public List<MyQuiz> myQuizes(Long userId) {
 
         return myQuizRepository.findByUserId(userId);
