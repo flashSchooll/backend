@@ -13,6 +13,7 @@ public class FlashcardResponse {
     private final String cardName;
     private final Boolean seen;
     private final String lesson;
+    private final boolean published;
 
     public FlashcardResponse(Flashcard flashcard) {
         this.id = flashcard.getId();
@@ -20,6 +21,7 @@ public class FlashcardResponse {
         this.cardName = flashcard.getCardName();
         this.seen = false;
         this.lesson = flashcard.getTopic().getLesson().getYksLesson().label;
+        this.published = flashcard.getCanBePublish();
     }
 
     public FlashcardResponse(Flashcard flashcard, List<Long> flashcardIds) {
@@ -28,5 +30,6 @@ public class FlashcardResponse {
         this.cardName = flashcard.getCardName();
         this.seen = flashcardIds.contains(flashcard.getId());
         this.lesson = flashcard.getTopic().getLesson().getYksLesson().label;
+        this.published = flashcard.getCanBePublish();
     }
 }
