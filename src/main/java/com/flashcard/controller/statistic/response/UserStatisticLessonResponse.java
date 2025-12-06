@@ -1,5 +1,5 @@
 package com.flashcard.controller.statistic.response;
 
-public record UserStatisticLessonResponse(String lesson, Long seenCard, Double percentage) {
+public record UserStatisticLessonResponse(String lesson, Integer seenCard, Double percentage) {
 
 }

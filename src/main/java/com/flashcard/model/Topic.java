@@ -45,8 +45,14 @@ public class Topic {// derslere ait konu bilgilerini tutar
     public void updateCardCount(Integer newCardCount) {
         Integer oldCardCount = getCardCount();
 
-        if (newCardCount != null && newCardCount > 0) {
+        if (newCardCount == null || newCardCount <= 0) {
+            throw new IllegalArgumentException("New card count must be greater than zero");
+        }
+
+        if (oldCardCount != null && oldCardCount > 0) {
             setCardCount(oldCardCount + newCardCount);
+        } else {
+            setCardCount(newCardCount);
         }
     }
 }

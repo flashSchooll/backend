@@ -20,6 +20,7 @@ public class AIQuestionResponse {
     private final String level;
     private final String description;
     private final boolean published;
+    private final String uuid;
 
     public AIQuestionResponse(AIQuestion aiQuestion) {
         this.id = aiQuestion.getId();
@@ -35,5 +36,6 @@ public class AIQuestionResponse {
         this.level = aiQuestion.getLevel();
         this.description = aiQuestion.getDescription();
         this.published = aiQuestion.isPublished();
+        this.uuid = aiQuestion.getUuid();
     }
 }

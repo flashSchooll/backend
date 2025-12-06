@@ -20,8 +20,8 @@ public class AIQuestionUserController {
     private final AIQuestionService aiQuestionService;
 
     @PostMapping
-    public void generateAIQuestions(@RequestBody AIQuestionSaveRequest aiQuestionSaveRequest) {
-        aiQuestionService.save(aiQuestionSaveRequest);
+    public void generateAIQuestions(@RequestBody List<AIQuestionSaveRequest> aiQuestionSaveRequest) {
+        aiQuestionService.saveAll(aiQuestionSaveRequest);
     }
 
     @GetMapping("get-all")

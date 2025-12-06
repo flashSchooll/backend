@@ -1,6 +1,7 @@
 package com.flashcard.service;
 
 import com.flashcard.controller.aiquestion.request.AIQuestionSaveRequest;
+import com.flashcard.controller.aiquestion.request.AIQuestionUpdateRequest;
 import com.flashcard.model.AIQuestion;
 import com.flashcard.model.Topic;
 import com.flashcard.model.User;
@@ -23,7 +24,7 @@ public class AIQuestionService {
     private final AuthService authService;
 
     @Transactional
-    public void save(AIQuestionSaveRequest aiQuestionSaveRequest) {
+    public void save(AIQuestionSaveRequest aiQuestionSaveRequest, String uuid) {
         Topic topic = topicService.getById(aiQuestionSaveRequest.getTopicId());
         User user = authService.getCurrentUser();
 
@@ -44,6 +45,7 @@ public class AIQuestionService {
         aiQuestion.setDescription(aiQuestionSaveRequest.getDescription());
         aiQuestion.setPublished(false);
         aiQuestion.setDeleted(false);
+        aiQuestion.setUuid(uuid);
 
         aiQuestionRepository.save(aiQuestion);
     }
@@ -97,5 +99,37 @@ public class AIQuestionService {
         User user = authService.getCurrentUser();
 
         return aiQuestionRepository.findByUser(user);
+    }
+
+    @Transactional
+    public void saveAll(List<AIQuestionSaveRequest> aiQuestionSaveRequest) {
+        String uuid = java.util.UUID.randomUUID().toString();
+
+        for (AIQuestionSaveRequest request : aiQuestionSaveRequest) {
+            save(request, uuid);
+        }
+    }
+
+    @Transactional
+    public AIQuestion update(String aiQuestionId, AIQuestionUpdateRequest aiQuestionUpdateRequest) {
+        AIQuestion aiQuestion = aiQuestionRepository.findById(aiQuestionId)
+                .orElseThrow(() -> new EntityNotFoundException("AIQuestion bulunamadı"));
+
+        aiQuestion.setSubject(aiQuestionUpdateRequest.getSubject());
+        aiQuestion.setQuestion(aiQuestionUpdateRequest.getQuestion());
+        aiQuestion.setAnswer(aiQuestionUpdateRequest.getAnswer());
+        aiQuestion.setA(aiQuestionUpdateRequest.getOptions().get(0));
+        aiQuestion.setB(aiQuestionUpdateRequest.getOptions().get(1));
+        aiQuestion.setC(aiQuestionUpdateRequest.getOptions().get(2));
+        aiQuestion.setD(aiQuestionUpdateRequest.getOptions().get(3));
+        if (aiQuestionUpdateRequest.getOptions().size() == 5) {
+            aiQuestion.setE(aiQuestionUpdateRequest.getOptions().get(4));
+        } else {
+            aiQuestion.setE(null);
+        }
+        aiQuestion.setLevel(aiQuestionUpdateRequest.getLevel());
+        aiQuestion.setDescription(aiQuestionUpdateRequest.getDescription());
+
+        return aiQuestionRepository.save(aiQuestion);
     }
 }

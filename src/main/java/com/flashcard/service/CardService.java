@@ -226,13 +226,13 @@ public class CardService {
 
         User user = authService.getCurrentUser();
         Branch branch = user.getBranch();
-        int totalCountAyt = cardRepository.countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranchAndFlashcardCanBePublishTrue(YKS.AYT, branch);
-        int totalCountTyt = cardRepository.countByFlashcardTopicLessonYksAndFlashcardCanBePublishTrue(YKS.TYT);
-        int seenCard = userSeenCardRepository.countByUser(user);
+        Integer totalCountAyt = cardRepository.countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranchAndFlashcardCanBePublishTrue(YKS.AYT, branch);
+        Integer totalCountTyt = cardRepository.countByFlashcardTopicLessonYksAndFlashcardCanBePublishTrue(YKS.TYT);
+        Integer seenCard = userSeenCardRepository.countByUser(user);
 
-        int totalCard = totalCountAyt + totalCountTyt;
-        int unseenCard = totalCard - seenCard;
-        double percentage = (double) seenCard / totalCard;
+        Integer totalCard = totalCountAyt + totalCountTyt;
+        Integer unseenCard = totalCard - seenCard;
+        Double percentage = (double) seenCard / totalCard;
 
         return UserCardStatisticResponse
                 .builder()
@@ -248,9 +248,9 @@ public class CardService {
         User user = authService.getCurrentUser();
         Branch branch = user.getBranch();
 
-        int totalCount = 0;
+        Integer totalCount = 0;
 
-        int seenCard;
+        Integer seenCard;
         if (yks == YKS.AYT) {
             totalCount = cardRepository.countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranchAndFlashcardCanBePublishTrue(YKS.AYT, branch);
             seenCard = userSeenCardRepository.countByUserAndCardFlashcardTopicLessonYks(user, yks);
@@ -259,9 +259,9 @@ public class CardService {
             seenCard = userSeenCardRepository.countByUserAndCardFlashcardTopicLessonYks(user, yks);
         }
 
-        int totalCard = totalCount;
-        int unseenCard = totalCard - seenCard;
-        double percentage = (double) seenCard / totalCard;
+        Integer totalCard = totalCount;
+        Integer unseenCard = totalCard - seenCard;
+        Double percentage = (double) seenCard / totalCard;
 
         return UserCardStatisticResponse
                 .builder()
@@ -281,7 +281,7 @@ public class CardService {
         return percentageList.stream().map(
                         l -> new UserStatisticLessonResponse(
                                 l.getLesson().getYksLesson().label,
-                                (long) l.getCompletedCard(),
+                                l.getCompletedCard(),
                                 (l.getCompletedCard() / (double) l.getTotalCard())))
                 .toList();
     }
@@ -295,7 +295,7 @@ public class CardService {
         return percentageList.stream().map(
                         l -> new UserStatisticLessonResponse(
                                 l.getLesson().getYksLesson().label,
-                                (long) l.getCompletedCard(),
+                                l.getCompletedCard(),
                                 (l.getCompletedCard() / (double) l.getTotalCard())))
                 .toList();
     }

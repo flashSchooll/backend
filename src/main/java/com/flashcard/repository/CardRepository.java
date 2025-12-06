@@ -26,10 +26,10 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findCardsWithFlashcard(Flashcard flashcard);
 
 
-    int countByFlashcard(Flashcard flashcard);
+    Integer countByFlashcard(Flashcard flashcard);
 
     @Query("SELECT COUNT(c) FROM Card c WHERE c.flashcard.topic.lesson = :lesson and c.flashcard.canBePublish = true")
-    int countByFlashcardTopicLesson(@Param("lesson") Lesson lesson);
+    Integer countByFlashcardTopicLesson(@Param("lesson") Lesson lesson);
 
     @Query("SELECT c FROM Card c WHERE c.flashcard.topic.lesson = :lesson")
     List<Card> findByLesson(Lesson lesson);
@@ -37,7 +37,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("SELECT c FROM Card c WHERE c.flashcard.topic = :topic")
     List<Card> findByTopic(Topic topic);
 
-    int countByFlashcardTopicLessonYksAndFlashcardCanBePublishTrue(YKS yks);
+    Integer countByFlashcardTopicLessonYksAndFlashcardCanBePublishTrue(YKS yks);
 
     @Query("SELECT  c FROM Card c " +
             "JOIN FETCH c.flashcard f " +       // Flashcard'ı hemen çek
@@ -54,7 +54,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     Long countByFlashcardTopicAndFlashcardCanBePublishTrue(Topic topic);
 
-    int countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranchAndFlashcardCanBePublishTrue(YKS yks, Branch branch);
+    Integer countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranchAndFlashcardCanBePublishTrue(YKS yks, Branch branch);
 
     @Query("SELECT c FROM Card c " +
             "JOIN FETCH c.flashcard f " +
@@ -102,5 +102,5 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("SELECT c.backPhotoPath FROM Card c")
     List<String> findAllBackPath();
 
-    int countByFlashcardTopic(Topic topic);
+    Integer countByFlashcardTopic(Topic topic);
 }

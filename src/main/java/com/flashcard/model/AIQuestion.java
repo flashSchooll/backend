@@ -27,6 +27,8 @@ public class AIQuestion {
     @ManyToOne
     private User user;
 
+    private String uuid; // bunu gelen soruları gruplamak için kullanabiliriz
+
     private String subject;
 
     private String question;

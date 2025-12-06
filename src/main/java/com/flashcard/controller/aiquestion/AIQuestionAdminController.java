@@ -1,5 +1,6 @@
 package com.flashcard.controller.aiquestion;
 
+import com.flashcard.controller.aiquestion.request.AIQuestionUpdateRequest;
 import com.flashcard.controller.aiquestion.response.AIQuestionResponse;
 import com.flashcard.model.AIQuestion;
 import com.flashcard.service.AIQuestionService;
@@ -8,7 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -19,11 +23,21 @@ public class AIQuestionAdminController {
     private final AIQuestionService aiQuestionService;
 
     @GetMapping("get-all")
-    public ResponseEntity<List<AIQuestionResponse>> getAllAIQuestions() {
+    public ResponseEntity<List<List<AIQuestionResponse>>> getAllAIQuestions() {
+        // 1. Servisten gelen tüm kayıtları AIQuestionResponse'a dönüştür
         List<AIQuestionResponse> responses = aiQuestionService.findByAdmin()
-                .stream().map(AIQuestionResponse::new).toList();
+                .stream()
+                .map(AIQuestionResponse::new)
+                .toList();
 
-        return ResponseEntity.ok(responses);
+        // 2. uuid'ye göre grupla
+        Map<String, List<AIQuestionResponse>> groupedByUuid = responses.stream()
+                .collect(Collectors.groupingBy(AIQuestionResponse::getUuid));
+
+        // 3. Sadece alt listeleri al (List<List<AIQuestionResponse>>)
+        List<List<AIQuestionResponse>> result = new ArrayList<>(groupedByUuid.values());
+
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("get-all/{topicId}")
@@ -51,6 +65,14 @@ public class AIQuestionAdminController {
     @PutMapping("/publish/{aiQuestionId}")
     public ResponseEntity<AIQuestionResponse> publishAIQuestion(@PathVariable String aiQuestionId) {
         AIQuestion aiQuestion = aiQuestionService.publishAIQuestion(aiQuestionId);
+
+        return ResponseEntity.ok(new AIQuestionResponse(aiQuestion));
+    }
+
+    @PutMapping("/{aiQuestionId}")
+    public ResponseEntity<AIQuestionResponse> updateAIQuestion(@PathVariable String aiQuestionId,
+                                                               @RequestBody AIQuestionUpdateRequest aiQuestionUpdateRequest) {
+        AIQuestion aiQuestion = aiQuestionService.update(aiQuestionId, aiQuestionUpdateRequest);
 
         return ResponseEntity.ok(new AIQuestionResponse(aiQuestion));
     }
