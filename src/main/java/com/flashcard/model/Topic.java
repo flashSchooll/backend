@@ -43,7 +43,7 @@ public class Topic {// derslere ait konu bilgilerini tutar
     private boolean deleted = false;
 
     public void updateCardCount(Integer newCardCount) {
-        int oldCardCount = getCardCount();
+        Integer oldCardCount = getCardCount();
 
         if (newCardCount != null && newCardCount > 0) {
             setCardCount(oldCardCount + newCardCount);

@@ -348,14 +348,14 @@ public class CardService {
         List<Flashcard> flashcards = flashCardRepository.findAll();
 
         for (Flashcard flashcard : flashcards) {
-            int cardCount = cardRepository.countByFlashcard(flashcard);
+            Integer cardCount = cardRepository.countByFlashcard(flashcard);
             flashcard.setCardCount(cardCount);
             flashCardRepository.save(flashcard);
         }
 
         List<Topic> topics = topicRepository.findAll();
         for (Topic topic : topics) {
-            int cardCount = cardRepository.countByFlashcardTopic(topic);
+            Integer cardCount = cardRepository.countByFlashcardTopic(topic);
             topic.setCardCount(cardCount);
             topicRepository.save(topic);
         }

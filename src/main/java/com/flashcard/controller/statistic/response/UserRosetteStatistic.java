@@ -11,10 +11,10 @@ public class UserRosetteStatistic {
     public final Long id;
     public final String userName;
     public final String userSurname;
-    public final long star;
-    public final long weeklyStar;
-    public final long rosette;
-    public final long order;
-    public final boolean me;
+    public final Integer star;
+    public final Integer weeklyStar;
+    public final Integer rosette;
+    public final Integer order;
+    public final Boolean me;
     public final String photoPath;
 }

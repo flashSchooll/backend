@@ -3,6 +3,7 @@ package com.flashcard.controller.flashcard.user;
 import com.flashcard.controller.flashcard.user.response.FlashcardSearchResponse;
 import com.flashcard.controller.flashcard.user.response.FlashcardUserResponse;
 import com.flashcard.model.Flashcard;
+import com.flashcard.model.enums.YKS;
 import com.flashcard.service.FlashCardService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,9 @@ public class FlashcardUserController {
 
     @GetMapping("/search")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<List<FlashcardSearchResponse>> search(@RequestParam @NotBlank String search) {
+    public ResponseEntity<List<FlashcardSearchResponse>> search(@RequestParam @NotBlank String search, @RequestParam(required = false) YKS yks) {
 
-        List<FlashcardSearchResponse> flashcards = flashCardService.search(search);
+        List<FlashcardSearchResponse> flashcards = flashCardService.search(search,yks);
 
         return ResponseEntity.ok(flashcards);
     }

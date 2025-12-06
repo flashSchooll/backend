@@ -2,6 +2,7 @@ package com.flashcard.repository;
 
 import com.flashcard.model.Flashcard;
 import com.flashcard.model.Topic;
+import com.flashcard.model.enums.YKS;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,4 +39,11 @@ public interface FlashCardRepository extends JpaRepository<Flashcard, Long> {
     List<Flashcard> findByIdIn(List<Long> flashcardList);
 
     List<Flashcard> findByCanBePublishFalse();
+
+    @Query("select f from Flashcard f " +
+            "where " +
+            "f.topic.lesson.yks = :yks " +
+            "and (f.cardName ilike (%:search%) " +
+            "or f.topic.subject ilike (%:search%))")
+    List<Flashcard> findByTopicLessonYksAndSearch(YKS yks, String search);
 }

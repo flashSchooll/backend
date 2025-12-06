@@ -7,6 +7,7 @@ import com.flashcard.controller.flashcard.user.response.FlashcardSearchResponse;
 import com.flashcard.controller.flashcard.user.response.FlashcardUserResponse;
 import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.*;
+import com.flashcard.model.enums.YKS;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.TopicRepository;
@@ -137,10 +138,15 @@ public class FlashCardService {
     }
 
     //  @Cacheable(value = "flashcardSearch", key = "#search")
-    public List<FlashcardSearchResponse> search(String search) {
+    public List<FlashcardSearchResponse> search(String search, YKS yks) {
         User user = authService.getCurrentUser();
 
-        List<Flashcard> flashcards = flashCardRepository.search(search);
+        List<Flashcard> flashcards = Collections.emptyList();
+        if (yks == null) {
+            flashcards = flashCardRepository.search(search);
+        }else{
+            flashcards=flashCardRepository.findByTopicLessonYksAndSearch(yks,search);
+        }
 
         List<Long> flashcardIds = userSeenCardRepository.findByUserWithAllData(user);
 

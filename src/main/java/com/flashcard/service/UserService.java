@@ -166,7 +166,7 @@ public class UserService {
             statistics.add(userStatistic);
         });
         if (!userExist) {
-            long order = userRepository.findOrderByUser(user.getId());
+            Integer order = userRepository.findOrderByUser(user.getId());
 
             UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
                     .userName(user.getUserName())
@@ -210,7 +210,7 @@ public class UserService {
             statistics.add(userStatistic);
         });
         if (!userExist) {
-            long order = userRepository.findOrderByUserWeekly(user.getId());
+            Integer order = userRepository.findOrderByUserWeekly(user.getId());
 
             UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
                     .userName(user.getUserName())

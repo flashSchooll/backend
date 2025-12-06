@@ -44,7 +44,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "FROM RankedUsers " +
             "WHERE id = :id",
             nativeQuery = true)
-    Long findOrderByUser(@Param("id") Long id);
+    Integer findOrderByUser(@Param("id") Long id);
 
     @Modifying
     @Query("""
@@ -72,7 +72,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "FROM RankedUsers " +
             "WHERE id = :id",
             nativeQuery = true)
-    long findOrderByUserWeekly(Long id);
+    Integer findOrderByUserWeekly(Long id);
 
     @Modifying
     @Query("UPDATE User SET weeklyStar = 0")
