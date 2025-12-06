@@ -3,6 +3,7 @@ package com.flashcard.service;
 import com.flashcard.constants.Constants;
 import com.flashcard.controller.topic.admin.request.TopicSaveRequest;
 import com.flashcard.controller.topic.admin.request.TopicUpdateRequest;
+import com.flashcard.controller.topic.user.response.TopicUserIdResponse;
 import com.flashcard.controller.topic.user.response.TopicUserResponse;
 import com.flashcard.model.Lesson;
 import com.flashcard.model.Topic;
@@ -111,10 +112,10 @@ public class TopicService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
     }
 
-    public List<String> getAllByYks(YKS yks) {
+    public List<TopicUserIdResponse> getAllByYks(YKS yks) {
         return topicRepository.findByLessonYks(yks)
                 .stream()
-                .map(topic -> topic.getSubject())
+                .map(TopicUserIdResponse::new)
                 .toList();
     }
 }

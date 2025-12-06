@@ -1,5 +1,6 @@
 package com.flashcard.controller.topic.user;
 
+import com.flashcard.controller.topic.user.response.TopicUserIdResponse;
 import com.flashcard.controller.topic.user.response.TopicUserResponse;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.service.TopicService;
@@ -31,9 +32,9 @@ public class TopicUserController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<List<String>> getAllTyt(@RequestParam YKS yks) {
+    public ResponseEntity<List<TopicUserIdResponse>> getAllTyt(@RequestParam YKS yks) {
 
-        List<String> response = topicService.getAllByYks(yks);
+        List<TopicUserIdResponse> response = topicService.getAllByYks(yks);
         return ResponseEntity.ok(response);
     }
 }
