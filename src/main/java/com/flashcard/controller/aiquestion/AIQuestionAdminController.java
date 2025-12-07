@@ -1,5 +1,6 @@
 package com.flashcard.controller.aiquestion;
 
+import com.flashcard.controller.aiquestion.request.AIQuestionAdminResponse;
 import com.flashcard.controller.aiquestion.request.AIQuestionUpdateRequest;
 import com.flashcard.controller.aiquestion.response.AIQuestionResponse;
 import com.flashcard.model.AIQuestion;
@@ -23,21 +24,21 @@ public class AIQuestionAdminController {
     private final AIQuestionService aiQuestionService;
 
     @GetMapping("get-all")
-    public ResponseEntity<List<List<AIQuestionResponse>>> getAllAIQuestions() {
-        // 1. Servisten gelen tüm kayıtları AIQuestionResponse'a dönüştür
-        List<AIQuestionResponse> responses = aiQuestionService.findByAdmin()
-                .stream()
-                .map(AIQuestionResponse::new)
+    public ResponseEntity<List<AIQuestionAdminResponse>> getAllAIQuestions() {
+
+        // 1) Tüm kayıtları çek
+        List<AIQuestion> rawList = aiQuestionService.findByAdmin();
+
+        // 2) UUID’ye göre grupla
+        Map<String, List<AIQuestion>> grouped = rawList.stream()
+                .collect(Collectors.groupingBy(AIQuestion::getUuid));
+
+        // 3) Her grup için bir AIQuestionAdminResponse üret
+        List<AIQuestionAdminResponse> response = grouped.values().stream()
+                .map(list -> new AIQuestionAdminResponse(list.get(0), list))
                 .toList();
 
-        // 2. uuid'ye göre grupla
-        Map<String, List<AIQuestionResponse>> groupedByUuid = responses.stream()
-                .collect(Collectors.groupingBy(AIQuestionResponse::getUuid));
-
-        // 3. Sadece alt listeleri al (List<List<AIQuestionResponse>>)
-        List<List<AIQuestionResponse>> result = new ArrayList<>(groupedByUuid.values());
-
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("get-all/{topicId}")

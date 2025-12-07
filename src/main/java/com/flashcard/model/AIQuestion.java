@@ -1,12 +1,14 @@
 package com.flashcard.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.hibernate.validator.constraints.Length;
 
 @Entity(name = "AIQuestion")
 @Table(name = "ai_question")
@@ -47,6 +49,7 @@ public class AIQuestion {
 
     private String level;
 
+    @Length(max = 1024)
     private String description;
 
     private boolean deleted = false;
