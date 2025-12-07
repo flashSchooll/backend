@@ -40,7 +40,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                 .email(email)
                                 .userName(firstName)      // @NotBlank alan
                                 .userSurname(finalLastName)
-                                .series(0)
+                                .series(1)
                                 .branch(null)
                                 .target(100)
                                 .star(0)

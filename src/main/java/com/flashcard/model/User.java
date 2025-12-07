@@ -76,7 +76,7 @@ public class User {// kullanıcı bilgisini tutar
 
     private String photoPath;
 
-    private Integer series = 0; // todo seri kırılınca sıfır olmalı bakılacak
+    private Integer series = 1; // todo seri kırılınca sıfır olmalı bakılacak
 
     private Integer targetSeries = 0;
 
