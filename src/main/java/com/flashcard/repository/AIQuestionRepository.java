@@ -4,6 +4,7 @@ import com.flashcard.model.AIQuestion;
 import com.flashcard.model.Topic;
 import com.flashcard.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -21,5 +22,13 @@ public interface AIQuestionRepository extends JpaRepository<AIQuestion, String> 
 
     List<AIQuestion> findAllByPublishedTrueAndUserNot(User user);
 
-    List<AIQuestion> findByUser( User user);
+    List<AIQuestion> findByUser(User user);
+
+    @Modifying
+    @Query("""
+            UPDATE AIQuestion aq
+            SET aq.published = true
+            WHERE aq.uuid = :uuid
+            """)
+    void publish(String uuid);
 }

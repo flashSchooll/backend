@@ -64,10 +64,10 @@ public class AIQuestionAdminController {
     }
 
     @PutMapping("/publish/{aiQuestionId}")
-    public ResponseEntity<AIQuestionResponse> publishAIQuestion(@PathVariable String aiQuestionId) {
-        AIQuestion aiQuestion = aiQuestionService.publishAIQuestion(aiQuestionId);
+    public ResponseEntity<Void> publishAIQuestion(@PathVariable String aiQuestionId) {
+        aiQuestionService.publishAIQuestion(aiQuestionId);
 
-        return ResponseEntity.ok(new AIQuestionResponse(aiQuestion));
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{aiQuestionId}")

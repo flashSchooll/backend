@@ -68,11 +68,8 @@ public class AIQuestionService {
     }
 
     @Transactional
-    public AIQuestion publishAIQuestion(String aiQuestionId) {
-        AIQuestion aiQuestion = aiQuestionRepository.findById(aiQuestionId).orElseThrow(() -> new EntityNotFoundException("aiQuestionId"));
-        aiQuestion.setPublished(true);
-
-        return aiQuestionRepository.save(aiQuestion);
+    public void publishAIQuestion(String uuid) {
+         aiQuestionRepository.publish(uuid);
     }
 
     public List<AIQuestion> findByAdminAndTopic(Long topicId) {

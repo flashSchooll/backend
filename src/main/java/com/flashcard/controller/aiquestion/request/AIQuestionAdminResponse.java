@@ -1,6 +1,5 @@
 package com.flashcard.controller.aiquestion.request;
 
-import com.flashcard.controller.aiquestion.response.AIQuestionResponse;
 import com.flashcard.model.AIQuestion;
 import lombok.Getter;
 import lombok.Setter;
