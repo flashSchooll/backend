@@ -52,12 +52,17 @@ public class FlashCardService {
         if (isExist) {
             throw new BadRequestException(Constants.FLASHCARD_NAME_ALREADY_EXISTS);
         }
+        Integer maxIndex = flashcardSaveRequest.getIndex();
+
+        if (maxIndex == null) {
+            maxIndex = flashCardRepository.findMaxIndexByTopic(topic) + 1;
+        }
 
         Flashcard flashcard = new Flashcard();
         flashcard.setTopic(topic);
         flashcard.setCardName(flashcardSaveRequest.getCardName());
         flashcard.setCanBePublish(false);
-        flashcard.setIndex(flashcardSaveRequest.getIndex());
+        flashcard.setIndex(maxIndex);
         flashcard.setCardCount(0);
         flashcard.setDeleted(false);
 
@@ -144,8 +149,8 @@ public class FlashCardService {
         List<Flashcard> flashcards = Collections.emptyList();
         if (yks == null) {
             flashcards = flashCardRepository.search(search);
-        }else{
-            flashcards=flashCardRepository.findByTopicLessonYksAndSearch(yks,search);
+        } else {
+            flashcards = flashCardRepository.findByTopicLessonYksAndSearch(yks, search);
         }
 
         List<Long> flashcardIds = userSeenCardRepository.findByUserWithAllData(user);

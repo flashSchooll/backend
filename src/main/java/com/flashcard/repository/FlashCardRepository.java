@@ -46,4 +46,7 @@ public interface FlashCardRepository extends JpaRepository<Flashcard, Long> {
             "and (f.cardName ilike (%:search%) " +
             "or f.topic.subject ilike (%:search%))")
     List<Flashcard> findByTopicLessonYksAndSearch(YKS yks, String search);
+
+    @Query("SELECT COALESCE(MAX(f.index), 0) FROM Flashcard f WHERE f.topic = :topic AND f.deleted = false")
+    Integer findMaxIndexByTopic(@Param("topic") Topic topic);
 }

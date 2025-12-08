@@ -37,10 +37,17 @@ public class TopicService {
         Lesson tytLesson = lessonRepository.findById(topicSaveRequest.getLessonId())
                 .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
+        Integer existingTopicCount = topicRepository.findMaxIndexByLesson(tytLesson);
+
+        if (existingTopicCount == null) {
+            existingTopicCount = 1;
+        }
+
         Topic topic = new Topic();
         topic.setLesson(tytLesson);
         topic.setSubject(topicSaveRequest.getSubject());
         topic.setDeleted(false);
+        topic.setIndex(existingTopicCount);
 
         return topicRepository.save(topic);
     }
@@ -77,7 +84,7 @@ public class TopicService {
         return topicRepository.findByLesson(tytLesson, pageable);
     }
 
-    @Cacheable(value = "lessonTopic", key = "#lessonId")
+   // @Cacheable(value = "lessonTopic", key = "#lessonId")
     public List<TopicUserResponse> getAllByLesson(Long lessonId) {
         Objects.requireNonNull(lessonId);
 

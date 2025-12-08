@@ -34,5 +34,8 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
             Pageable pageable);
 
     List<Topic> findByLessonYks(YKS yks);
+
+    @Query("SELECT COALESCE(MAX(t.index), 0) FROM Topic t WHERE t.lesson = :lesson AND t.deleted = false")
+    Integer findMaxIndexByLesson(@Param("lesson") Lesson lesson);
 }
 //  AND (:query IS NULL OR LOWER(t.subject) LIKE LOWER(CONCAT('%', :query, '%')))

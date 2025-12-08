@@ -69,6 +69,8 @@ public class AIQuestionService {
 
     @Transactional
     public void publishAIQuestion(String uuid) {
+        // burda kendi soru havuzumuza aktar
+        // userseen questions a da ekle kullanıcı karşısına çıkınca ben bunu çözdüm görsün
          aiQuestionRepository.publish(uuid);
     }
 
