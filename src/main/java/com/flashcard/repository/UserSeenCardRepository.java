@@ -51,4 +51,6 @@ public interface UserSeenCardRepository extends JpaRepository<UserSeenCard, Long
 
 
     int countByUserAndCardFlashcardTopicLessonYks(User user, YKS yks);
+
+    long countByUserAndCardFlashcardTopic(User user, Topic topic);
 }

@@ -7,11 +7,14 @@ import com.flashcard.controller.topic.user.response.TopicUserIdResponse;
 import com.flashcard.controller.topic.user.response.TopicUserResponse;
 import com.flashcard.model.Lesson;
 import com.flashcard.model.Topic;
+import com.flashcard.model.User;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.model.enums.YKSLesson;
 import com.flashcard.repository.CardRepository;
 import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.TopicRepository;
+import com.flashcard.repository.UserSeenCardRepository;
+import com.flashcard.security.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -28,6 +31,8 @@ public class TopicService {
     private final TopicRepository topicRepository;
     private final LessonRepository lessonRepository;
     private final CardRepository cardRepository;
+    private final UserSeenCardRepository userSeenCardRepository;
+    private final AuthService authService;
 
     @Transactional
     public Topic save(TopicSaveRequest topicSaveRequest) {
@@ -85,25 +90,33 @@ public class TopicService {
     }
 
    // @Cacheable(value = "lessonTopic", key = "#lessonId")
-    public List<TopicUserResponse> getAllByLesson(Long lessonId) {
-        Objects.requireNonNull(lessonId);
+   public List<TopicUserResponse> getAllByLesson(Long lessonId) {
+       Objects.requireNonNull(lessonId);
 
-        Lesson tytLesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
+       User user = authService.getCurrentUser();
 
-        List<Topic> topics = topicRepository.findByLesson(tytLesson);
+       Lesson lesson = lessonRepository.findById(lessonId)
+               .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
-        Map<Topic, Long> counts = new HashMap<>();
-        for (Topic t : topics) {
-            long count = cardRepository.countByFlashcardTopicAndFlashcardCanBePublishTrue(t);
-            counts.put(t, count);
-        }
+       // Konuları veritabanından sadece 1 kere çekiyoruz
+       List<Topic> topics = topicRepository.findByLesson(lesson);
 
-        return topicRepository.findByLesson(tytLesson)
-                .stream()
-                .map(topic -> new TopicUserResponse(topic, Math.toIntExact(counts.get(topic))))
-                .toList();
-    }
+       return topics.stream()
+               .map(topic -> {
+                   // Her bir konu için kart sayılarını burada hesaplıyoruz
+                   long totalCount = cardRepository.countByFlashcardTopicAndFlashcardCanBePublishTrue(topic);
+
+                   // User ve Topic'e göre kullanıcının gördüğü kart sayısı
+                   long seenCount = userSeenCardRepository.countByUserAndCardFlashcardTopic(user, topic);
+
+                   return new TopicUserResponse(
+                           topic,
+                           (int) totalCount,
+                           (int) seenCount
+                   );
+               })
+               .toList();
+   }
 
     public Page<Topic> getAll(Pageable pageable) {
         return topicRepository.findAll(pageable);

@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -92,6 +93,11 @@ public class UserStatisticController {
     public ResponseEntity<List<UserRosetteStatistic>> getByRosetteMonthly() {
 
         List<UserRosetteStatistic> response = userService.getUsersStatisticList();
+        response.sort(
+                Comparator
+                        .comparing(UserRosetteStatistic::getStar, Comparator.nullsLast(Comparator.reverseOrder()))
+                        .thenComparing(UserRosetteStatistic::getRosette, Comparator.nullsLast(Comparator.reverseOrder()))
+        );
 
         return ResponseEntity.ok(response);
     }
@@ -102,7 +108,11 @@ public class UserStatisticController {
     public ResponseEntity<List<UserRosetteStatistic>> getByRosetteWeekly() {
 
         List<UserRosetteStatistic> response = userService.getUsersStatisticListWeekly();
-
+        response.sort(
+                Comparator
+                        .comparing(UserRosetteStatistic::getWeeklyStar, Comparator.nullsLast(Comparator.reverseOrder()))
+                        .thenComparing(UserRosetteStatistic::getRosette, Comparator.nullsLast(Comparator.reverseOrder()))
+        );
         return ResponseEntity.ok(response);
     }
 

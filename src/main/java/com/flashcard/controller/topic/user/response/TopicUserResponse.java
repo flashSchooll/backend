@@ -11,11 +11,13 @@ public class TopicUserResponse {
     private final Integer cardCount;
     private final String subject;
     private final Integer index;
+    private final Integer seenCount;
 
-    public TopicUserResponse(Topic topic, Integer card) {
+    public TopicUserResponse(Topic topic, Integer card, Integer seenCount) {
         this.id = topic.getId();
         this.subject = topic.getSubject();
         this.cardCount = card;
         this.index = topic.getIndex();
+        this.seenCount = seenCount;
     }
 }
