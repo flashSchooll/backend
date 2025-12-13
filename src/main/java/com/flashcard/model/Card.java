@@ -51,6 +51,7 @@ public class Card {// kart bilgisini tutar
     @Size(max = 128)
     private String backPhotoPath;
 
+    @Column(name = "index_val")
     private Integer index;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

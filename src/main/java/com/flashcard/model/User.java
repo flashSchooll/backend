@@ -67,8 +67,6 @@ public class User {// kullanıcı bilgisini tutar
 
     private Integer rosette = 0;
 
-    private byte[] profilePhoto;
-
     @Enumerated(EnumType.STRING)
     private Branch branch;
 

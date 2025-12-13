@@ -61,7 +61,7 @@ public class FlashCardService {
         Flashcard flashcard = new Flashcard();
         flashcard.setTopic(topic);
         flashcard.setCardName(flashcardSaveRequest.getCardName());
-        flashcard.setCanBePublish(false);
+        flashcard.setCanBePublish(true);
         flashcard.setIndex(maxIndex);
         flashcard.setCardCount(0);
         flashcard.setDeleted(false);

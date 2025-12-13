@@ -68,18 +68,6 @@ public class UserController {
         return ResponseEntity.ok("Resim başarıyla silindi");
     }
 
-    @GetMapping("/photo")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<Object> getPhoto() {
-
-        byte[] photo = userService.getImage();
-
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                        "Content-Disposition", "attachment; filename=\"image.jpg\"").
-                contentType(MediaType.IMAGE_JPEG).
-                body(photo);
-    }
-
     @PutMapping("/update-branch")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserDTO> updateBranch(@RequestParam Branch branch) {

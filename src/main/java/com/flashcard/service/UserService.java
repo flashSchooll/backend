@@ -124,13 +124,6 @@ public class UserService {
         return userRepository.save(user).getPhotoPath();
     }
 
-    public byte[] getImage() {
-
-        User user = authService.getCurrentUser();
-
-        return user.getProfilePhoto();
-    }
-
     @Transactional
     public void deletePhoto() {
         User user = authService.getCurrentUser();

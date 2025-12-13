@@ -39,11 +39,12 @@ public class Flashcard {// flashcard bilgisini tutar
     @Column(columnDefinition = "TEXT")
     private String cardName;
 
+    @Column(name = "index_val")
     private Integer index;
 
     private Integer cardCount;
 
-    private Boolean canBePublish;
+    private Boolean canBePublish; // todo burası daha sonra güncellenecek
 
     private boolean deleted = false;
 

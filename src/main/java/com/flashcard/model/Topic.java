@@ -36,6 +36,7 @@ public class Topic {// derslere ait konu bilgilerini tutar
     @NotBlank
     private String subject;
 
+    @Column(name = "index_val")
     private Integer index;
 
     private Integer cardCount;

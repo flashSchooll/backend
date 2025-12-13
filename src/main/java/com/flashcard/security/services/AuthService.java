@@ -67,7 +67,6 @@ public class AuthService {
         user.setCreatedDate(LocalDateTime.now());
         user.setStar(0);
         user.setRosette(0);
-        user.setProfilePhoto(null);
         user.setUserAgreement(signUpRequest.getUserAgreement());
         user.setBranch(signUpRequest.getBranch());
         user.setTarget(100);

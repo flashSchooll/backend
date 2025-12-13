@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class TopicUserResponse {
+public class  TopicUserResponse {
     private final Long id;
     private final Integer cardCount;
     private final String subject;

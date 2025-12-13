@@ -112,6 +112,7 @@ public class UserStatisticController {
                 Comparator
                         .comparing(UserRosetteStatistic::getWeeklyStar, Comparator.nullsLast(Comparator.reverseOrder()))
                         .thenComparing(UserRosetteStatistic::getRosette, Comparator.nullsLast(Comparator.reverseOrder()))
+                        .thenComparing(UserRosetteStatistic::getUserName, Comparator.nullsLast(Comparator.reverseOrder()))
         );
         return ResponseEntity.ok(response);
     }
