@@ -89,34 +89,30 @@ public class TopicService {
         return topicRepository.findByLesson(tytLesson, pageable);
     }
 
-   // @Cacheable(value = "lessonTopic", key = "#lessonId")
-   public List<TopicUserResponse> getAllByLesson(Long lessonId) {
-       Objects.requireNonNull(lessonId);
+    // @Cacheable(value = "lessonTopic", key = "#lessonId")
+    public List<TopicUserResponse> getAllByLesson(Long lessonId) {
+        Objects.requireNonNull(lessonId);
 
-       User user = authService.getCurrentUser();
+        User user = authService.getCurrentUser();
 
-       Lesson lesson = lessonRepository.findById(lessonId)
-               .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
-       // Konuları veritabanından sadece 1 kere çekiyoruz
-       List<Topic> topics = topicRepository.findByLesson(lesson);
+        // Konuları veritabanından sadece 1 kere çekiyoruz
+        List<Topic> topics = topicRepository.findByLesson(lesson);
 
-       return topics.stream()
-               .map(topic -> {
-                   // Her bir konu için kart sayılarını burada hesaplıyoruz
-                   long totalCount = cardRepository.countByFlashcardTopicAndFlashcardCanBePublishTrue(topic);
-
-                   // User ve Topic'e göre kullanıcının gördüğü kart sayısı
-                   long seenCount = userSeenCardRepository.countByUserAndCardFlashcardTopic(user, topic);
-
-                   return new TopicUserResponse(
-                           topic,
-                           (int) totalCount,
-                           (int) seenCount
-                   );
-               })
-               .toList();
-   }
+        return topics.stream()
+                .map(topic -> {
+                    Integer totalCount = cardRepository.countByFlashcardTopicAndFlashcardCanBePublishTrue(topic);
+                    if (totalCount != null && totalCount > 0) {
+                        Integer seenCount = userSeenCardRepository.countByUserAndCardFlashcardTopic(user, topic);
+                        return new TopicUserResponse(topic, totalCount, seenCount);
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
 
     public Page<Topic> getAll(Pageable pageable) {
         return topicRepository.findAll(pageable);

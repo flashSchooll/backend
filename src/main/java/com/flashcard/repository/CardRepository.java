@@ -52,7 +52,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("SELECT DISTINCT c FROM Card c JOIN FETCH c.flashcard f WHERE f.id IN :flashcardIds")
     List<Card> findByFlashcardIn(List<Long> flashcardIds);
 
-    Long countByFlashcardTopicAndFlashcardCanBePublishTrue(Topic topic);
+    Integer countByFlashcardTopicAndFlashcardCanBePublishTrue(Topic topic);
 
     Integer countByFlashcardTopicLessonYksAndFlashcardTopicLessonBranchAndFlashcardCanBePublishTrue(YKS yks, Branch branch);
 
