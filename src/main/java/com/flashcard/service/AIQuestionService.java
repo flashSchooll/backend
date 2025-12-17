@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -30,7 +31,7 @@ public class AIQuestionService {
 
         AIQuestion aiQuestion = new AIQuestion();
         aiQuestion.setTopic(topic);
-        aiQuestion.setUser(user);
+        aiQuestion.setGenerateUser(user);
         aiQuestion.setSubject(aiQuestionSaveRequest.getSubject());
         aiQuestion.setQuestion(aiQuestionSaveRequest.getQuestion());
         aiQuestion.setAnswer(aiQuestionSaveRequest.getAnswer());
@@ -46,6 +47,7 @@ public class AIQuestionService {
         aiQuestion.setPublished(false);
         aiQuestion.setDeleted(false);
         aiQuestion.setUuid(uuid);
+        aiQuestion.setCreatedAt(LocalDateTime.now());
 
         aiQuestionRepository.save(aiQuestion);
     }
@@ -53,14 +55,14 @@ public class AIQuestionService {
     public List<AIQuestion> findAll() {
         User user = authService.getCurrentUser();
 
-        return aiQuestionRepository.findAllByPublishedTrueAndUserNot(user);
+        return aiQuestionRepository.findAllByPublishedTrueAndGenerateUserNot(user);
     }
 
     public List<AIQuestion> findByTopic(Long topicId) {
         Topic topic = topicService.getById(topicId);
         User user = authService.getCurrentUser();
 
-        return aiQuestionRepository.findByTopicAndPublishedTrueAndUserNot(topic, user);
+        return aiQuestionRepository.findByTopicAndPublishedTrueAndGenerateUserNot(topic, user);
     }
 
     public List<AIQuestion> findByAdmin() {
@@ -97,7 +99,7 @@ public class AIQuestionService {
     public List<AIQuestion> findByCurrentUser() {
         User user = authService.getCurrentUser();
 
-        return aiQuestionRepository.findByUser(user);
+        return aiQuestionRepository.findByGenerateUser(user);
     }
 
     @Transactional

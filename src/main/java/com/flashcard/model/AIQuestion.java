@@ -10,6 +10,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.Length;
 
+import java.time.LocalDateTime;
+
 @Entity(name = "AIQuestion")
 @Table(name = "ai_question")
 @Getter
@@ -27,7 +29,8 @@ public class AIQuestion {
     private Topic topic;
 
     @ManyToOne
-    private User user;
+    @JoinColumn(name = "generate_user")
+    private User generateUser;
 
     private String uuid; // bunu gelen soruları gruplamak için kullanabiliriz
 
@@ -55,4 +58,6 @@ public class AIQuestion {
     private boolean deleted = false;
 
     private boolean published = false;
+
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

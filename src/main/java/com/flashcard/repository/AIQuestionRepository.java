@@ -16,13 +16,13 @@ public interface AIQuestionRepository extends JpaRepository<AIQuestion, String> 
             """)
     List<AIQuestion> findAllPublished();
 
-    List<AIQuestion> findByTopicAndPublishedTrueAndUserNot(Topic topic, User user);
+    List<AIQuestion> findByTopicAndPublishedTrueAndGenerateUserNot(Topic topic, User user);
 
     List<AIQuestion> findByTopic(Topic topic);
 
-    List<AIQuestion> findAllByPublishedTrueAndUserNot(User user);
+    List<AIQuestion> findAllByPublishedTrueAndGenerateUserNot(User user);
 
-    List<AIQuestion> findByUser(User user);
+    List<AIQuestion> findByGenerateUser(User user);
 
     @Modifying
     @Query("""

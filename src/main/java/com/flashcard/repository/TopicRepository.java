@@ -4,6 +4,7 @@ import com.flashcard.model.Lesson;
 import com.flashcard.model.Topic;
 import com.flashcard.model.enums.YKS;
 import com.flashcard.model.enums.YKSLesson;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,5 +38,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     @Query("SELECT COALESCE(MAX(t.index), 0) FROM Topic t WHERE t.lesson = :lesson AND t.deleted = false")
     Integer findMaxIndexByLesson(@Param("lesson") Lesson lesson);
+
+    Topic findBySubject(String topic);
 }
 //  AND (:query IS NULL OR LOWER(t.subject) LIKE LOWER(CONCAT('%', :query, '%')))
