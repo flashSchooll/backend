@@ -31,4 +31,12 @@ public interface AIQuestionRepository extends JpaRepository<AIQuestion, String> 
             WHERE aq.uuid = :uuid
             """)
     void publish(String uuid);
+    @Query("""
+        SELECT aq
+        FROM AIQuestion aq
+        JOIN FETCH aq.topic
+        JOIN FETCH aq.generateUser
+    """)
+    List<AIQuestion> findAllWithTopicAndUser();
+
 }

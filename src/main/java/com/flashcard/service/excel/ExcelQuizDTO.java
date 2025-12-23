@@ -13,6 +13,7 @@ public class ExcelQuizDTO {
     private String b;
     private String c;
     private String d;
+    private String e;
     private QuizOption answer;
     private String name;
     private QuizType type;

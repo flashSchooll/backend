@@ -54,6 +54,7 @@ public class QuizExcelImporter {
             quiz.setB(e.getB());
             quiz.setC(e.getC());
             quiz.setD(e.getD());
+            quiz.setE(e.getE());
             quiz.setTopic(topic);
             quiz.setName(e.getName());
             quiz.setType(e.getType());
@@ -99,11 +100,13 @@ public class QuizExcelImporter {
                                     cardDTO.setC(getStringCell(cell, "c"));
                             case 4 -> // d sütunu
                                     cardDTO.setD(getStringCell(cell, "d"));
-                            case 5 -> // şık sütunu
+                            case 5 -> // e sütunu
+                                    cardDTO.setE(getStringCell(cell, "e"));
+                            case 6 -> // şık sütunu
                                     cardDTO.setAnswer(setEnumCell(cell, "şık"));
-                            case 6 -> // quiz adı sütunu
+                            case 7 -> // quiz adı sütunu
                                     cardDTO.setName(getStringCell(cell, "quiz adı"));
-                            case 7 -> // quiz tipi sütunu
+                            case 8 -> // quiz tipi sütunu
                                     cardDTO.setType(getQuizType(cell, "quiz tipi"));
 
                         }

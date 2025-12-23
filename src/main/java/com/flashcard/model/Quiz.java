@@ -39,6 +39,8 @@ public class Quiz {
 
     private String d;
 
+    private String e;
+
     @NotNull
     @Enumerated(value = EnumType.STRING)
     private QuizOption answer;

@@ -25,10 +25,10 @@ public class AIQuestion {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.UUID)
     private String id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Topic topic;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "generate_user")
     private User generateUser;
 

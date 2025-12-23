@@ -12,7 +12,8 @@ public enum QuizOption {
     A("A",0),
     B("B",1),
     C("C",2),
-    D("D",3);
+    D("D",3),
+    E("E",4);
 
     private final String label;
     private final int index;

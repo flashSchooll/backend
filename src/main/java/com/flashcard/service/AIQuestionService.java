@@ -25,7 +25,7 @@ public class AIQuestionService {
     private final AuthService authService;
 
     @Transactional
-    public void save(AIQuestionSaveRequest aiQuestionSaveRequest, String uuid) {
+    public void save(AIQuestionSaveRequest aiQuestionSaveRequest, String uuid, LocalDateTime createdAt) {
         Topic topic = topicService.getById(aiQuestionSaveRequest.getTopicId());
         User user = authService.getCurrentUser();
 
@@ -47,7 +47,7 @@ public class AIQuestionService {
         aiQuestion.setPublished(false);
         aiQuestion.setDeleted(false);
         aiQuestion.setUuid(uuid);
-        aiQuestion.setCreatedAt(LocalDateTime.now());
+        aiQuestion.setCreatedAt(createdAt);
 
         aiQuestionRepository.save(aiQuestion);
     }
@@ -66,14 +66,14 @@ public class AIQuestionService {
     }
 
     public List<AIQuestion> findByAdmin() {
-        return aiQuestionRepository.findAll();
+        return aiQuestionRepository.findAllWithTopicAndUser();
     }
 
     @Transactional
     public void publishAIQuestion(String uuid) {
         // burda kendi soru havuzumuza aktar
         // userseen questions a da ekle kullanıcı karşısına çıkınca ben bunu çözdüm görsün
-         aiQuestionRepository.publish(uuid);
+        aiQuestionRepository.publish(uuid);
     }
 
     public List<AIQuestion> findByAdminAndTopic(Long topicId) {
@@ -105,9 +105,9 @@ public class AIQuestionService {
     @Transactional
     public void saveAll(List<AIQuestionSaveRequest> aiQuestionSaveRequest) {
         String uuid = java.util.UUID.randomUUID().toString();
-
+        LocalDateTime createdAt = LocalDateTime.now();
         for (AIQuestionSaveRequest request : aiQuestionSaveRequest) {
-            save(request, uuid);
+            save(request, uuid, createdAt);
         }
     }
 
