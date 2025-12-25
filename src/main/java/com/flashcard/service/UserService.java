@@ -144,20 +144,34 @@ public class UserService {
 
         List<UserRosetteStatistic> statistics = new ArrayList<>();
 
-        users.forEach(u -> {
-            UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
-                    .userName(u.getUserName())
-                    .userSurname(u.getUserSurname().charAt(0) + ".")
-                    .photoPath(u.getPhotoPath())
-                    .id(u.getId())
-                    .star(u.getStar())
-                    .rosette(u.getRosette())
-                    .order(statistics.size())
-                    .me(Objects.equals(u.getId(), user.getId()))
-                    .build();
+        for (User u : users) {
+            try {
+                String surname = "";
+                if (u.getUserSurname() != null && !u.getUserSurname().isBlank()) {
+                    surname = u.getUserSurname().charAt(0) + ".";
+                }
 
-            statistics.add(userStatistic);
-        });
+                UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
+                        .userName(u.getUserName())
+                        .userSurname(surname)
+                        .photoPath(u.getPhotoPath())
+                        .id(u.getId())
+                        .star(u.getStar())
+                        .rosette(u.getRosette())
+                        .order(statistics.size() + 1)
+                        .me(Objects.equals(u.getId(), user.getId()))
+                        .build();
+
+                statistics.add(userStatistic);
+
+            } catch (RuntimeException e) {
+                System.err.println(u.getId() + " id'li kullanıcıda sorun var");
+                //  throw new RuntimeException(
+                //          u.getId() + " id'li kullanıcıda sorun var: " + e.getMessage(), e
+                //  );
+            }
+        }
+
         if (!userExist) {
             Integer order = userRepository.findOrderByUser(user.getId());
 
@@ -187,21 +201,39 @@ public class UserService {
 
         List<UserRosetteStatistic> statistics = new ArrayList<>();
 
-        users.forEach(u -> {
-            UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
-                    .userName(u.getUserName())
-                    .userSurname(u.getUserSurname().charAt(0) + ".")
-                    .photoPath(u.getPhotoPath())
-                    .id(u.getId())
-                    .star(u.getStar())
-                    .weeklyStar(u.getWeeklyStar())
-                    .rosette(u.getRosette())
-                    .order(statistics.size())
-                    .me(Objects.equals(u.getId(), user.getId()))
-                    .build();
+        for (User u : users) {
+            try {
+                String surname = "";
+                if (u.getUserSurname() != null && !u.getUserSurname().isBlank()) {
+                    surname = u.getUserSurname().charAt(0) + ".";
+                }
 
-            statistics.add(userStatistic);
-        });
+                UserRosetteStatistic userStatistic = UserRosetteStatistic.builder()
+                        .userName(u.getUserName())
+                        .userSurname(surname)
+                        .photoPath(u.getPhotoPath())
+                        .id(u.getId())
+                        .star(u.getStar())
+                        .weeklyStar(u.getWeeklyStar())
+                        .rosette(u.getRosette())
+                        .order(statistics.size() + 1)
+                        .me(Objects.equals(u.getId(), user.getId()))
+                        .build();
+
+                statistics.add(userStatistic);
+
+            } catch (Exception e) {
+                System.err.println(
+                        u.getId() + " id'li kullanıcı için UserRosetteStatistic oluşturulurken hata oluştu"
+                );
+                //  throw new RuntimeException(
+                //          u.getId() + " id'li kullanıcı için UserRosetteStatistic oluşturulurken hata oluştu",
+                //          e
+                //  );
+            }
+        }
+
+
         if (!userExist) {
             Integer order = userRepository.findOrderByUserWeekly(user.getId());
 

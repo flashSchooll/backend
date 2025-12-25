@@ -10,6 +10,7 @@ import com.flashcard.repository.FlashCardRepository;
 import com.flashcard.repository.LessonRepository;
 import com.flashcard.repository.TopicRepository;
 import com.flashcard.service.S3StorageService;
+import com.flashcard.service.UserCardPercentageService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -44,6 +45,7 @@ public class FlashcardExcelImporter {
     private final CardRepository cardRepository;
     private static List<XSSFPictureData> pictures;
     private final S3StorageService s3StorageService;
+    private final UserCardPercentageService userCardPercentageService;
 
     @Transactional
     public void saveExcel(Long lessonId, MultipartFile file) throws IOException {
@@ -161,6 +163,7 @@ public class FlashcardExcelImporter {
 
                 cardRepository.saveAll(cards);
 
+                userCardPercentageService.updateCardCount(lesson);
             }
         }
 

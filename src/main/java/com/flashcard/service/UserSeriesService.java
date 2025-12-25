@@ -33,6 +33,20 @@ public class UserSeriesService {
     }
 
     @Transactional
+    public void saveForToday(User user) {
+
+        UserSeries userSeries = new UserSeries();
+        userSeries.setUser(user);
+        userSeries.setDate(LocalDate.now());
+        userSeries.setDeleted(false);
+        userSeriesRepository.save(userSeries);
+
+        user.updateSeriesCount();
+        userRepository.save(user);
+
+    }
+
+    @Transactional
     public void resetSeries(User user) {
         user.setSeries(1);
         userRepository.save(user);

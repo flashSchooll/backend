@@ -44,13 +44,16 @@ public class DailyTargetService {
 
         dailyTarget = dailyTargetRepository.save(dailyTarget);
 
-        Optional<DailyTarget> dailyTargetOptional = dailyTargetRepository.findByUserAndDay(user, LocalDate.now().minusDays(1));
-        if (dailyTargetOptional.isPresent()) {
+        Optional<DailyTarget> yesterdayDailyTargetOptional = dailyTargetRepository.findByUserAndDay(user, LocalDate.now().minusDays(1));
+
+        if (yesterdayDailyTargetOptional.isPresent()) {
             userSeriesService.save(user);// her gün için seri sayısını artır
-        }else {
+        } else if (user.getCreatedDate().toLocalDate().equals(LocalDate.now())) {  // todo burası test edilecek
+            userSeriesService.saveForToday(user);
+        } else {
             userSeriesService.resetSeries(user); // seriyi sıfırla
         }
-        
+
         return dailyTarget;
     }
 

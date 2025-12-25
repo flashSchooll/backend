@@ -93,7 +93,6 @@ public class UserCardPercentageService {
             proxy.save(user, YKS.TYT, null);
         }
         return userCardPercentageRepository.findByUserAndLessonYks(user, YKS.TYT);
-
     }
 
     //   @Cacheable(value = "userCardPercentageAyt", key = "#user.id")
