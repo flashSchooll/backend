@@ -19,6 +19,7 @@ public class QuizResponse {
     private final String b;
     private final String c;
     private final String d;
+    private final String e;
     private final Integer answer;
     private final String name;
     private final String topic;
@@ -31,7 +32,8 @@ public class QuizResponse {
         this.b = quiz.getB();
         this.c = quiz.getC();
         this.d = quiz.getD();
-        this.optionList = quiz.getType().equals(QuizType.TEST) ? List.of(quiz.getA(), quiz.getB(), quiz.getC(), quiz.getD()) : List.of(quiz.getA(), quiz.getB());
+        this.e = quiz.getE();
+        this.optionList = quiz.getType().equals(QuizType.TEST) ? List.of(quiz.getA(), quiz.getB(), quiz.getC(), quiz.getD(), quiz.getE()) : List.of(quiz.getA(), quiz.getB());
         this.answer = quiz.getAnswer().getIndex();
         this.name = quiz.getName();
         this.topic = quiz.getTopic().getSubject();
@@ -45,6 +47,7 @@ public class QuizResponse {
         this.b = quiz.getB();
         this.c = quiz.getC();
         this.d = quiz.getD();
+        this.e = quiz.getE();
         this.optionList = quiz.getType().equals(QuizType.TEST) ? List.of(quiz.getA(), quiz.getB(), quiz.getC(), quiz.getD()) : List.of(quiz.getA(), quiz.getB());
         this.answer = quiz.getAnswer().getIndex();
         this.name = quiz.getName();
