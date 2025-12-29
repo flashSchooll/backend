@@ -29,8 +29,8 @@ public class SwaggerConfig {
                         )
                 )
                 .info(new Info()
-                        .title("Stumy Api Service")
-                        .description("Stumy api documentation")
+                        .title("Flazzy Api Service")
+                        .description("Flazzy api documentation")
                         .version("1.0")
                 );
     }

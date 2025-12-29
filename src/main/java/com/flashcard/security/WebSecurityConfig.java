@@ -119,7 +119,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOriginPatterns( // Değişiklik burada
-                                "https://www.stumy.com.tr",
+                                "https://www.flazzyapp.com",
                                 "http://localhost:3000",
                                 "http://localhost:5173"
                         )
@@ -145,7 +145,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
         // allowedOriginPatterns kullanın (allowedOrigins DEĞİL)
         configuration.setAllowedOriginPatterns(Arrays.asList(
-                "https://www.stumy.com.tr",
+                "https://www.flazzyapp.com",
                 "http://localhost:3000",
                 "http://localhost:5173"
         ));

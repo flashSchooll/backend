@@ -29,7 +29,7 @@ public class EmailService implements EmailSender {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
             helper.setText(email, true);
             helper.setTo(to);
-            helper.setSubject("Welcome to the Stumy");
+            helper.setSubject("Welcome to the Flazzy");
             helper.setFrom(mailAddress);
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
@@ -528,7 +528,7 @@ public class EmailService implements EmailSender {
                 "                        <h1>Hi " + name + ",</h1>\n" +
                 "                        <p>\n" +
                 "                          You recently requested to reset your password for your\n" +
-                "                          Stumy account. Use this code to reset\n" +
+                "                          Flazzy account. Use this code to reset\n" +
                 "                          it.\n" +
                 "                          <strong\n" +
                 "                            >This password reset is only valid for the next 24\n" +
@@ -569,7 +569,7 @@ public class EmailService implements EmailSender {
                 "                            </td>\n" +
                 "                          </tr>\n" +
                 "                        </table>\n" +
-                "                        <p>Thanks, <br />The Stumy Team</p>\n" +
+                "                        <p>Thanks, <br />The Flazzy Team</p>\n" +
                 "                        <!-- Sub copy -->\n" +
                 "                        <table class=\"body-sub\" role=\"presentation\">\n" +
                 "                          <tr>\n" +

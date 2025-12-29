@@ -88,8 +88,8 @@ logging:
           hbm2ddl: debug
 info:
   application:
-    name: 'Stumy Backend App'
-    description: 'This is Stumy Backend Project'
+    name: 'Flazzy Backend App'
+    description: 'This is Flazzy Backend Project'
     version: '@project.version@'
 
 supabase:
