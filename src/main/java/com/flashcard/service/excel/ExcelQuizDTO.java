@@ -17,4 +17,6 @@ public class ExcelQuizDTO {
     private QuizOption answer;
     private String name;
     private QuizType type;
+    private String description;
+    private Integer level;
 }

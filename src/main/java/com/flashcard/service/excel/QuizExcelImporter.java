@@ -46,6 +46,24 @@ public class QuizExcelImporter {
         Quiz quiz;
 
         for (ExcelQuizDTO e : dtoList) {
+            String level;
+
+            // DÜZENLEME: Integer kontrolü yapıldı
+            if (e.getLevel() == null) {
+                // Varsayılan bir değer atayabilir veya hata fırlatabilirsiniz.
+                throw new IllegalArgumentException("Zorluk seviyesi boş olamaz");
+            }
+
+            if (e.getLevel() == 1) {
+                level = "KOLAY";
+            } else if (e.getLevel() == 2) {
+                level = "ORTA";
+            } else if (e.getLevel() == 3) {
+                level = "ZOR";
+            } else {
+                throw new IllegalArgumentException("Yanlış zorluk seviyesi girildi: " + e.getLevel());
+            }
+
             quiz = new Quiz();
 
             quiz.setQuestion(e.getQuestion());
@@ -59,12 +77,12 @@ public class QuizExcelImporter {
             quiz.setName(e.getName());
             quiz.setType(e.getType());
             quiz.setDeleted(false);
+            quiz.setDescription(e.getDescription());
+            quiz.setLevel(level);
 
             quizSet.add(quiz);
-
         }
         quizRepository.saveAll(quizSet);
-
     }
 
     private List<ExcelQuizDTO> getExcelDataFromExcel(MultipartFile file) throws IOException {
@@ -86,7 +104,7 @@ public class QuizExcelImporter {
                 cardDTO = new ExcelQuizDTO();
                 try {
                     for (Cell cell : row) {
-                        if (cell.getRow().toString().isEmpty() || cell.getCellType() == CellType.BLANK /*|| getColumnName(cell.getColumnIndex()) == null*/) {
+                        if (cell.getRow().toString().isEmpty() || cell.getCellType() == CellType.BLANK) {
                             continue;
                         }
                         switch (cell.getColumnIndex()) {
@@ -108,7 +126,11 @@ public class QuizExcelImporter {
                                     cardDTO.setName(getStringCell(cell, "quiz adı"));
                             case 8 -> // quiz tipi sütunu
                                     cardDTO.setType(getQuizType(cell, "quiz tipi"));
-
+                            case 9 -> // description sütunu
+                                    cardDTO.setDescription(getStringCell(cell, "Description"));
+                            case 10 -> // level sütunu
+                                // DÜZENLEME: Artık Integer okuyan metodu çağırıyoruz
+                                    cardDTO.setLevel(getIntegerCell(cell, "Zorluk Seviyesi"));
                         }
                     }
                     if (cardDTO.getAnswer() != null) {
@@ -126,16 +148,15 @@ public class QuizExcelImporter {
         return excelCardDTOS.stream().toList();
     }
 
+    // ... Diğer metodlar (getQuizType, setEnumCell vs.) aynı kalabilir ...
+
     private QuizType getQuizType(Cell cell, String quizType) {
         if (cell.getCellType().equals(CellType.BLANK)) {
             throw new IllegalArgumentException("Soru tipi girilmelidir");
         }
-
         String cellValue = null;
-
         try {
             cellValue = cell.getStringCellValue();
-
         } catch (Exception e) {
             throw new InvalidCellException(quizType, String.valueOf(cell.getStringCellValue()), e);
         }
@@ -146,25 +167,47 @@ public class QuizExcelImporter {
         if (cell.getCellType().equals(CellType.BLANK)) {
             throw new BadRequestException("Cevap şıkkı boş olamaz");
         }
-
         String cellValue = null;
-
         try {
             cellValue = cell.getStringCellValue().trim();
-
             return QuizOption.byLabel(cellValue);
         } catch (Exception e) {
             throw new InvalidCellException(alternative, String.valueOf(cellValue), e);
         }
-
     }
 
+    // DÜZENLEME: Yeni Integer okuma metodu
+    private Integer getIntegerCell(Cell cell, String columnName) {
+        if (cell == null || cell.getCellType() == CellType.BLANK) {
+            return null;
+        }
+
+        try {
+            if (cell.getCellType() == CellType.NUMERIC) {
+                // Excel sayıları double olarak tutar, int'e cast ediyoruz.
+                return (int) cell.getNumericCellValue();
+            } else if (cell.getCellType() == CellType.STRING) {
+                // Eğer hücre metin olarak "1" içeriyorsa parse etmeyi dener
+                String val = cell.getStringCellValue().trim();
+                // "1.0" gibi string gelme ihtimaline karşı önce double sonra int yapılabilir
+                try {
+                    return Integer.parseInt(val);
+                } catch (NumberFormatException e) {
+                    // Belki "1.0" formatında stringdir
+                    return (int) Double.parseDouble(val);
+                }
+            } else {
+                throw new InvalidCellException(columnName, "Beklenmeyen hücre tipi: " + cell.getCellType(), null);
+            }
+        } catch (Exception e) {
+            throw new InvalidCellException(columnName, "Sayısal değer okunamadı", e);
+        }
+    }
 
     private String getStringCell(Cell cell, String columnName) {
         if (cell == null || cell.getCellType() == CellType.BLANK) {
-            return null; // Hücre boşsa null dön
+            return null;
         }
-
         String cellValue = null;
         try {
             switch (cell.getCellType()) {
@@ -172,18 +215,22 @@ public class QuizExcelImporter {
                     cellValue = cell.getStringCellValue().trim();
                     break;
                 case NUMERIC:
-                    // Numeric hücreyi string'e çevir (örneğin: 123 → "123")
                     if (DateUtil.isCellDateFormatted(cell)) {
-                        // Tarih formatındaysa özel işlem yap (opsiyonel)
                         cellValue = cell.getLocalDateTimeCellValue().toString();
                     } else {
-                        cellValue = String.valueOf(cell.getNumericCellValue());
+                        // Tam sayı ise sonundaki .0'ı at
+                        double val = cell.getNumericCellValue();
+                        if (val == (long) val) {
+                            cellValue = String.format("%d", (long) val);
+                        } else {
+                            cellValue = String.valueOf(val);
+                        }
                     }
                     break;
                 default:
-                    throw new InvalidCellException(columnName, "Beklenmeyen hücre tipi: " + cell.getCellType(),null);
+                    throw new InvalidCellException(columnName, "Beklenmeyen hücre tipi: " + cell.getCellType(), null);
             }
-            return cellValue.isEmpty() ? null : cellValue; // Boş string kontrolü
+            return cellValue.isEmpty() ? null : cellValue;
         } catch (Exception e) {
             throw new InvalidCellException(columnName, cellValue, e);
         }

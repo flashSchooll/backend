@@ -57,4 +57,8 @@ public class Quiz {
     private QuizType type;
 
     private boolean deleted = false;
+
+    private String description;
+
+    private String level;
 }

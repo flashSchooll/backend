@@ -24,6 +24,8 @@ public class QuizResponse {
     private final String name;
     private final String topic;
     private final Boolean isSaved;
+    private final String description;
+    private final String level;
 
     public QuizResponse(Quiz quiz, boolean isSaved) {
         this.id = quiz.getId();
@@ -38,6 +40,8 @@ public class QuizResponse {
         this.name = quiz.getName();
         this.topic = quiz.getTopic().getSubject();
         this.isSaved = isSaved;
+        this.description = quiz.getDescription();
+        this.level = quiz.getLevel();
     }
 
     public QuizResponse(Quiz quiz) {
@@ -53,5 +57,7 @@ public class QuizResponse {
         this.name = quiz.getName();
         this.topic = quiz.getTopic().getSubject();
         this.isSaved = false;
+        this.description = quiz.getDescription();
+        this.level = quiz.getLevel();
     }
 }
