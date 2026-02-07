@@ -114,7 +114,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         return http.build();
     }
 
-    @Bean
+   /* @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
@@ -143,23 +143,37 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 "/webjars/**");
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        // allowedOriginPatterns kullanın (allowedOrigins DEĞİL)
-        configuration.setAllowedOriginPatterns(Arrays.asList(
-                "https://www.flazzyapp.com",
-                "http://localhost:3000",
-                "http://localhost:5173"
-        ));
-        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowCredentials(true); // Kimlik bilgilerine izin ver
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization")); // JWT token'ı istemciye göster
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Tüm endpoint'ler için geçerli
-        return source;
-    }
+    */
+   @Bean
+   CorsConfigurationSource corsConfigurationSource() {
+       CorsConfiguration configuration = new CorsConfiguration();
+
+       configuration.setAllowedOriginPatterns(Arrays.asList(
+               "https://flazzyapp.com",
+               "https://www.flazzyapp.com",
+               "http://localhost:3000",
+               "http://localhost:5173"
+       ));
+
+       configuration.setAllowedMethods(Arrays.asList(
+               "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
+       ));
+
+       configuration.setAllowedHeaders(Arrays.asList(
+               "Authorization",
+               "Content-Type",
+               "Accept"
+       ));
+
+       configuration.setExposedHeaders(Arrays.asList("Authorization"));
+
+       configuration.setAllowCredentials(false); // 🔥 JWT header kullanıyorsun
+
+       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+       source.registerCorsConfiguration("/**", configuration);
+       return source;
+   }
+
 
 }
