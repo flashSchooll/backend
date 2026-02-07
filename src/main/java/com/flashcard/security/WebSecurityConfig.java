@@ -121,6 +121,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOriginPatterns( // Değişiklik burada
+                                "https://flazzyapp.com",
                                 "https://www.flazzyapp.com",
                                 "http://localhost:3000",
                                 "http://localhost:5173"
