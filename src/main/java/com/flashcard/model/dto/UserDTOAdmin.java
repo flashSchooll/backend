@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 public class UserDTOAdmin {
 
+    private final Long id;
     private final String username;
     private final String userSurname;
     private final String email;
@@ -18,6 +19,7 @@ public class UserDTOAdmin {
     private final Integer rosette;
 
     public UserDTOAdmin(User user) {
+        this.id = user.getId();
         this.username = user.getUserName();
         this.userSurname = user.getUserSurname();
         this.email = user.getEmail();

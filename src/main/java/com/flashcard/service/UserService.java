@@ -7,6 +7,7 @@ import com.flashcard.exception.BadRequestException;
 import com.flashcard.model.Role;
 import com.flashcard.model.User;
 import com.flashcard.model.dto.UserDTO;
+import com.flashcard.model.dto.UserDTOAdmin;
 import com.flashcard.model.enums.AWSDirectory;
 import com.flashcard.model.enums.Branch;
 import com.flashcard.model.enums.ERole;
@@ -42,17 +43,20 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
     }
 
-    @Cacheable(value = "users", key = "'allUsers'")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    //  @Cacheable(value = "users", key = "'allUsers'")
+    public Page<UserDTOAdmin> getAllUsers(Pageable pageable) {
+        return userRepository
+                .findAll(pageable)
+                .map(UserDTOAdmin::new);
     }
+
 
     public Page<User> getUserPage(String search, Pageable pageable) {
         return userRepository.findAllAsPage(search, pageable);
     }
 
     @Transactional
-    @CacheEvict(value = "users", key = "'allUsers'")
+   // @CacheEvict(value = "users", key = "'allUsers'")
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));

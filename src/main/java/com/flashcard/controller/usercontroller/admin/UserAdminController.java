@@ -35,12 +35,12 @@ public class UserAdminController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserDTOAdmin>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-
-        List<UserDTOAdmin> allUsers = users.stream().map(UserDTOAdmin::new).toList();
-
-        return ResponseEntity.ok(allUsers);
+    public ResponseEntity<Page<UserDTOAdmin>> getAllUsers(
+            @PageableDefault(size = 20, sort = "createdDate", direction = Sort.Direction.DESC)
+            Pageable pageable
+    ) {
+        Page<UserDTOAdmin> users = userService.getAllUsers(pageable);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/pages")

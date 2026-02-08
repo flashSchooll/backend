@@ -3,6 +3,7 @@ package com.flashcard.repository;
 import com.flashcard.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -77,4 +78,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User SET weeklyStar = 0")
     void updateWeeklyStar();
+
+    @EntityGraph(attributePaths = "roles")
+    Page<User> findAll(Pageable pageable);
+
 }
