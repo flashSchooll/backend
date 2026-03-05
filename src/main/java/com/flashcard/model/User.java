@@ -116,6 +116,8 @@ public class User {// kullanıcı bilgisini tutar
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OwnerFlashcard> ownerFlashcards = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Payment> payments = new ArrayList<>();
 
     public void raiseStar(int addedStar) {
         Integer alreadyStar = getStar();

@@ -26,6 +26,7 @@ public class LessonService {
 
     private final LessonRepository lessonRepository;
     private final S3StorageService s3StorageService;
+    private final SupabaseStorageService supabaseStorageService;
 
     @Transactional
     public Lesson save(YKS yks, Branch branch, YKSLesson yksLesson, MultipartFile icon) throws IOException {
@@ -85,16 +86,16 @@ public class LessonService {
     }
 
     @Transactional
-    public Lesson updateIcon(Long id, MultipartFile icon) throws IOException {
+    public Lesson updateIcon(Long id, MultipartFile icon) throws IOException, InterruptedException {
         if (icon.isEmpty()) {
             throw new IllegalArgumentException("Resim boş olamaz");
         }
         Lesson lesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.LESSON_NOT_FOUND));
 
-        s3StorageService.deleteFile(lesson.getPath());
+        //s3StorageService.deleteFile(lesson.getPath());
 
-        String path = s3StorageService.uploadFile(icon, AWSDirectory.LESSONS);
+        String path = supabaseStorageService.uploadFile(icon, AWSDirectory.LESSONS.path);
         lesson.setPath(path);
 
         return lessonRepository.save(lesson);
