@@ -273,17 +273,19 @@ public class CardService {
     }
 
     public List<UserStatisticLessonResponse> getUserStatisticByLesson(YKS yks) {
-
         User user = authService.getCurrentUser();
 
-        List<UserCardPercentage> percentageList = userCardPercentageRepository.findByUser(user, yks);
+        List<UserCardPercentage> percentageList =
+                userCardPercentageRepository.findAllByUserAndLessonYksWithLesson(user, yks);
 
-        return percentageList.stream().map(
-                        l -> new UserStatisticLessonResponse(
-                                l.getLesson().getYksLesson().label,
-                                l.getCompletedCard(),
-                                (l.getCompletedCard() / (double) l.getTotalCard())))
-                .toList();
+        return percentageList.stream().map(ucp ->
+                new UserStatisticLessonResponse(
+                        ucp.getLesson().getYksLesson().name(),
+                        ucp.getCompletedCard(),
+                        ucp.getTotalCard() > 0 ?
+                                (ucp.getCompletedCard() / (double) ucp.getTotalCard()) : 0.0
+                )
+        ).toList();
     }
 
     public List<UserStatisticLessonResponse> getUserStatisticByLesson() {

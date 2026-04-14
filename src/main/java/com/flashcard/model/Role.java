@@ -18,7 +18,8 @@ import org.hibernate.annotations.Where;
 public class Role {// role türlerini tutar
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_seq")
+    @SequenceGenerator(name = "role_seq", sequenceName = "role_seq", allocationSize = 1)
     private Integer id;
 
     @Enumerated(EnumType.STRING)

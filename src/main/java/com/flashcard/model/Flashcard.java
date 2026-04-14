@@ -49,11 +49,11 @@ public class Flashcard {// flashcard bilgisini tutar
     private boolean deleted = false;
 
     public void updateCardCount(Integer newCardCount) {
-        Integer oldCardCount = getCardCount();
-
-        if (newCardCount == null || newCardCount <= 0) {
-            throw new IllegalArgumentException("New card count must be greater than zero");
+        if (newCardCount == null) {
+            throw new IllegalArgumentException("New card count cannot be null");
         }
+
+        Integer oldCardCount = getCardCount();
 
         if (oldCardCount != null && oldCardCount > 0) {
             setCardCount(oldCardCount + newCardCount);

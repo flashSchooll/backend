@@ -137,12 +137,46 @@ public class UserCardPercentageService {
 
         int percentageCount = userCardPercentageRepository.countByLesson(lesson);
 
+        long totalUserCount = userRepository.count();
+
         if (percentageCount == 0) {
             UserCardPercentageService proxy = applicationContext.getBean(UserCardPercentageService.class);
             proxy.saveForLesson(lesson);
         } else {
             userCardPercentageRepository.updateTotalCardByLesson(lesson, count);
+
+            // Eksik kullanıcılar var mı kontrol et
+            if (percentageCount < totalUserCount) {
+                UserCardPercentageService proxy = applicationContext.getBean(UserCardPercentageService.class);
+                proxy.saveMissingUsersForLesson(lesson, count);
+            }
         }
+    }
+
+    @Transactional
+    public void saveMissingUsersForLesson(Lesson lesson, int cardCount) {
+
+        List<Long> existingUserIds = userCardPercentageRepository.findUserIdsByLesson(lesson);
+
+        List<User> missingUsers = userRepository.findAll()
+                .stream()
+                .filter(user -> !existingUserIds.contains(user.getId()))
+                .toList();
+
+        if (missingUsers.isEmpty()) return;
+
+        List<UserCardPercentage> percentages = missingUsers.stream()
+                .map(user -> {
+                    UserCardPercentage ucp = new UserCardPercentage();
+                    ucp.setUser(user);
+                    ucp.setCompletedCard(0);
+                    ucp.setLesson(lesson);
+                    ucp.setTotalCard(cardCount);
+                    ucp.setDeleted(false);
+                    return ucp;
+                }).toList();
+
+        userCardPercentageRepository.saveAll(percentages);
     }
 
     //  @Cacheable(value = "countAverageFifty")

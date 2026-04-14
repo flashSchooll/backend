@@ -1,5 +1,6 @@
 package com.flashcard.repository;
 
+import com.flashcard.controller.statistic.response.UserStatisticLessonResponse;
 import com.flashcard.model.Lesson;
 import com.flashcard.model.User;
 import com.flashcard.model.UserCardPercentage;
@@ -27,6 +28,7 @@ public interface UserCardPercentageRepository extends JpaRepository<UserCardPerc
 
     Optional<UserCardPercentage> findByUserAndLesson(User user, Lesson lesson);
 
+    @EntityGraph(attributePaths = {"user"})
     List<UserCardPercentage> findByLesson(Lesson lesson);
 
     @EntityGraph(attributePaths = {"lesson"})
@@ -40,4 +42,18 @@ public interface UserCardPercentageRepository extends JpaRepository<UserCardPerc
     void updateTotalCardByLesson(@Param("lesson") Lesson lesson, @Param("total") int total);
 
     int countByLesson(Lesson lesson);
+
+    @Query("SELECT ucp.user.id FROM UserCardPercentage ucp WHERE ucp.lesson = :lesson")
+    List<Long> findUserIdsByLesson(@Param("lesson") Lesson lesson);
+
+    // UserCardPercentageRepository.java
+    @EntityGraph(attributePaths = {"lesson"})
+    @Query("SELECT ucp FROM UserCardPercentage ucp " +
+            "WHERE ucp.user = :user AND ucp.lesson.yks = :yks")
+    List<UserCardPercentage> findByUserWithLesson(@Param("user") User user,
+                                                  @Param("yks") YKS yks);
+
+    @EntityGraph(attributePaths = {"lesson"})
+    @Query("SELECT ucp FROM UserCardPercentage ucp WHERE ucp.user = :user AND ucp.lesson.yks = :yks")
+    List<UserCardPercentage> findAllByUserAndLessonYksWithLesson(@Param("user") User user, @Param("yks") YKS yks);
 }

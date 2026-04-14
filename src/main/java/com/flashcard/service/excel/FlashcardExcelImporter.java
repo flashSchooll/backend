@@ -69,7 +69,7 @@ public class FlashcardExcelImporter {
                 .collect(Collectors.toMap(
                         ExcelCardDTO::getFlashcardName,
                         ExcelCardDTO::getFlashcardIndex,
-                        (existing, replacement) -> existing // aynı subject varsa ilkini koru
+                        (existing, replacement) -> existing // aynı flashcard varsa ilkini koru
                 ));
 
 
@@ -98,8 +98,7 @@ public class FlashcardExcelImporter {
             Map<String, List<ExcelCardDTO>> groupedByFlashcard = groupedBySubject.get(topic.getSubject()).stream()
                     .collect(Collectors.groupingBy(ExcelCardDTO::getFlashcardName));
 
-            for (Map.Entry<String, List<ExcelCardDTO>> entryFlash : groupedByFlashcard.entrySet()) {// flashcarda göre
-                // grupladık
+            for (Map.Entry<String, List<ExcelCardDTO>> entryFlash : groupedByFlashcard.entrySet()) {// flashcarda göre grupladık
                 String flashCardName = entryFlash.getKey();
 
                 Optional<Flashcard> optionalFlashcard = flashCardRepository.findByCardNameAndTopic(flashCardName, topic);
@@ -262,23 +261,15 @@ public class FlashcardExcelImporter {
 
         String cellValue = null;
         try {
-            switch (cell.getCellType()) {
-                case STRING:
-                    cellValue = cell.getStringCellValue();
-                    break;
-                case NUMERIC:
+            cellValue = switch (cell.getCellType()) {
+                case STRING -> cell.getStringCellValue();
+                case NUMERIC ->
                     // Numeric değeri String'e çevir
-                    cellValue = String.valueOf(cell.getNumericCellValue());
-                    break;
-                case BOOLEAN:
-                    cellValue = String.valueOf(cell.getBooleanCellValue());
-                    break;
-                case BLANK:
-                    cellValue = "";
-                    break;
-                default:
-                    throw new InvalidCellException(columnName, "Unsupported cell type", null);
-            }
+                        String.valueOf(cell.getNumericCellValue());
+                case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
+                case BLANK -> "";
+                default -> throw new InvalidCellException(columnName, "Unsupported cell type", null);
+            };
             return cellValue;
         } catch (Exception e) {
             throw new InvalidCellException(columnName, cell.toString(), e);
