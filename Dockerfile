@@ -1,15 +1,13 @@
-# Temel imaj olarak OpenJDK kullan
-FROM openjdk:17-jdk-slim
+# Daha küçük ve güvenli seçenek (Alpine tabanlı)
+FROM eclipse-temurin:17-jdk-alpine
 
-# Çalışma dizinini belirle
 WORKDIR /app
 
-# Uygulama JAR dosyasını kopyala
-ARG JAR_FILE=target/FK-0.0.1-SNAPSHOT.jar
-COPY ${JAR_FILE} app.jar
+# JAR dosyasını kopyala
+COPY target/FK-0.0.1-SNAPSHOT.jar app.jar
 
-# Port ayarı
+# Cloud Run 8080 portunu bekler
 EXPOSE 8080
 
 # Uygulamayı çalıştır
-ENTRYPOINT ["java", "-jar", "/app/app.jar"] 
+ENTRYPOINT ["java", "-jar", "app.jar"]
