@@ -1,13 +1,21 @@
-# Daha küçük ve güvenli seçenek (Alpine tabanlı)
-FROM eclipse-temurin:17-jdk-alpine
-
+# AŞAMA 1: Build (Maven ile derleme)
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
 WORKDIR /app
 
-# JAR dosyasını kopyala
-COPY target/FK-0.0.1-SNAPSHOT.jar app.jar
+# Önce bağımlılıkları kopyala (cache için)
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Cloud Run 8080 portunu bekler
+# Sonra kaynak kodları kopyala ve derle
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# AŞAMA 2: Runtime (Sadece JAR çalıştırma)
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+
+# Build aşamasından JAR dosyasını kopyala
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
-
-# Uygulamayı çalıştır
 ENTRYPOINT ["java", "-jar", "app.jar"]
