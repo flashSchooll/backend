@@ -1,21 +1,8 @@
-# AŞAMA 1: Build (Maven + JDK)
-FROM maven:3.9-eclipse-temurin-17-alpine AS build
-WORKDIR /app
-
-# Önce sadece pom.xml kopyala (bağımlılıklar cache'lensin)
-COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Sonra kaynak kodları kopyala ve derle
-COPY src ./src
-RUN mvn clean package -DskipTests
-
-# AŞAMA 2: Runtime (Sadece JRE)
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
-# Build aşamasından JAR'ı kopyala
-COPY --from=build /app/target/*.jar app.jar
+# Görseldeki doğru JAR adını kullan
+COPY target/api-0.0.1-v1.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
