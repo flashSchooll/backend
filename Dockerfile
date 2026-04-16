@@ -9,7 +9,7 @@ ARG JAR_FILE=target/FK-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
 
 # Port ayarı
-EXPOSE 8081
+EXPOSE 8080
 
 # Uygulamayı çalıştır
 ENTRYPOINT ["java", "-jar", "/app/app.jar"] 
