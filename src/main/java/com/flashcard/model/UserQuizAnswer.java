@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDate;
+
 @Entity(name = "UserQuizAnswer")
 @Table(name = "user_quiz_answer",
         indexes = {
@@ -38,6 +40,8 @@ public class UserQuizAnswer {
     @NotNull
     @ManyToOne
     private Quiz quiz;
+
+    private LocalDate createdDate;
 
     private boolean deleted = false;
 }

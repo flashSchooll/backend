@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -158,40 +159,80 @@ public class QuizService {
         Map<Long, Quiz> quizMap = quizList.stream()
                 .collect(Collectors.toMap(Quiz::getId, quiz -> quiz));
 
-
         int quizCount = quizRepository.countByNameAndTopic(userQuizAnswerRequest.getName(), topic);
 
         if (userQuizAnswerRequest.getAnswerList().size() != quizCount) {
             throw new IllegalArgumentException("Quizdeki soru sayısı doğru değil");
         }
 
-        List<Long> quizIds = userQuizAnswerRequest.getAnswerList().stream().map(UserQuizAnswerRequest::getQuizId).toList();
+        List<Long> quizIds = userQuizAnswerRequest.getAnswerList().stream()
+                .map(UserQuizAnswerRequest::getQuizId)
+                .toList();
 
         List<UserQuizAnswer> answeredQuizes = userQuizAnswerRepository.findByUserAndQuizIdIn(user, quizIds);
 
-        List<UserQuizAnswerRequest> answerlist = userQuizAnswerRequest.getAnswerList();
+        // Cevapları quizId'ye göre map'le (performans için)
+        Map<Long, UserQuizAnswerRequest> answerRequestMap = userQuizAnswerRequest.getAnswerList().stream()
+                .collect(Collectors.toMap(UserQuizAnswerRequest::getQuizId, req -> req));
 
         if (!answeredQuizes.isEmpty()) {
+            // ========== GÜNCELLEME SENARYOSU ==========
             if (userQuizAnswerRequest.getAnswerList().size() != answeredQuizes.size()) {
                 throw new IllegalArgumentException("Quizdeki soru sayısı doğru değil");
             }
+
+            int newStarCount = 0;
+
             for (UserQuizAnswer userQuizAnswer : answeredQuizes) {
-                userQuizAnswer.setAnswer(QuizOption.byIndex(answerlist.stream().filter(q-> Objects.equals(q.getQuizId(), userQuizAnswer.getQuiz().getId())).toList().get(0).getIndex()));
+                UserQuizAnswerRequest request = answerRequestMap.get(userQuizAnswer.getQuiz().getId());
+                if (request == null) {
+                    throw new IllegalArgumentException("Quiz ID bulunamadı: " + userQuizAnswer.getQuiz().getId());
+                }
+
+                Quiz quiz = quizMap.get(request.getQuizId());
+
+                // Kullanıcı cevabını güncelle
+                userQuizAnswer.setAnswer(QuizOption.byIndex(request.getIndex()));
+
+                // Doğru cevap kontrolü (mevcut quiz'in güncel cevabına göre)
+                if (request.getIndex().equals(quiz.getAnswer().getIndex())) {
+                    newStarCount++;
+                }
+            }
+
+            // Eski yıldız sayısını hesapla (rightAnswer'a göre)
+            int oldStarCount = 0;
+            for (UserQuizAnswer answeredQuiz : answeredQuizes) {
+                if (answeredQuiz.getAnswer().equals(answeredQuiz.getQuiz().getAnswer())) {
+                    oldStarCount++;
+                }
+            }
+
+            // Yıldız farkını hesapla ve kullanıcıya uygula
+            int starDiff = newStarCount - oldStarCount;
+            if (starDiff != 0) {
+                user.raiseStar(starDiff); // pozitif veya negatif olabilir
+                userRepository.save(user);
             }
 
         } else {
+            // ========== İLK KAYIT SENARYOSU ==========
             List<UserQuizAnswer> answerList = new ArrayList<>();
-
-            UserQuizAnswer answer;
             int starCount = 0;
 
             for (UserQuizAnswerRequest u : userQuizAnswerRequest.getAnswerList()) {
-                answer = new UserQuizAnswer();
+                Quiz quiz = quizMap.get(u.getQuizId());
+                if (quiz == null) {
+                    throw new IllegalArgumentException("Quiz bulunamadı: " + u.getQuizId());
+                }
+
+                UserQuizAnswer answer = new UserQuizAnswer();
                 answer.setUser(user);
                 answer.setAnswer(QuizOption.byIndex(u.getIndex()));
-                answer.setQuiz(quizMap.get(u.getQuizId()));
+                answer.setQuiz(quiz);
+                answer.setCreatedDate(LocalDate.now());
 
-                if (u.getIndex().equals(quizMap.get(u.getQuizId()).getAnswer().getIndex())) {
+                if (u.getIndex().equals(quiz.getAnswer().getIndex())) {
                     starCount++;
                 }
 
@@ -202,9 +243,7 @@ public class QuizService {
 
             user.raiseStar(starCount);
             user.raiseRosette();
-
             userRepository.save(user);
-
         }
     }
 
