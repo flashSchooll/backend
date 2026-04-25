@@ -1,8 +1,8 @@
-package com.flashcard.controller.ownerflashcard.user;
+package com.flashcard.controller.ownerflashcarduser;
 
-import com.flashcard.controller.ownerflashcard.user.request.OwnerFlashcardSaveRequest;
-import com.flashcard.controller.ownerflashcard.user.request.OwnerFlashcardUpdateRequest;
-import com.flashcard.controller.ownerflashcard.user.response.OwnerFlashcardResponse;
+import com.flashcard.controller.ownerflashcarduser.request.OwnerFlashcardSaveRequest;
+import com.flashcard.controller.ownerflashcarduser.request.OwnerFlashcardUpdateRequest;
+import com.flashcard.controller.ownerflashcarduser.response.OwnerFlashcardResponse;
 import com.flashcard.model.OwnerFlashcard;
 import com.flashcard.service.OwnerFlashcardService;
 import jakarta.validation.Valid;

@@ -119,6 +119,12 @@ public class User {// kullanıcı bilgisini tutar
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Payment> payments = new ArrayList<>();
 
+    //
+    /*
+    todo isPremium eklenecek
+    expire kaç aylık ona göre bitiş tarihi
+     */
+
     public void raiseStar(int addedStar) {
         Integer alreadyStar = getStar();
         Integer alreadyWeeklyStar = getWeeklyStar();

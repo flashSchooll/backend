@@ -1,4 +1,4 @@
-package com.flashcard.controller.ownerflashcard.user.response;
+package com.flashcard.controller.ownerflashcarduser.response;
 
 import com.flashcard.model.OwnerFlashcard;
 import com.flashcard.model.enums.YKSLesson;

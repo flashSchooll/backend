@@ -34,6 +34,7 @@ public class UserCardPercentageService {
             cards = cardRepository.findByFlashcardTopicLessonYksBranch(yks, branch);
         }
 
+
         Map<Lesson, Long> lessonCountMap = cards.stream()
                 .collect(Collectors.groupingBy(
                         card -> card.getFlashcard().getTopic().getLesson(),

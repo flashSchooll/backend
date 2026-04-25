@@ -33,6 +33,8 @@ public class GrowingReportService {
 
         List<UserQuizAnswer> userQuizAnswers = userQuizAnswerRepository.findByUserAndDateRange(user, startDate, endDate);
 
+        // todo boşluk doldurma ve doğru yanlış cevaplar da eklenecek
+
         Map<Lesson, Map<Topic, List<UserQuizAnswer>>> groupedData = userQuizAnswers.stream()
                 .filter(answer -> !answer.isDeleted())
                 .filter(answer -> answer.getCreatedDate() != null)

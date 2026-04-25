@@ -1,4 +1,4 @@
-package com.flashcard.controller.ownerflashcard.user.request;
+package com.flashcard.controller.ownerflashcarduser.request;
 
 import com.flashcard.model.enums.YKSLesson;
 import jakarta.validation.constraints.NotBlank;
@@ -8,14 +8,12 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class OwnerFlashcardUpdateRequest {
-
-    @NotNull
-    private Long id;
+public class OwnerFlashcardSaveRequest {
 
     @NotBlank
     private String name;
 
     @NotNull
     private YKSLesson yksLesson;
+
 }

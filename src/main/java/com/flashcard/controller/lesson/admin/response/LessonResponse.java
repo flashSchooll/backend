@@ -10,6 +10,7 @@ public class LessonResponse {
 
     private final Long lessonId;
     private final String yksLesson;
+    private final String lessonName;
     private final String branch;
     private final String yks;
     private final String path;
@@ -17,6 +18,7 @@ public class LessonResponse {
     public LessonResponse(Lesson lesson) {
         this.lessonId = lesson.getId();
         this.yksLesson = lesson.getYksLesson() != null ? lesson.getYksLesson().name() : null;
+        this.lessonName = lesson.getYksLesson() != null ? lesson.getYksLesson().label : null;
         this.branch = lesson.getBranch() != null ? lesson.getBranch().name() : null;
         this.yks = lesson.getYks().name();
         this.path = lesson.getPath();

@@ -1,7 +1,7 @@
 package com.flashcard.service;
 
-import com.flashcard.controller.ownerflashcard.user.request.OwnerFlashcardSaveRequest;
-import com.flashcard.controller.ownerflashcard.user.request.OwnerFlashcardUpdateRequest;
+import com.flashcard.controller.ownerflashcarduser.request.OwnerFlashcardSaveRequest;
+import com.flashcard.controller.ownerflashcarduser.request.OwnerFlashcardUpdateRequest;
 import com.flashcard.model.OwnerFlashcard;
 import com.flashcard.model.User;
 import com.flashcard.repository.OwnerFlashcardRepository;

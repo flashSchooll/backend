@@ -52,8 +52,8 @@ public class LessonUserController {
     @GetMapping("/list")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
-    public List<LessonListResponse> getLessonList(){
-        List<Lesson> lessons=lessonService.getAll();
+    public List<LessonListResponse> getLessonList() {
+        List<Lesson> lessons = lessonService.getAll();
 
         return lessons.stream().map(LessonListResponse::new).toList();
     }
