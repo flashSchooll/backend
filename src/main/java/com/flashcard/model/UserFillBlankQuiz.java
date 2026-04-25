@@ -43,5 +43,7 @@ public class UserFillBlankQuiz {
 
     private Integer known;
 
+    private Integer total;
+
     private boolean deleted = false;
 }
