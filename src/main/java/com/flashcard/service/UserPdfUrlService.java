@@ -28,6 +28,12 @@ public class UserPdfUrlService {
     public void save(UserPdfUrlRequest request) {
         User user = authService.getCurrentUser();
 
+        Long urlCount = userPdfUrlRepository.countByUser(user);
+
+        if (urlCount >= 20) {
+            throw new IllegalArgumentException(urlCount + " pdf url kayıtlı olduğu için kaydedemezsiniz");
+        }
+
         UserPdfUrl userPdfUrl = new UserPdfUrl();
         userPdfUrl.setUser(user);
         userPdfUrl.setUrl(request.getUrl());

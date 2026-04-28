@@ -4,6 +4,8 @@ import com.flashcard.model.User;
 import com.flashcard.model.enums.Branch;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class UserDTO {
     private final Long id;
@@ -16,6 +18,8 @@ public class UserDTO {
     private final String photoPath;
     private final Integer series;
     private final Integer targetSeries;
+    private final Boolean isPremium;
+    private final LocalDateTime expirePremiumDate;
 
     public UserDTO(User user) {
         this.id = user.getId();
@@ -28,5 +32,7 @@ public class UserDTO {
         this.photoPath = user.getPhotoPath();
         this.series = user.getSeries();
         this.targetSeries = user.getTargetSeries();
+        this.isPremium = user.getIsPremium();
+        this.expirePremiumDate = user.getPremiumExpireDate();
     }
 }

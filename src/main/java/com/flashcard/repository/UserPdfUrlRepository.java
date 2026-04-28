@@ -12,4 +12,6 @@ public interface UserPdfUrlRepository extends JpaRepository<UserPdfUrl, UUID> {
     List<UserPdfUrl> findByUser(User user);
 
     Optional<UserPdfUrl> findByUserAndId(User user, UUID id);
+
+    Long countByUser(User user);
 }

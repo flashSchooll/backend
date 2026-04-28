@@ -56,7 +56,7 @@ public class UserService {
     }
 
     @Transactional
-   // @CacheEvict(value = "users", key = "'allUsers'")
+    // @CacheEvict(value = "users", key = "'allUsers'")
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(Constants.USER_NOT_FOUND));
@@ -313,6 +313,15 @@ public class UserService {
 
         user.raiseStar(star);
         user.raiseRosette();
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updatePremium(int month) {
+        User user = authService.getCurrentUser();
+
+        user.activatePremium(month);
+
         return userRepository.save(user);
     }
 }

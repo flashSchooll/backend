@@ -119,11 +119,31 @@ public class User {// kullanıcı bilgisini tutar
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Payment> payments = new ArrayList<>();
 
-    //
-    /*
-    todo isPremium eklenecek
-    expire kaç aylık ona göre bitiş tarihi
-     */
+    // @Column(nullable = false)
+    private Boolean isPremium = false;
+
+    private LocalDateTime premiumExpireDate;
+
+    // Premium başlatma (örneğin 3 aylık)
+    public void activatePremium(int months) {
+        this.isPremium = true;
+        this.premiumExpireDate = LocalDateTime.now().plusMonths(months);
+    }
+
+    // Premium kontrolü (expired mı?)
+    public boolean hasActivePremium() {
+        return isPremium &&
+                premiumExpireDate != null &&
+                premiumExpireDate.isAfter(LocalDateTime.now());
+    }
+
+    // Süresi dolunca otomatik düşürmek için
+    public void checkAndExpirePremium() {
+        if (isPremium && premiumExpireDate != null &&
+                premiumExpireDate.isBefore(LocalDateTime.now())) {
+            this.isPremium = false;
+        }
+    }
 
     public void raiseStar(int addedStar) {
         Integer alreadyStar = getStar();

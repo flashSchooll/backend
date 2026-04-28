@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -50,6 +51,7 @@ public class UserFillBlankQuizService {
             quiz.setTitle(title);
             quiz.setKnown(known);
             quiz.setDeleted(false);
+            quiz.setCreatedDate(LocalDate.now());
 
             userFillBlankQuizRepository.save(quiz);
 

@@ -108,5 +108,15 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @PutMapping("/update-premium")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<UserDTO> updatePremium(@RequestParam int month) {
+        User user = userService.updatePremium(month);
+
+        UserDTO userDTO = new UserDTO(user);
+
+        return ResponseEntity.ok(userDTO);
+    }
+
 
 }

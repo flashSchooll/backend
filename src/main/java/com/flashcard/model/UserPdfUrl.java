@@ -34,9 +34,3 @@ public class UserPdfUrl {
 
     private boolean deleted = false;
 }
-
-  /*
-
-  todo kullanıcının 20 pdf oluşturma olacak  bunun için ayrı bir tablo oluşturulacak
-
-   */
