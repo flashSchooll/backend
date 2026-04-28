@@ -5,6 +5,7 @@ import com.flashcard.controller.growingreport.response.GrowingReportLessonRespon
 import com.flashcard.controller.growingreport.response.GrowingReportResponse;
 import com.flashcard.controller.growingreport.response.GrowingReportTopicResponse;
 import com.flashcard.model.*;
+import com.flashcard.model.enums.QuizType;
 import com.flashcard.repository.UserFillBlankQuizRepository;
 import com.flashcard.repository.UserQuizAnswerRepository;
 import com.flashcard.security.services.AuthService;
@@ -78,29 +79,41 @@ public class GrowingReportService {
 
                     List<GrowingReportTopicResponse> topicResponses = allTopics.stream()
                             .map(topic -> {
-                                // Çoktan seçmeli istatistikler
                                 List<UserQuizAnswer> answers = quizByTopic
                                         .getOrDefault(topic, Collections.emptyList());
-                                int quizTotal = answers.size();
-                                int quizRight = (int) answers.stream()
+
+                                // QuizType'a göre ayır
+                                List<UserQuizAnswer> testAnswers = answers.stream()
+                                        .filter(a -> a.getQuiz().getType() == QuizType.TEST)
+                                        .toList();
+
+                                List<UserQuizAnswer> rightWrongAnswers = answers.stream()
+                                        .filter(a -> a.getQuiz().getType() == QuizType.RIGHT_WRONG)
+                                        .toList();
+
+                                // TEST istatistikleri
+                                int testTotal = testAnswers.size();
+                                int testRight = (int) testAnswers.stream()
                                         .filter(a -> a.getAnswer() == a.getQuiz().getAnswer())
                                         .count();
 
-                                // Boşluk doldurma istatistikler
+                                // RIGHT_WRONG istatistikleri
+                                int rwTotal = rightWrongAnswers.size();
+                                int rwRight = (int) rightWrongAnswers.stream()
+                                        .filter(a -> a.getAnswer() == a.getQuiz().getAnswer())
+                                        .count();
+
+                                // FillBlank (mevcut)
                                 List<UserFillBlankQuiz> fillBlanks = fillBlankByTopic
                                         .getOrDefault(topic, Collections.emptyList());
                                 int fillBlankKnown = fillBlanks.stream()
-                                        .mapToInt(fb -> fb.getKnown() != null ? fb.getKnown() : 0)
-                                        .sum();
+                                        .mapToInt(fb -> fb.getKnown() != null ? fb.getKnown() : 0).sum();
                                 int fillBlankTotal = fillBlanks.stream()
-                                        .mapToInt(fb -> fb.getTotal() != null ? fb.getTotal() : 0) // total alanı yoksa aşağıya bak
-                                        .sum();
+                                        .mapToInt(fb -> fb.getTotal() != null ? fb.getTotal() : 0).sum();
 
-                                // Toplam
-                                int totalQuestions = quizTotal + fillBlankTotal;
-                                int totalRight = quizRight + fillBlankKnown;
-
-                                return getGrowingReportTopicResponse(totalQuestions, totalRight, topic);
+                                return buildTopicResponse(topic, testTotal, testRight,
+                                        rwTotal, rwRight,
+                                        fillBlankTotal, fillBlankKnown);
                             }).toList();
 
                     GrowingReportLessonResponse lessonResponse = new GrowingReportLessonResponse();
@@ -114,16 +127,43 @@ public class GrowingReportService {
         return response;
     }
 
-    private static GrowingReportTopicResponse getGrowingReportTopicResponse(int questionCount, int rightCount, Topic topic) {
-        int wrongCount = questionCount - rightCount;
-        int percent = questionCount > 0 ? (rightCount * 100) / questionCount : 0;
+    private GrowingReportTopicResponse buildTopicResponse(
+            Topic topic,
+            int testTotal, int testRight,
+            int rwTotal, int rwRight,
+            int fillBlankTotal, int fillBlankKnown) {
 
-        GrowingReportTopicResponse topicResponse = new GrowingReportTopicResponse();
-        topicResponse.setTopic(topic.getSubject());
-        topicResponse.setQuestionCount(questionCount);
-        topicResponse.setRightCount(rightCount);
-        topicResponse.setWrongCount(wrongCount);
-        topicResponse.setPercent(percent);
-        return topicResponse;
+        int testWrong = testTotal - testRight;
+        int testPercent = testTotal > 0 ? (testRight * 100) / testTotal : 0;
+
+        int rwWrong = rwTotal - rwRight;
+        int rwPercent = rwTotal > 0 ? (rwRight * 100) / rwTotal : 0;
+
+        // Genel toplam: fillBlank'i istediğin gruba ekleyebilirsin
+        // ya da ayrı tutabilirsin. Burada genel toplama eklendi.
+        int grandTotal = testTotal + rwTotal + fillBlankTotal;
+        int grandRight = testRight + rwRight + fillBlankKnown;
+        int grandWrong = grandTotal - grandRight;
+        int grandPercent = grandTotal > 0 ? (grandRight * 100) / grandTotal : 0;
+
+        GrowingReportTopicResponse response = new GrowingReportTopicResponse();
+        response.setTopic(topic.getSubject());
+
+        response.setTestQuestionCount(testTotal);
+        response.setTestRightCount(testRight);
+        response.setTestWrongCount(testWrong);
+        response.setTestPercent(testPercent);
+
+        response.setRightWrongQuestionCount(rwTotal);
+        response.setRightWrongRightCount(rwRight);
+        response.setRightWrongWrongCount(rwWrong);
+        response.setRightWrongPercent(rwPercent);
+
+        response.setTotalQuestionCount(grandTotal);
+        response.setTotalRightCount(grandRight);
+        response.setTotalWrongCount(grandWrong);
+        response.setTotalPercent(grandPercent);
+
+        return response;
     }
 }

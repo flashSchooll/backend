@@ -7,8 +7,22 @@ import lombok.Setter;
 @Getter
 public class GrowingReportTopicResponse {
     private String topic;
-    private Integer questionCount;
-    private Integer rightCount;
-    private Integer wrongCount;
-    private Integer percent;
+
+    // TEST istatistikleri
+    private Integer testQuestionCount;
+    private Integer testRightCount;
+    private Integer testWrongCount;
+    private Integer testPercent;
+
+    // RIGHT_WRONG istatistikleri
+    private Integer rightWrongQuestionCount;
+    private Integer rightWrongRightCount;
+    private Integer rightWrongWrongCount;
+    private Integer rightWrongPercent;
+
+    // Genel toplam (opsiyonel, istersen kaldırabilirsin)
+    private Integer totalQuestionCount;
+    private Integer totalRightCount;
+    private Integer totalWrongCount;
+    private Integer totalPercent;
 }
