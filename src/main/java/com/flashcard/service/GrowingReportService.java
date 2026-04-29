@@ -37,7 +37,7 @@ public class GrowingReportService {
 
         // Boşluk doldurma quizleri
         List<UserFillBlankQuiz> fillBlankQuizzes = userFillBlankQuizRepository
-                .findByUserAndDateRange(user, startDate, endDate);
+                .findByUserAndDateRange(user.getId(), startDate, endDate);
 
         // Çoktan seçmeli: Lesson → Topic → [answers]
         Map<Lesson, Map<Topic, List<UserQuizAnswer>>> groupedQuizData = userQuizAnswers.stream()

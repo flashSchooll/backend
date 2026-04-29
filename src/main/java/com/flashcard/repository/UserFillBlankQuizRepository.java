@@ -17,14 +17,15 @@ public interface UserFillBlankQuizRepository extends JpaRepository<UserFillBlank
 
     Optional<UserFillBlankQuiz> findByUserAndTitleAndTopic(User user, @NotBlank String title, Topic topic);
 
-    @Query("""
-    SELECT f FROM UserFillBlankQuiz f
-    WHERE f.user = :user
-    AND (:startDate IS NULL OR f.createdDate >= :startDate)
-    AND (:endDate IS NULL OR f.createdDate <= :endDate)
-    """)
+    @Query(value = """
+    SELECT * FROM user_fill_blank_quiz
+    WHERE deleted = false
+    AND user_id = :userId
+    AND (CAST(:startDate AS date) IS NULL OR created_date >= CAST(:startDate AS date))
+    AND (CAST(:endDate AS date) IS NULL OR created_date <= CAST(:endDate AS date))
+    """, nativeQuery = true)
     List<UserFillBlankQuiz> findByUserAndDateRange(
-            @Param("user") User user,
+            @Param("userId") Long userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
