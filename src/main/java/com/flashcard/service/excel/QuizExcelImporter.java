@@ -22,149 +22,218 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
 public class QuizExcelImporter {
-    private static final Logger logger = LoggerFactory.getLogger(QuizExcelImporter.class);
+
     private final TopicRepository topicRepository;
     private final QuizRepository quizRepository;
 
-
+    // ─── Tekli Import (topicId parametre olarak gelir) ───────────────────────
     public void saveExcel(Long topicId, MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("Dosya boş olamaz");
-        }
-        List<ExcelQuizDTO> dtoList = getExcelDataFromExcel(file);
+        if (file.isEmpty()) throw new IllegalArgumentException("Dosya boş olamaz");
+
+        List<ExcelQuizDTO> dtoList = getExcelDataFromExcel(file, false);
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        Set<Quiz> quizSet = new HashSet<>();
-        Quiz quiz;
+        List<Quiz> quizList = dtoList.stream()
+                .map(dto -> mapToQuiz(dto, topic))
+                .collect(Collectors.toList());
 
-        for (ExcelQuizDTO e : dtoList) {
-            String level;
-
-            // DÜZENLEME: Integer kontrolü yapıldı
-            if (e.getLevel() == null) {
-                // Varsayılan bir değer atayabilir veya hata fırlatabilirsiniz.
-                throw new IllegalArgumentException("Zorluk seviyesi boş olamaz");
-            }
-
-            if (e.getLevel() == 1) {
-                level = "KOLAY";
-            } else if (e.getLevel() == 2) {
-                level = "ORTA";
-            } else if (e.getLevel() == 3) {
-                level = "ZOR";
-            } else {
-                throw new IllegalArgumentException("Yanlış zorluk seviyesi girildi: " + e.getLevel());
-            }
-
-            quiz = new Quiz();
-
-            quiz.setQuestion(e.getQuestion());
-            quiz.setAnswer(e.getAnswer());
-            quiz.setA(e.getA());
-            quiz.setB(e.getB());
-            quiz.setC(e.getC());
-            quiz.setD(e.getD());
-            quiz.setE(e.getE());
-            quiz.setTopic(topic);
-            quiz.setName(e.getName());
-            quiz.setType(e.getType());
-            quiz.setDeleted(false);
-            quiz.setDescription(e.getDescription());
-            quiz.setLevel(level);
-
-            quizSet.add(quiz);
-        }
-        quizRepository.saveAll(quizSet);
+        quizRepository.saveAll(quizList);
+        log.info("Tekli import tamamlandı. {} quiz kaydedildi.", quizList.size());
     }
 
-    private List<ExcelQuizDTO> getExcelDataFromExcel(MultipartFile file) throws IOException {
+    // ─── Toplu Import (topicId Excel'den okunur) ─────────────────────────────
+    public void saveExcelBulk(MultipartFile file) throws IOException {
+        if (file.isEmpty()) throw new IllegalArgumentException("Dosya boş olamaz");
 
-        XSSFWorkbook workbook;
-        InputStream inputStream = file.getInputStream();
+        List<ExcelQuizDTO> dtoList = getExcelDataFromExcel(file, true);
 
-        workbook = new XSSFWorkbook(inputStream);
+        Map<Long, List<ExcelQuizDTO>> groupedByTopic = dtoList.stream()
+                .filter(dto -> dto.getTopicId() != null)
+                .collect(Collectors.groupingBy(ExcelQuizDTO::getTopicId));
 
-        Set<ExcelQuizDTO> excelCardDTOS = new HashSet<>();
-        ExcelQuizDTO cardDTO;
-        int numberOfSheets = workbook.getNumberOfSheets();
-        for (int i = 0; i < numberOfSheets; i++) {
-            Sheet sheet = workbook.getSheetAt(i);
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) {
-                    continue;
-                }
-                cardDTO = new ExcelQuizDTO();
-                try {
-                    for (Cell cell : row) {
-                        if (cell.getRow().toString().isEmpty() || cell.getCellType() == CellType.BLANK) {
-                            continue;
-                        }
-                        switch (cell.getColumnIndex()) {
-                            case 0 -> // soru sütunu
-                                    cardDTO.setQuestion(getStringCell(cell, "soru"));
-                            case 1 -> // a sütunu
-                                    cardDTO.setA(getStringCell(cell, "a"));
-                            case 2 -> // b sütunu
-                                    cardDTO.setB(getStringCell(cell, "b"));
-                            case 3 -> // c sütunu
-                                    cardDTO.setC(getStringCell(cell, "c"));
-                            case 4 -> // d sütunu
-                                    cardDTO.setD(getStringCell(cell, "d"));
-                            case 5 -> // e sütunu
-                                    cardDTO.setE(getStringCell(cell, "e"));
-                            case 6 -> // şık sütunu
-                                    cardDTO.setAnswer(setEnumCell(cell, "şık"));
-                            case 7 -> // quiz adı sütunu
-                                    cardDTO.setName(getStringCell(cell, "quiz adı"));
-                            case 8 -> // quiz tipi sütunu
-                                    cardDTO.setType(getQuizType(cell, "quiz tipi"));
-                            case 9 -> // description sütunu
-                                    cardDTO.setDescription(getStringCell(cell, "Description"));
-                            case 10 -> // level sütunu
-                                // DÜZENLEME: Artık Integer okuyan metodu çağırıyoruz
-                                    cardDTO.setLevel(getIntegerCell(cell, "Zorluk Seviyesi"));
-                        }
-                    }
-                    if (cardDTO.getAnswer() != null) {
-                        excelCardDTOS.add(cardDTO);
-                    } else {
-                        break;
-                    }
-
-                } catch (InvalidCellException e) {
-                    log.debug("Hata oluştu. Satır: " + (row.getRowNum() + 1) + ", Hata: " + e.getMessage(), e);
-                    throw new BusinessException(row.getRowNum() + 1 + " Satırda okunamadı " + e.getMessage());
-                }
-            }
+        if (groupedByTopic.isEmpty()) {
+            throw new IllegalArgumentException("Excel'de geçerli topicId bulunamadı");
         }
-        return excelCardDTOS.stream().toList();
+
+        // Tüm topic'leri tek sorguda çek
+        Map<Long, Topic> topicMap = topicRepository.findAllById(groupedByTopic.keySet())
+                .stream()
+                .collect(Collectors.toMap(Topic::getId, Function.identity()));
+
+        // Eksik topic kontrolü
+        groupedByTopic.keySet().forEach(id -> {
+            if (!topicMap.containsKey(id)) {
+                throw new NoSuchElementException(Constants.TOPIC_NOT_FOUND + ": " + id);
+            }
+        });
+
+        // ✦ YENİ: Her topic grubuna cevap dağılımını dengele
+        groupedByTopic.values().forEach(this::redistributeAnswers);
+
+        List<Quiz> quizList = groupedByTopic.entrySet().stream()
+                .flatMap(entry -> entry.getValue().stream()
+                        .map(dto -> mapToQuiz(dto, topicMap.get(entry.getKey()))))
+                .collect(Collectors.toList());
+
+        quizRepository.saveAll(quizList);
+        log.info("Bulk import tamamlandı. {} quiz kaydedildi.", quizList.size());
     }
 
-    // ... Diğer metodlar (getQuizType, setEnumCell vs.) aynı kalabilir ...
+    // ─── Cevap Dağılımını Dengele ─────────────────────────────────────────────
+    private void redistributeAnswers(List<ExcelQuizDTO> rows) {
+        List<String> slots = new ArrayList<>(List.of("A", "B", "C", "D", "E"));
+        int size = rows.size();
+        Random rnd = new Random();
 
-    private QuizType getQuizType(Cell cell, String quizType) {
-        if (cell.getCellType().equals(CellType.BLANK)) {
+        // İlk 5 slot: A,B,C,D,E her biri en az 1 kez geçsin (shuffle ile garanti)
+        Collections.shuffle(slots, rnd);
+        List<String> targets = new ArrayList<>(slots);
+
+        // Kalan (size - 5) soru için tamamen rastgele şık ata
+        for (int i = 5; i < size; i++) {
+            targets.add(slots.get(rnd.nextInt(slots.size())));
+        }
+
+        // Hedef sırayı karıştır (ilk 5'in pozisyonu da sabit kalmasın)
+        Collections.shuffle(targets, rnd);
+
+        // Her soruya hedef şıkkı uygula
+        for (int i = 0; i < size; i++) {
+            ExcelQuizDTO dto = rows.get(i);
+            String targetSlot = targets.get(i);
+            String currentSlot = dto.getAnswer().getLabel().trim().toUpperCase();
+
+            if (!currentSlot.equals(targetSlot)) {
+                swapOptions(dto, currentSlot, targetSlot);
+                dto.setAnswer(QuizOption.byLabel(targetSlot));
+            }
+        }
+    }
+
+    private void swapOptions(ExcelQuizDTO dto, String from, String to) {
+        String fromVal = getOption(dto, from);
+        String toVal = getOption(dto, to);
+        setOption(dto, from, toVal);
+        setOption(dto, to, fromVal);
+    }
+
+    private String getOption(ExcelQuizDTO dto, String slot) {
+        return switch (slot) {
+            case "A" -> dto.getA();
+            case "B" -> dto.getB();
+            case "C" -> dto.getC();
+            case "D" -> dto.getD();
+            case "E" -> dto.getE();
+            default  -> "";
+        };
+    }
+
+    private void setOption(ExcelQuizDTO dto, String slot, String value) {
+        switch (slot) {
+            case "A" -> dto.setA(value);
+            case "B" -> dto.setB(value);
+            case "C" -> dto.setC(value);
+            case "D" -> dto.setD(value);
+            case "E" -> dto.setE(value);
+        }
+    }
+
+    // ─── Excel Okuma (withTopicId=true ise kolon 9 = topicId) ────────────────
+    private List<ExcelQuizDTO> getExcelDataFromExcel(MultipartFile file, boolean withTopicId) throws IOException {
+        try (XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream())) {
+
+            Set<ExcelQuizDTO> result = new HashSet<>();
+
+            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                Sheet sheet = workbook.getSheetAt(i);
+
+                for (Row row : sheet) {
+                    if (row.getRowNum() == 0) continue; // başlık satırını atla
+
+                    ExcelQuizDTO dto = new ExcelQuizDTO();
+                    try {
+                        for (Cell cell : row) {
+                            if (cell.getCellType() == CellType.BLANK) continue;
+
+                            switch (cell.getColumnIndex()) {
+                                case 0 -> dto.setQuestion(getStringCell(cell, "Soru"));
+                                case 1 -> dto.setA(getStringCell(cell, "A"));
+                                case 2 -> dto.setB(getStringCell(cell, "B"));
+                                case 3 -> dto.setC(getStringCell(cell, "C"));
+                                case 4 -> dto.setD(getStringCell(cell, "D"));
+                                case 5 -> dto.setE(getStringCell(cell, "E"));
+                                case 6 -> dto.setAnswer(setEnumCell(cell, "Cevap"));
+                                case 7 -> dto.setName(getStringCell(cell, "Quiz Adı"));
+                                case 8 -> dto.setType(getQuizType(cell, "Quiz Tipi"));
+                                // Kolon 9: withTopicId'ye göre farklı anlam
+                                case 9 -> {
+                                    if (withTopicId) {
+                                        dto.setTopicId(getLongCell(cell, "topicId"));
+                                    }
+                                    // withTopicId=false ise bu kolonu yoksay
+                                }
+                            }
+                        }
+
+                        if (dto.getAnswer() != null) {
+                            result.add(dto);
+                        } else {
+                            break; // cevap yoksa satır boş, dur
+                        }
+
+                    } catch (InvalidCellException e) {
+                        log.debug("Satır {} okunamadı: {}", row.getRowNum() + 1, e.getMessage());
+                        throw new BusinessException((row.getRowNum() + 1) + ". satırda hata: " + e.getMessage());
+                    }
+                }
+            }
+            return result.stream().toList();
+        }
+    }
+
+    // ─── Quiz Mapping ─────────────────────────────────────────────────────────
+    private Quiz mapToQuiz(ExcelQuizDTO dto, Topic topic) {
+        Quiz quiz = new Quiz();
+        quiz.setQuestion(dto.getQuestion());
+        quiz.setAnswer(dto.getAnswer());
+        quiz.setA(dto.getA());
+        quiz.setB(dto.getB());
+        quiz.setC(dto.getC());
+        quiz.setD(dto.getD());
+        quiz.setE(dto.getE());
+        quiz.setTopic(topic);
+        quiz.setName(dto.getName());
+        quiz.setType(dto.getType());
+        quiz.setDeleted(false);
+        quiz.setDescription(dto.getDescription());
+        quiz.setLevel(null);
+        return quiz;
+    }
+
+    // ─── Yardımcı Metodlar ───────────────────────────────────────────────────
+    private QuizType getQuizType(Cell cell, String columnName) {
+        if (cell.getCellType() == CellType.BLANK) {
             throw new IllegalArgumentException("Soru tipi girilmelidir");
         }
-        String cellValue = null;
         try {
-            cellValue = cell.getStringCellValue();
+            return QuizType.by(cell.getStringCellValue());
         } catch (Exception e) {
-            throw new InvalidCellException(quizType, String.valueOf(cell.getStringCellValue()), e);
+            throw new InvalidCellException(columnName, cell.getStringCellValue(), e);
         }
-        return QuizType.by(cellValue);
     }
 
-    private QuizOption setEnumCell(Cell cell, String alternative) {
-        if (cell.getCellType().equals(CellType.BLANK)) {
+    private QuizOption setEnumCell(Cell cell, String columnName) {
+        if (cell.getCellType() == CellType.BLANK) {
             throw new BadRequestException("Cevap şıkkı boş olamaz");
         }
         String cellValue = null;
@@ -172,65 +241,58 @@ public class QuizExcelImporter {
             cellValue = cell.getStringCellValue().trim();
             return QuizOption.byLabel(cellValue);
         } catch (Exception e) {
-            throw new InvalidCellException(alternative, String.valueOf(cellValue), e);
+            throw new InvalidCellException(columnName, cellValue, e);
         }
     }
 
-    // DÜZENLEME: Yeni Integer okuma metodu
     private Integer getIntegerCell(Cell cell, String columnName) {
-        if (cell == null || cell.getCellType() == CellType.BLANK) {
-            return null;
-        }
-
+        if (cell == null || cell.getCellType() == CellType.BLANK) return null;
         try {
             if (cell.getCellType() == CellType.NUMERIC) {
-                // Excel sayıları double olarak tutar, int'e cast ediyoruz.
                 return (int) cell.getNumericCellValue();
             } else if (cell.getCellType() == CellType.STRING) {
-                // Eğer hücre metin olarak "1" içeriyorsa parse etmeyi dener
                 String val = cell.getStringCellValue().trim();
-                // "1.0" gibi string gelme ihtimaline karşı önce double sonra int yapılabilir
                 try {
                     return Integer.parseInt(val);
                 } catch (NumberFormatException e) {
-                    // Belki "1.0" formatında stringdir
                     return (int) Double.parseDouble(val);
                 }
-            } else {
-                throw new InvalidCellException(columnName, "Beklenmeyen hücre tipi: " + cell.getCellType(), null);
             }
+            throw new InvalidCellException(columnName, "Beklenmeyen hücre tipi: " + cell.getCellType(), null);
+        } catch (InvalidCellException e) {
+            throw e;
         } catch (Exception e) {
             throw new InvalidCellException(columnName, "Sayısal değer okunamadı", e);
         }
     }
 
+    private Long getLongCell(Cell cell, String columnName) {
+        Integer val = getIntegerCell(cell, columnName);
+        return val != null ? val.longValue() : null;
+    }
+
     private String getStringCell(Cell cell, String columnName) {
-        if (cell == null || cell.getCellType() == CellType.BLANK) {
-            return null;
-        }
+        if (cell == null || cell.getCellType() == CellType.BLANK) return null;
         String cellValue = null;
         try {
             switch (cell.getCellType()) {
-                case STRING:
-                    cellValue = cell.getStringCellValue().trim();
-                    break;
-                case NUMERIC:
+                case STRING -> cellValue = cell.getStringCellValue().trim();
+                case NUMERIC -> {
                     if (DateUtil.isCellDateFormatted(cell)) {
                         cellValue = cell.getLocalDateTimeCellValue().toString();
                     } else {
-                        // Tam sayı ise sonundaki .0'ı at
                         double val = cell.getNumericCellValue();
-                        if (val == (long) val) {
-                            cellValue = String.format("%d", (long) val);
-                        } else {
-                            cellValue = String.valueOf(val);
-                        }
+                        cellValue = (val == (long) val)
+                                ? String.format("%d", (long) val)
+                                : String.valueOf(val);
                     }
-                    break;
-                default:
-                    throw new InvalidCellException(columnName, "Beklenmeyen hücre tipi: " + cell.getCellType(), null);
+                }
+                default -> throw new InvalidCellException(columnName,
+                        "Beklenmeyen hücre tipi: " + cell.getCellType(), null);
             }
-            return cellValue.isEmpty() ? null : cellValue;
+            return (cellValue == null || cellValue.isEmpty()) ? null : cellValue;
+        } catch (InvalidCellException e) {
+            throw e;
         } catch (Exception e) {
             throw new InvalidCellException(columnName, cellValue, e);
         }

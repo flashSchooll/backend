@@ -41,6 +41,15 @@ public class QuizAdminController {
         return ResponseEntity.ok(Constants.EXCEL_SUCCESSFULLY_IMPORTED);
     }
 
+    @PostMapping("/import-excel/bulk")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Object> importExcelBulk(@RequestBody MultipartFile file) throws Exception {
+
+        quizService.importExcelBulk(file);
+
+        return ResponseEntity.ok(Constants.EXCEL_SUCCESSFULLY_IMPORTED);
+    }
+
     @GetMapping("/get-all/{topicId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getAll(@PathVariable Long topicId) {

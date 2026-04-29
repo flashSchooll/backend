@@ -6,6 +6,7 @@ import com.flashcard.controller.quiz.request.UserQuizAnswerRequest;
 import com.flashcard.controller.quiz.request.UserQuizAnswerRequestList;
 import com.flashcard.controller.quiz.response.QuizCount;
 import com.flashcard.controller.quiz.response.QuizResponse;
+import com.flashcard.exception.BusinessException;
 import com.flashcard.model.*;
 import com.flashcard.model.enums.QuizOption;
 import com.flashcard.model.enums.QuizType;
@@ -41,6 +42,9 @@ public class QuizService {
 
     @Transactional
     public void importExcel(Long topicId, MultipartFile file) throws Exception {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Dosya boş olamaz");
+        }
 
         try {
             quizExcelImporter.saveExcel(topicId, file);
@@ -50,6 +54,22 @@ public class QuizService {
             throw new IOException(e);
         }
 
+    }
+
+    @Transactional
+    public void importExcelBulk(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Dosya boş olamaz");
+        }
+        try {
+            quizExcelImporter.saveExcelBulk(file);
+        } catch (IOException e) {
+            log.error("Bulk Excel import sırasında IO hatası oluştu: {}", e.getMessage());
+            throw new BusinessException("Dosya okunurken hata oluştu: " + e.getMessage());
+        } catch (NoSuchElementException e) {
+            log.error("Bulk Excel import sırasında topic bulunamadı: {}", e.getMessage());
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     public List<QuizResponse> getByTopic(Long topicId) {
@@ -248,11 +268,11 @@ public class QuizService {
     }
 
     //  @Cacheable(value = "userQuizAnswers", key = "{#userId,#name}")
-    public List<UserQuizAnswer> getAnswers(Long userId, String name,Long topicId) {
+    public List<UserQuizAnswer> getAnswers(Long userId, String name, Long topicId) {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        return userQuizAnswerRepository.findByUserIdAndQuizNameAndQuizTopic(userId, name,topic);
+        return userQuizAnswerRepository.findByUserIdAndQuizNameAndQuizTopic(userId, name, topic);
     }
 
     public List<QuizResponse> getAllByName(String name, Long topicId) {
@@ -271,6 +291,8 @@ public class QuizService {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException(Constants.TOPIC_NOT_FOUND));
 
-        userQuizAnswerRepository.deleteByQuizTopicAndQuizName(topic,name);
+        userQuizAnswerRepository.deleteByQuizTopicAndQuizName(topic, name);
     }
+
+
 }

@@ -19,4 +19,5 @@ public class ExcelQuizDTO {
     private QuizType type;
     private String description;
     private Integer level;
+    private Long topicId;
 }
